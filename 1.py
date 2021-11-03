@@ -11,7 +11,7 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from lib import upbit as upbit  # noqa
 
 
-
+# 특정 시간마다 리스트 초기화
 def list_intial():
     except_items = ''
 
