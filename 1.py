@@ -4,11 +4,18 @@
 import sys
 import os
 import time
+import schedule
 
 # 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from lib import upbit as upbit  # noqa
 
+
+
+def list_intial():
+    except_items = ''
+
+schedule.every(15).minutes.do(list_intial)
 
 # -----------------------------------------------------------------------------
 # - Name : start_buytrade
@@ -29,6 +36,9 @@ def start_buytrade(buy_amt, except_items):
             # 1. KRW마켓  ``
             # 2. 제외할 ticker
             item_list = upbit.get_items('KRW', except_items)
+
+            schedule.run_pending()
+            time.sleep(0.5)
 
             # 전체 종목 반복
             for item_list_for in item_list:
@@ -90,7 +100,7 @@ def start_buytrade(buy_amt, except_items):
                     except_items = except_items + ',' + item_list_for['market'].split('-')[1]
 
 
-                #time.sleep(0.02)
+                time.sleep(0.01)
 
                 if bb_now >= can_lowNow and vol_eval >= 0:
                     print("TRIED !!")
