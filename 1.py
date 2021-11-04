@@ -5,17 +5,14 @@ import sys
 import os
 import time
 import schedule
+from datetime import datetime, timedelta
 
 # 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from lib import upbit as upbit  # noqa
 
 
-# 특정 시간마다 리스트 초기화
-def list_intial():
-    except_items = ''
 
-schedule.every(15).minutes.do(list_intial)
 
 # -----------------------------------------------------------------------------
 # - Name : start_buytrade
@@ -29,6 +26,9 @@ def start_buytrade(buy_amt, except_items):
     try:
         data_cnt = 0
 
+        # 55분 마다 리스트 초기화 (변수 변경 시 아래도 변경해야 함)
+        due_time = (datetime.now() + timedelta(minutes=55)).strftime('%M')
+
         # 매수 될 때까지 반복 수행
         while True:
 
@@ -37,11 +37,10 @@ def start_buytrade(buy_amt, except_items):
             # 2. 제외할 ticker
             item_list = upbit.get_items('KRW', except_items)
 
-            schedule.run_pending()
-            time.sleep(0.5)
-
             # 전체 종목 반복
             for item_list_for in item_list:
+
+
 
                 # 1분봉 (최대 200개 요청가능) - 6개 요청(5분전부터)
                 df_candle = upbit.get_candle(item_list_for['market'], '1', 6)
@@ -108,6 +107,14 @@ def start_buytrade(buy_amt, except_items):
                 if data_cnt == 0 or data_cnt % 100 == 0:
                     print("매수 진행 중...[" + str(data_cnt) + "]")
 
+
+
+                now = datetime.now().strftime('%M')
+
+                if due_time == now:
+                    except_items = ''
+                    due_time = (datetime.now() + timedelta(minutes=55)).strftime('%M')
+
                 # 조회건수증가
                 data_cnt = data_cnt + 1
 
@@ -124,9 +131,15 @@ if __name__ == '__main__':
 
 
     buy_amt = 10000
-    except_items = ''
-
     print("매수금액:" + str(buy_amt))
 
     # 매수로직 시작
-    start_buytrade(buy_amt, except_items)
+    try:
+        except_items = ''
+        while True:
+            start_buytrade(buy_amt, except_items)
+
+
+    except Exception:
+
+        raise
