@@ -95,7 +95,7 @@ def start_buytrade(buy_amt, except_items):
                 print("BBL", format((bb_now - can_lowNow) / bb_now * 100, '.2f'),"%",item_list_for['market'], "  BB추세", int(bb_eval) , "  거래량",format(vol_eval * 100 / (vol_tradeNow + vol_before1 + vol_before2 + vol_before3 + vol_before4 + vol_before5),'.0f'), "%     양수TRY / 제외종목:", except_items)
 
                 # 볼린저밴드 15분봉 하단을 찍을 때 매수
-                if bb_now > can_lowNow and bb_eval > 0 and vol_eval > 0 and can_lowNow < can_lowBefore1 and can_lowNow < can_lowBefore2 and can_lowNow < can_lowBefore3 and can_gapBefore1 != 0 and can_gapBefore2 != 0 and can_gapBefore3 != 0 and can_gapBefore4 != 0 and can_gapBefore5 != 0:
+                if bb_now > can_lowNow and bb_eval > 0:# and vol_eval > 0 and can_lowNow < can_lowBefore1 and can_lowNow < can_lowBefore2 and can_lowNow < can_lowBefore3 and can_gapBefore1 != 0 and can_gapBefore2 != 0 and can_gapBefore3 != 0 and can_gapBefore4 != 0 and can_gapBefore5 != 0:
 
                     # 기준 충족 종목 종가
                     print(item_list_for['market'],'하한가' + str(can_lowNow))
