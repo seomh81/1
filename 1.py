@@ -76,10 +76,21 @@ def start_buytrade(buy_amt, except_items):
                 can_eval = can_gapNow - (can_gapBefore1 + can_gapBefore2)# + can_gapBefore3 + can_gapBefore4 + can_gapBefore5) * 1
                 vol_eval = vol_tradeNow - (vol_before1 + vol_before2 + vol_before3 + vol_before4 + vol_before5) * 1
 
-                # 볼린저밴드 5분봉
-                df_bb = upbit.get_bb(item_list_for['market'], '5', '200', 1) #15분봉으로 테스트
+                # 볼린저밴드 15분봉
+                df_bb = upbit.get_bb(item_list_for['market'], '15', '200', 6) #15분봉으로 테스트
 
                 bb_now = df_bb[0]['BBL']
+                bb_Before1 = df_bb[1]['BBL']
+                bb_Before2 = df_bb[2]['BBL']
+                bb_Before3 = df_bb[3]['BBL']
+                bb_Before4 = df_bb[4]['BBL']
+                bb_Before5 = df_bb[5]['BBL']
+                bb_gapBefore1 = bb_Before1 - bb_Before2
+                bb_gapBefore2 = bb_Before2 - bb_Before3
+                bb_gapBefore3 = bb_Before3 - bb_Before4
+                bb_gapBefore4 = bb_Before4 - bb_Before5
+                bb_gapBefore2to5 = (bb_Before2 - bb_Before5) / 3
+                bb_eval =
 
                 print("BBL", format((bb_now - can_lowNow) / bb_now * 100, '.2f'),"%",item_list_for['market'], "거래량",format(vol_eval * 100 / (vol_tradeNow + vol_before1 + vol_before2 + vol_before3 + vol_before4 + vol_before5),'.0f'), "%     양수TRY / 제외종목:", except_items)
 
