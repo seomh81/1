@@ -74,7 +74,7 @@ def start_buytrade(buy_amt, except_items):
                 can_gapBefore5 = can_highBefore5 - can_lowBefore5
 
                 can_eval = can_gapNow - (can_gapBefore1 + can_gapBefore2)# + can_gapBefore3 + can_gapBefore4 + can_gapBefore5) * 1
-                vol_eval = vol_tradeNow - (vol_before1 + vol_before2 + vol_before3 + vol_before4 + vol_before5) * 1
+                vol_eval = vol_tradeNow - (vol_before1 + vol_before2 + vol_before3 + vol_before4 + vol_before5) * 0.5
 
                 # 볼린저밴드 15분봉
                 df_bb = upbit.get_bb(item_list_for['market'], '15', '200', 11) #15분봉으로 테스트
@@ -93,7 +93,7 @@ def start_buytrade(buy_amt, except_items):
                 bb_gapBefore2to10 = bb_Before2 - bb_Before10
                 bb_eval = bb_gapBefore1 - (bb_gapBefore2to10 / 8)
 
-                print("BBL", format((bb_now - can_lowNow) / bb_now * 100, '.2f'),"%",item_list_for['market'], "  BB추세", int(bb_eval) , "  거래량",format(vol_eval * 100 / (vol_tradeNow + vol_before1 + vol_before2 + vol_before3 + vol_before4 + vol_before5),'.0f'), "%     양수TRY / 제외종목:", except_items)
+                print("BBL", format((bb_now - can_lowNow) / bb_now * 100, '.2f'),"%",item_list_for['market'], "  BB추세", int(bb_eval) , "  거래량",format(vol_eval * 100 / (vol_tradeNow + vol_before1 + vol_before2 + vol_before3 + vol_before4 + vol_before5),'.0f'), "%---양수TRY / 제외종목:", except_items)
 
                 # 볼린저밴드 15분봉 하단을 찍을 때 매수
                 if bb_now > can_lowNow and bb_eval > 0 and vol_eval > 0 and can_lowNow < can_lowBefore1 and can_lowNow < can_lowBefore2 and can_lowNow < can_lowBefore3 and can_gapBefore1 != 0 and can_gapBefore2 != 0 and can_gapBefore3 != 0 and can_gapBefore4 != 0 and can_gapBefore5 != 0:
