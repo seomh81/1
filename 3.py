@@ -1,6 +1,7 @@
 import os
 import sys
 import logging
+import time
 import traceback
 
 # 공통 모듈 Import
@@ -22,21 +23,29 @@ if __name__ == '__main__':
         # 로그레벨(D:DEBUG, E:ERROR, 그외:INFO)
         upbit.set_loglevel('I')
 
-        # ---------------------------------------------------------------------
-        # Logic Start!
-        # ---------------------------------------------------------------------
-        # 미체결 주문 조회
-        locked_trade = upbit.get_order('KRW-DOGE')
-        logging.info("취소전")
-        logging.info(locked_trade)
+        item_list = upbit.get_items('KRW', '')
 
-        # 미체결 주문 취소
-        upbit.cancel_order('KRW-DOGE', 'BUY')
+        while True:
+            for item_list_for in item_list:
+                # ---------------------------------------------------------------------
+                # Logic Start!
+                # ---------------------------------------------------------------------
+                # 미체결 주문 조회
+                locked_trade = upbit.get_order(item_list_for['market'])
+                logging.info("취소전")
+                logging.info(locked_trade)
 
-        # 미체결 주문 재조회
-        locked_trade = upbit.get_order('KRW-DOGE')
-        logging.info("취소후")
-        logging.info(locked_trade)
+                if locked_trade !='':
+
+                    # 미체결 주문 취소
+                    upbit.cancel_order(item_list_for['market'], 'BUY')
+
+                    # 미체결 주문 재조회
+                    locked_trade = upbit.get_order(item_list_for['market'])
+                    logging.info("취소후")
+                    logging.info(locked_trade)
+
+                time.sleep(0.02)
 
     except KeyboardInterrupt:
         logging.error("KeyboardInterrupt Exception 발생!")
