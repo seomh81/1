@@ -27,7 +27,7 @@ def start_buytrade(buy_amt, except_items):
         data_cnt = 0
 
         # 55분 마다 리스트 초기화 (변수 변경 시 아래도 변경해야 함)
-        due_time = (datetime.now() + timedelta(minutes=55)).strftime('%M')
+        due_time = (datetime.now() + timedelta(hours=6)).strftime('%H')
 
         # 매수 될 때까지 반복 수행
         while True:
@@ -77,7 +77,7 @@ def start_buytrade(buy_amt, except_items):
                 vol_eval = vol_tradeNow - (vol_before1 + vol_before2 + vol_before3 + vol_before4 + vol_before5) * 1
 
                 # 볼린저밴드 15분봉
-                df_bb = upbit.get_bb(item_list_for['market'], '15', '200', 6) #15분봉으로 테스트
+                df_bb = upbit.get_bb(item_list_for['market'], '15', '200', 11) #15분봉으로 테스트
 
                 bb_now = df_bb[0]['BBL']
                 bb_Before1 = df_bb[1]['BBL']
@@ -85,17 +85,18 @@ def start_buytrade(buy_amt, except_items):
                 bb_Before3 = df_bb[3]['BBL']
                 bb_Before4 = df_bb[4]['BBL']
                 bb_Before5 = df_bb[5]['BBL']
+                bb_Before10 = df_bb[10]['BBL']
                 bb_gapBefore1 = bb_Before1 - bb_Before2
                 bb_gapBefore2 = bb_Before2 - bb_Before3
                 bb_gapBefore3 = bb_Before3 - bb_Before4
                 bb_gapBefore4 = bb_Before4 - bb_Before5
-                bb_gapBefore2to5 = bb_Before2 - bb_Before5
-                bb_eval = bb_gapBefore1 - (bb_gapBefore2to5 / 3)
+                bb_gapBefore2to10 = bb_Before2 - bb_Before10
+                bb_eval = bb_gapBefore1 - (bb_gapBefore2to10 / 8)
 
                 print("BBL", format((bb_now - can_lowNow) / bb_now * 100, '.2f'),"%",item_list_for['market'], "  BB추세", int(bb_eval) , "  거래량",format(vol_eval * 100 / (vol_tradeNow + vol_before1 + vol_before2 + vol_before3 + vol_before4 + vol_before5),'.0f'), "%     양수TRY / 제외종목:", except_items)
 
                 # 볼린저밴드 15분봉 하단을 찍을 때 매수
-                if bb_now > can_lowNow and bb_eval > 0:# and vol_eval > 0 and can_lowNow < can_lowBefore1 and can_lowNow < can_lowBefore2 and can_lowNow < can_lowBefore3 and can_gapBefore1 != 0 and can_gapBefore2 != 0 and can_gapBefore3 != 0 and can_gapBefore4 != 0 and can_gapBefore5 != 0:
+                if bb_now > can_lowNow and bb_eval > 0 and vol_eval > 0 and can_lowNow < can_lowBefore1 and can_lowNow < can_lowBefore2 and can_lowNow < can_lowBefore3 and can_gapBefore1 != 0 and can_gapBefore2 != 0 and can_gapBefore3 != 0 and can_gapBefore4 != 0 and can_gapBefore5 != 0:
 
                     # 기준 충족 종목 종가
                     print(item_list_for['market'],'하한가' + str(can_lowNow))
@@ -120,11 +121,11 @@ def start_buytrade(buy_amt, except_items):
 
 
 
-                now = datetime.now().strftime('%M')
+                now = datetime.now().strftime('%H')
 
                 if due_time == now:
                     except_items = ''
-                    due_time = (datetime.now() + timedelta(minutes=55)).strftime('%M')
+                    due_time = (datetime.now() + timedelta(hours=6)).strftime('%H')
 
                 # 조회건수증가
                 data_cnt = data_cnt + 1
