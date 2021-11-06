@@ -128,7 +128,7 @@ def start_buytrade(buy_amt, except_items):
 
                 time.sleep(0.01)
 
-                if bb_now >= can_lowNow and vol_eval >= 0 and bb_eval >= 0:
+                if bb_now >= can_lowNow and vol_eval >= 0 and bb_eval1 >= 0:
                     print("TRIED !!")
 
                 if data_cnt == 0 or data_cnt % 100 == 0:
