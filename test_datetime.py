@@ -47,13 +47,13 @@ print(due_time)
 i=0
 '''
 i=0
-due_time = (datetime.now() + timedelta(seconds=5)).strftime('%S')
+due_time = (datetime.now() + timedelta(seconds=5)).strftime('%M%S')
 
 while True:
     i += 1
-    now = datetime.now().strftime('%S')
-    print(i)
+    now = datetime.now().strftime('%M%S')
+    print(now,i)
     if due_time == now:
         now = datetime.now()
-        due_time = (datetime.now() + timedelta(seconds=5)).strftime('%S')
+        due_time = (datetime.now() + timedelta(seconds=5)).strftime('%M%S')
         i = 0

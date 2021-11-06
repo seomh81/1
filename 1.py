@@ -26,7 +26,7 @@ def start_buytrade(buy_amt, except_items):
         data_cnt = 0
 
         # 55분 마다 리스트 초기화 (변수 변경 시 아래도 변경해야 함)
-        due_time = (datetime.now() + timedelta(hours=2)).strftime('%H')
+        due_time = (datetime.now() + timedelta(hours=1)).strftime('%H%M')
 
         # 매수 될 때까지 반복 수행
         while True:
@@ -41,7 +41,7 @@ def start_buytrade(buy_amt, except_items):
 
 
                 # 1분봉 (최대 200개 요청가능) - 6개 요청(5분전부터)
-                df_candle = upbit.get_candle(item_list_for['market'], '1', 6)
+                df_candle = upbit.get_candle(item_list_for['market'], '3', 6)
 
                 '''
                 vol_tradeNow = df_candle[0]['candle_acc_trade_volume']
@@ -77,7 +77,7 @@ def start_buytrade(buy_amt, except_items):
                 #vol_eval = vol_tradeNow - (vol_before1 + vol_before2 + vol_before3 + vol_before4 + vol_before5) * 0.5
 
                 # 볼린저밴드 15분봉
-                df_bb = upbit.get_bb(item_list_for['market'], '5', '200', 11) #15분봉으로 테스트
+                df_bb = upbit.get_bb(item_list_for['market'], '10', '200', 11) #15분봉으로 테스트
 
                 bb_now = df_bb[0]['BBL']
                 bb_Before1 = df_bb[1]['BBL']
@@ -85,28 +85,28 @@ def start_buytrade(buy_amt, except_items):
                 bb_Before3 = df_bb[3]['BBL']
                 bb_Before4 = df_bb[4]['BBL']
                 bb_Before5 = df_bb[5]['BBL']
-                bb_Before6 = df_bb[6]['BBL']
-                bb_Before7 = df_bb[7]['BBL']
-                bb_Before8 = df_bb[8]['BBL']
-                bb_Before9 = df_bb[9]['BBL']
-                bb_Before10 = df_bb[10]['BBL']
+                #bb_Before6 = df_bb[6]['BBL']
+                #bb_Before7 = df_bb[7]['BBL']
+                #bb_Before8 = df_bb[8]['BBL']
+                #bb_Before9 = df_bb[9]['BBL']
+                #bb_Before10 = df_bb[10]['BBL']
                 bb_gapBefore1 = bb_Before1 - bb_Before2
                 bb_gapBefore2 = (bb_Before1 - bb_Before3) / 2
                 bb_gapBefore3 = (bb_Before1 - bb_Before4) / 3
                 bb_gapBefore4 = (bb_Before1 - bb_Before5) / 4
-                bb_gapBefore5 = (bb_Before1 - bb_Before6) / 5
-                bb_gapBefore6 = (bb_Before1 - bb_Before7) / 6
-                bb_gapBefore7 = (bb_Before1 - bb_Before8) / 7
-                bb_gapBefore8 = (bb_Before1 - bb_Before9) / 8
-                bb_gapBefore9 = (bb_Before1 - bb_Before10) / 9
+                #bb_gapBefore5 = (bb_Before1 - bb_Before6) / 5
+                #bb_gapBefore6 = (bb_Before1 - bb_Before7) / 6
+                #bb_gapBefore7 = (bb_Before1 - bb_Before8) / 7
+                #bb_gapBefore8 = (bb_Before1 - bb_Before9) / 8
+                #bb_gapBefore9 = (bb_Before1 - bb_Before10) / 9
                 bb_eval1 = bb_gapBefore1 - bb_gapBefore2
                 bb_eval2 = bb_gapBefore1 - bb_gapBefore3
                 bb_eval3 = bb_gapBefore1 - bb_gapBefore4
-                bb_eval4 = bb_gapBefore1 - bb_gapBefore5
-                bb_eval5 = bb_gapBefore1 - bb_gapBefore6
-                bb_eval6 = bb_gapBefore1 - bb_gapBefore7
-                bb_eval7 = bb_gapBefore1 - bb_gapBefore8
-                bb_eval8 = bb_gapBefore1 - bb_gapBefore9
+                #bb_eval4 = bb_gapBefore1 - bb_gapBefore5
+                #bb_eval5 = bb_gapBefore1 - bb_gapBefore6
+                #bb_eval6 = bb_gapBefore1 - bb_gapBefore7
+                #bb_eval7 = bb_gapBefore1 - bb_gapBefore8
+                #bb_eval8 = bb_gapBefore1 - bb_gapBefore9
 
                 print("BBL", format((bb_now - can_lowNow) / bb_now * 100, '.2f'),"%",item_list_for['market'], "  BB추세", format(bb_eval1, '.4f') , "%---양수TRY / 제외종목:", except_items)
 
@@ -126,7 +126,7 @@ def start_buytrade(buy_amt, except_items):
                     except_items = except_items + ',' + item_list_for['market'].split('-')[1]
 
 
-                time.sleep(0.02)
+                time.sleep(0.03)
 
                 #if bb_now >= can_lowNow and vol_eval >= 0 and bb_eval1 >= 0:
                     #print("TRIED !!")
@@ -136,11 +136,11 @@ def start_buytrade(buy_amt, except_items):
 
 
 
-                now = datetime.now().strftime('%H')
+                now = datetime.now().strftime('%H%M')
 
                 if due_time == now:
                     except_items = ''
-                    due_time = (datetime.now() + timedelta(hours=2)).strftime('%H')
+                    due_time = (datetime.now() + timedelta(hours=1)).strftime('%H%M')
 
                 # 조회건수증가
                 data_cnt = data_cnt + 1

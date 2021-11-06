@@ -44,7 +44,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
             # -----------------------------------------------------------------
             for target_item in target_items:
                 for ticker in tickers:
-                    time.sleep(0.3)
+                    time.sleep(0.1)
                     if target_item['market'] == ticker['market']:
 
                         # -----------------------------------------------------
@@ -84,7 +84,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         # ------------------------------------------------------------------
                         # 캔들 조회
                         # ------------------------------------------------------------------
-                        candles = upbit.get_candle(target_item['market'], '15', 200)
+                        candles = upbit.get_candle(target_item['market'], '15', 50)
 
                         # ------------------------------------------------------------------
                         # 최근 매수일자 다음날부터 현재까지의 최고가를 계산
