@@ -937,7 +937,7 @@ def cancel_order_uuid(order_uuid):
             'uuid': order_uuid,
         }
 
-        query_string = urlencode(query).encode().decode('utf8') #뒤에 .decode('utf8')을 안넣어주면 에러남. 원문에는 없음.
+        query_string = urlencode(query).encode()
 
         m = hashlib.sha512()
         m.update(query_string)
@@ -950,7 +950,7 @@ def cancel_order_uuid(order_uuid):
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, secret_key).decode('utf8') #뒤에 .decode('utf8')을 안넣어주면 에러남. 원문에는 없음.
+        jwt_token = jwt.encode(payload, secret_key)
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
