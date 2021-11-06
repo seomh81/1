@@ -937,7 +937,7 @@ def cancel_order_uuid(order_uuid):
             'uuid': order_uuid,
         }
 
-        query_string = urlencode(query).encode()
+        query_string = urlencode(query).encode().decode('utf8') #뒤에 .decode('utf8')을 안넣어주면 에러남. 원문에는 없음.
 
         m = hashlib.sha512()
         m.update(query_string)
