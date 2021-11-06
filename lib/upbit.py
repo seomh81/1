@@ -950,7 +950,7 @@ def cancel_order_uuid(order_uuid):
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, secret_key)
+        jwt_token = jwt.encode(payload, secret_key).decode('utf8') #뒤에 .decode('utf8')을 안넣어주면 에러남. 원문에는 없음.
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
