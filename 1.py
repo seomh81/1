@@ -108,7 +108,7 @@ def start_buytrade(buy_amt, except_items):
                 bb_eval7 = bb_gapBefore1 - bb_gapBefore8
                 bb_eval8 = bb_gapBefore1 - bb_gapBefore9
 
-                print("BBL", format((bb_now - can_lowNow) / bb_now * 100, '.2f'),"%",item_list_for['market'], "  BB추세", bb_eval1 , "  거래량",format(vol_eval * 100 / (vol_tradeNow + vol_before1 + vol_before2 + vol_before3 + vol_before4 + vol_before5),'.0f'), "%---양수TRY / 제외종목:", except_items)
+                print("BBL", format((bb_now - can_lowNow) / bb_now * 100, '.2f'),"%",item_list_for['market'], "  BB추세", format(bb_eval1, '.4f') , "  거래량",format(vol_eval * 100 / (vol_tradeNow + vol_before1 + vol_before2 + vol_before3 + vol_before4 + vol_before5),'.0f'), "%---양수TRY / 제외종목:", except_items)
 
                 # 볼린저밴드 15분봉 하단을 찍을 때 매수
                 if bb_now > can_lowNow and bb_eval1 > 0 and bb_eval2 > 0 and bb_eval3 > 0 and bb_eval4 > 0 and bb_eval5 > 0 and bb_eval6 > 0 and bb_eval7 > 0 and bb_eval8 > 0 and vol_eval > 0 and can_lowNow < can_lowBefore1 and can_lowNow < can_lowBefore2 and can_lowNow < can_lowBefore3 and can_gapBefore1 != 0 and can_gapBefore2 != 0 and can_gapBefore3 != 0 and can_gapBefore4 != 0 and can_gapBefore5 != 0 and can_highBefore1 != can_highBefore2 and can_highBefore1 != can_highBefore3 and can_highBefore1 != can_highBefore4 and can_highBefore1 != can_highBefore5:
@@ -128,8 +128,8 @@ def start_buytrade(buy_amt, except_items):
 
                 time.sleep(0.01)
 
-                if bb_now >= can_lowNow and vol_eval >= 0 and bb_eval1 >= 0:
-                    print("TRIED !!")
+                #if bb_now >= can_lowNow and vol_eval >= 0 and bb_eval1 >= 0:
+                    #print("TRIED !!")
 
                 if data_cnt == 0 or data_cnt % 100 == 0:
                     print("매수 진행 중...[" + str(data_cnt) + "]")
