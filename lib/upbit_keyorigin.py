@@ -18,8 +18,8 @@ from urllib.parse import urlencode
 from decimal import Decimal
 
 # Keys
-access_key = 'n1inbLR7Rq8h8xsmMp8Z18ThaQqRL9IzV2ZIzK8A' ####API키 넣을것
-secret_key = 'tqakzE54kMVviOZGwx4icd4jPqyAAOJQVpRfKNAm' ####비번키 넣을것
+access_key = 'BZ74uTMeZpcXeJVDGlqVVOBTh8UAGBxgnsRjkAit' ####API키 넣을것
+secret_key = 'bJVZxIO01yyyYcQHxXAxpGmMxSNSo5O8lO90EIko' ####비번키 넣을것
 server_url = 'https://api.upbit.com'
 
 # 상수 설정
