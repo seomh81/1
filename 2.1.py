@@ -84,11 +84,12 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         # ------------------------------------------------------------------
                         # 캔들 조회
                         # ------------------------------------------------------------------
-                        candles = upbit.get_candle(target_item['market'], '15', 50)
+                        candles = upbit.get_candle(target_item['market'], '15', 200)
                         #볼린저밴드 조회
-                        bb = upbit.get_bb(target_item['market'], '30', '200', 3)
+                        bb = upbit.get_bb(target_item['market'], '10', '200', 3)
 
-                        canNow = candles[0]['trade_price']
+                        #canNow = candles[0]['trade_price']
+                        canLow = candles[0]['low_price']
                         #bbNow = bb[0]['BBM']
                         bbSell = bb[2]['BBM']
 
@@ -111,7 +112,9 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         logging.info('- 매수 후 최고가:' + str(higest_high_price))
                         logging.info('- 고점대비 하락률:' + str(cur_dcnt_pcnt))
 
-                        if Decimal(str(cur_dcnt_pcnt)) < Decimal(str(dcnt_pcnt)) and canNow < bbSell:
+                        print(format((canLow-bbSell)/canLow*100, '.2f'),'%')
+
+                        if Decimal(str(cur_dcnt_pcnt)) < Decimal(str(dcnt_pcnt)) and canLow < bbSell:
 
                             # ------------------------------------------------------------------
                             # 시장가 매도
