@@ -86,12 +86,12 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         # ------------------------------------------------------------------
                         candles = upbit.get_candle(target_item['market'], '15', 200)
                         #볼린저밴드 조회
-                        bb = upbit.get_bb(target_item['market'], '1', '200', 3)
+                        bb = upbit.get_bb(target_item['market'], '1', '200', 2)
 
                         #canNow = candles[0]['trade_price']
                         canLow = candles[0]['low_price']
                         #bbNow = bb[0]['BBM']
-                        bbSell = bb[2]['BBM']
+                        bbSell = bb[1]['BBM']
 
                         # ------------------------------------------------------------------
                         # 최근 매수일자 다음날부터 현재까지의 최고가를 계산
