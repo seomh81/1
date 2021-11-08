@@ -1,4 +1,4 @@
-# 캔들 3분봉 볼밴 30분봉 매수 7000
+# 캔들 3분봉 볼밴 30분봉 매수 7000(시장가)
 # 볼린저밴트 5분봉 하단 점을 찍고 올라가면 매수 모니터링은 1분봉기준
 # 저가 매수 로직만 세팅
 
@@ -118,8 +118,14 @@ def start_buytrade(buy_amt, except_items):
                     print(item_list_for['market'],'하한가' + str(can_lowNow))
 
                     # 지정가 매수
-                    print('지정가 매수 시작!')
-                    upbit.buycoin_tg(item_list_for['market'],buy_amt, can_lowNow)
+                    #print('지정가 매수 시작!')
+                    #upbit.buycoin_tg(item_list_for['market'],buy_amt, can_lowNow)
+
+                    # 시장가 매수
+                    print('시장가 매수 시작!')
+                    upbit.buycoin_mp(item_list_for['market'],buy_amt)
+                    #매도표현식 참조
+                    #rtn_sellcoin_mp = upbit.sellcoin_mp(target_item['market'], 'Y')
 
                     # ------------------------------------------------------------------
                     # 매수 완료 종목은 매수 대상에서 제외

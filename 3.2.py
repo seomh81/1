@@ -1,4 +1,4 @@
-# 300초 모니터링 후 미체결 주문 취소
+# 180초 모니터링 후 미체결 주문 취소
 import os
 import sys
 import logging
@@ -38,7 +38,7 @@ if __name__ == '__main__':
 
                 if locked_trade != []:
                     # 미체결 주문 확인하면 5분간 대기 후 취소 진행
-                    time.sleep(300)
+                    time.sleep(180)
 
                     # 미체결 주문 취소
                     upbit.cancel_order(item_list_for['market'], 'BUY')

@@ -1,4 +1,4 @@
-# 기준 1.1%, 하락 -0.1% BBM 1분 2기준 전
+# 기준 1.5%, 하락 -0.01% BBM 1분 2기준 전
 import time
 import os
 import sys
@@ -85,14 +85,14 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         # ------------------------------------------------------------------
                         # 캔들 조회
                         # ------------------------------------------------------------------
-                        candles = upbit.get_candle(target_item['market'], '15', 200)
+                        candles = upbit.get_candle(target_item['market'], '1', 200)
                         #볼린저밴드 조회
                         bb = upbit.get_bb(target_item['market'], '1', '200', 2)
 
-                        #canNow = candles[0]['trade_price']
-                        canLow = candles[0]['low_price']
+                        canNow = candles[0]['trade_price']
+                        #canLow = candles[0]['low_price']
                         #bbNow = bb[0]['BBM']
-                        bbSell = bb[1]['BBM']
+                        bbSell = bb[2]['BBM']
 
                         # ------------------------------------------------------------------
                         # 최근 매수일자 다음날부터 현재까지의 최고가를 계산
@@ -113,9 +113,9 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         logging.info('- 매수 후 최고가:' + str(higest_high_price))
                         logging.info('- 고점대비 하락률:' + str(cur_dcnt_pcnt))
 
-                        print(format((canLow-bbSell)/canLow*100, '.2f'),'%')
+                        print(format((canNow-bbSell)/canNow*100, '.2f'),'%')
 
-                        if Decimal(str(cur_dcnt_pcnt)) < Decimal(str(dcnt_pcnt)) and canLow < bbSell:
+                        if Decimal(str(cur_dcnt_pcnt)) < Decimal(str(dcnt_pcnt)) and canNow < bbSell:
 
                             # ------------------------------------------------------------------
                             # 시장가 매도
@@ -164,8 +164,8 @@ if __name__ == '__main__':
 
         # 1. 로그레벨
         log_level = 'I'#input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
-        sell_pcnt = 1.1#input("매도 수익률(ex:2%=2) : ")
-        dcnt_pcnt = -0.1#input("고점대비 하락률(ex:-1%=-1) : ")
+        sell_pcnt = 1.5#input("매도 수익률(ex:2%=2) : ")
+        dcnt_pcnt = -0.01#input("고점대비 하락률(ex:-1%=-1) : ")
 
         upbit.set_loglevel(log_level)
 
