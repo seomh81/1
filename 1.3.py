@@ -1,4 +1,4 @@
-# 캔들 3분봉 볼밴 15분봉 매수 5000
+# 캔들 3분봉 볼밴 60분봉 매수 10000
 # 볼린저밴트 5분봉 하단 점을 찍고 올라가면 매수 모니터링은 1분봉기준
 # 저가 매수 로직만 세팅
 
@@ -78,7 +78,7 @@ def start_buytrade(buy_amt, except_items):
                 #vol_eval = vol_tradeNow - (vol_before1 + vol_before2 + vol_before3 + vol_before4 + vol_before5) * 0.5
 
                 # 볼린저밴드 15분봉
-                df_bb = upbit.get_bb(item_list_for['market'], '15', '200', 11) #15분봉으로 테스트
+                df_bb = upbit.get_bb(item_list_for['market'], '60', '200', 11) #15분봉으로 테스트
 
                 bb_now = df_bb[0]['BBL']
                 bb_Before1 = df_bb[1]['BBL']
@@ -158,7 +158,7 @@ def start_buytrade(buy_amt, except_items):
 if __name__ == '__main__':
 
 
-    buy_amt = 5000
+    buy_amt = 10000
     print("매수금액:" + str(buy_amt))
 
     # 매수로직 시작
