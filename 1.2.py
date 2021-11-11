@@ -1,4 +1,4 @@
-# 캔들 3분봉 볼밴 30분봉 매수 7000(시장가)
+# 캔들 3분봉 볼밴 30분봉 매수 5100(시장가)
 # 볼린저밴트 5분봉 하단 점을 찍고 올라가면 매수 모니터링은 1분봉기준
 # 저가 매수 로직만 세팅
 
@@ -78,7 +78,7 @@ def start_buytrade(buy_amt, except_items):
                 #vol_eval = vol_tradeNow - (vol_before1 + vol_before2 + vol_before3 + vol_before4 + vol_before5) * 0.5
 
                 # 볼린저밴드 15분봉
-                df_bb = upbit.get_bb(item_list_for['market'], '30', '200', 11) #15분봉으로 테스트
+                df_bb = upbit.get_bb(item_list_for['market'], '3', '200', 11) #15분봉으로 테스트
 
                 bb_now = df_bb[0]['BBL']
                 bb_Before1 = df_bb[1]['BBL']
@@ -86,33 +86,33 @@ def start_buytrade(buy_amt, except_items):
                 bb_Before3 = df_bb[3]['BBL']
                 bb_Before4 = df_bb[4]['BBL']
                 bb_Before5 = df_bb[5]['BBL']
-                #bb_Before6 = df_bb[6]['BBL']
-                #bb_Before7 = df_bb[7]['BBL']
-                #bb_Before8 = df_bb[8]['BBL']
-                #bb_Before9 = df_bb[9]['BBL']
-                #bb_Before10 = df_bb[10]['BBL']
+                bb_Before6 = df_bb[6]['BBL']
+                bb_Before7 = df_bb[7]['BBL']
+                bb_Before8 = df_bb[8]['BBL']
+                bb_Before9 = df_bb[9]['BBL']
+                bb_Before10 = df_bb[10]['BBL']
                 bb_gapBefore1 = bb_Before1 - bb_Before2
                 bb_gapBefore2 = (bb_Before1 - bb_Before3) / 2
                 bb_gapBefore3 = (bb_Before1 - bb_Before4) / 3
                 bb_gapBefore4 = (bb_Before1 - bb_Before5) / 4
-                #bb_gapBefore5 = (bb_Before1 - bb_Before6) / 5
-                #bb_gapBefore6 = (bb_Before1 - bb_Before7) / 6
-                #bb_gapBefore7 = (bb_Before1 - bb_Before8) / 7
-                #bb_gapBefore8 = (bb_Before1 - bb_Before9) / 8
-                #bb_gapBefore9 = (bb_Before1 - bb_Before10) / 9
+                bb_gapBefore5 = (bb_Before1 - bb_Before6) / 5
+                bb_gapBefore6 = (bb_Before1 - bb_Before7) / 6
+                bb_gapBefore7 = (bb_Before1 - bb_Before8) / 7
+                bb_gapBefore8 = (bb_Before1 - bb_Before9) / 8
+                bb_gapBefore9 = (bb_Before1 - bb_Before10) / 9
                 bb_eval1 = bb_gapBefore1 - bb_gapBefore2
                 bb_eval2 = bb_gapBefore1 - bb_gapBefore3
                 bb_eval3 = bb_gapBefore1 - bb_gapBefore4
-                #bb_eval4 = bb_gapBefore1 - bb_gapBefore5
-                #bb_eval5 = bb_gapBefore1 - bb_gapBefore6
-                #bb_eval6 = bb_gapBefore1 - bb_gapBefore7
-                #bb_eval7 = bb_gapBefore1 - bb_gapBefore8
-                #bb_eval8 = bb_gapBefore1 - bb_gapBefore9
+                bb_eval4 = bb_gapBefore1 - bb_gapBefore5
+                bb_eval5 = bb_gapBefore1 - bb_gapBefore6
+                bb_eval6 = bb_gapBefore1 - bb_gapBefore7
+                bb_eval7 = bb_gapBefore1 - bb_gapBefore8
+                bb_eval8 = bb_gapBefore1 - bb_gapBefore9
 
                 print("BBL", format((bb_now - can_lowNow) / bb_now * 100, '.2f'),"%",item_list_for['market'], "  BB추세", format(bb_eval1, '.4f') , "%---양수TRY / 제외종목:", except_items)
 
                 # 볼린저밴드 15분봉 하단을 찍을 때 매수
-                if bb_now > can_lowNow and bb_eval1 > 0 and bb_eval2 > 0 and bb_eval3 > 0 and can_lowNow < can_lowBefore1 and can_lowNow < can_lowBefore2 and can_lowNow < can_lowBefore3 and can_gapBefore1 != 0 and can_gapBefore2 != 0 and can_gapBefore3 != 0 and can_gapBefore4 != 0 and can_gapBefore5 != 0 and can_highBefore1 != can_highBefore2 and can_highBefore1 != can_highBefore3 and can_highBefore1 != can_highBefore4 and can_highBefore1 != can_highBefore5:
+                if bb_now > can_lowBefore1 and bb_now < can_lowNow and bb_eval1 > 0 and bb_eval2 > 0 and bb_eval3 > 0 and bb_eval4 > 0 and bb_eval5 > 0  and bb_eval6 > 0 and bb_eval7 > 0 and bb_eval8 > 0and can_lowNow < can_lowBefore1 and can_lowNow < can_lowBefore2 and can_lowNow < can_lowBefore3 and can_gapBefore1 != 0 and can_gapBefore2 != 0 and can_gapBefore3 != 0 and can_gapBefore4 != 0 and can_gapBefore5 != 0 and can_highBefore1 != can_highBefore2 and can_highBefore1 != can_highBefore3 and can_highBefore1 != can_highBefore4 and can_highBefore1 != can_highBefore5:
 
                     # 기준 충족 종목 종가
                     print(item_list_for['market'],'하한가' + str(can_lowNow))
@@ -164,7 +164,7 @@ def start_buytrade(buy_amt, except_items):
 if __name__ == '__main__':
 
 
-    buy_amt = 7000
+    buy_amt = 5100
     print("매수금액:" + str(buy_amt))
 
     # 매수로직 시작

@@ -27,7 +27,7 @@ def start_buytrade(buy_amt, except_items):
         data_cnt = 0
 
         # 55분 마다 리스트 초기화 (변수 변경 시 아래도 변경해야 함)
-        due_time = (datetime.now() + timedelta(hours=1)).strftime('%H%M')
+        due_time = (datetime.now() + timedelta(hours=3)).strftime('%H%M')
 
         # 매수 될 때까지 반복 수행
         while True:

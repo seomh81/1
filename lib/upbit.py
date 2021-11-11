@@ -1206,7 +1206,7 @@ def get_bb(target_item, tick_kind, inq_range, loop_cnt):
             df = df['trade_price'].iloc[::-1]
 
             # 표준편차(곱)
-            unit = 2
+            unit = 2 #2 디폴트값
 
             band1 = unit * numpy.std(df[len(df) - 20:len(df)])
             bb_center = numpy.mean(df[len(df) - 20:len(df)])

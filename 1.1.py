@@ -42,7 +42,7 @@ def start_buytrade(buy_amt, except_items):
 
 
                 # 1분봉 (최대 200개 요청가능) - 6개 요청(5분전부터)
-                df_candle = upbit.get_candle(item_list_for['market'], '3', 6)
+                df_candle = upbit.get_candle(item_list_for['market'], '5', 6)
 
                 '''
                 vol_tradeNow = df_candle[0]['candle_acc_trade_volume']
