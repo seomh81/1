@@ -60,6 +60,7 @@ def start_buytrade(buy_amt, except_items):
                 can_highBefore3 = df_candle[3]['high_price']
                 can_highBefore4 = df_candle[4]['high_price']
                 can_highBefore5 = df_candle[5]['high_price']
+                can_highNow = df_candle[0]['high_price']
                 can_lowNow = df_candle[0]['low_price']
                 can_lowBefore1 = df_candle[1]['low_price']
                 can_lowBefore2 = df_candle[2]['low_price']
@@ -78,7 +79,7 @@ def start_buytrade(buy_amt, except_items):
                 #vol_eval = vol_tradeNow - (vol_before1 + vol_before2 + vol_before3 + vol_before4 + vol_before5) * 0.5
 
                 # 볼린저밴드 15분봉
-                df_bb = upbit.get_bb(item_list_for['market'], '3', '200', 11) #15분봉으로 테스트
+                df_bb = upbit.get_bb(item_list_for['market'], '5', '200', 11) #15분봉으로 테스트
 
                 bb_now = df_bb[0]['BBL']
                 bb_Before1 = df_bb[1]['BBL']
@@ -111,8 +112,14 @@ def start_buytrade(buy_amt, except_items):
 
                 print("BBL", format((bb_now - can_lowNow) / bb_now * 100, '.2f'),"%",item_list_for['market'], "  BB추세", format(bb_eval1, '.4f') , "%---양수TRY / 제외종목:", except_items)
 
+                # 급등 시 매수 1%
+                if (can_highNow - can_lowNow) / can_highNow * 100 > 1:
+                    upbit.buycoin_mp(item_list_for['market'], buy_amt)
+
+
+
                 # 볼린저밴드 15분봉 하단을 찍을 때 매수
-                if bb_now > can_lowBefore1 and bb_now < can_lowNow and bb_eval1 > 0 and bb_eval2 > 0 and bb_eval3 > 0 and bb_eval4 > 0 and bb_eval5 > 0  and bb_eval6 > 0 and bb_eval7 > 0 and bb_eval8 > 0and can_lowNow < can_lowBefore1 and can_lowNow < can_lowBefore2 and can_lowNow < can_lowBefore3 and can_gapBefore1 != 0 and can_gapBefore2 != 0 and can_gapBefore3 != 0 and can_gapBefore4 != 0 and can_gapBefore5 != 0 and can_highBefore1 != can_highBefore2 and can_highBefore1 != can_highBefore3 and can_highBefore1 != can_highBefore4 and can_highBefore1 != can_highBefore5:
+                if bb_now > can_lowNow and bb_eval1 > 0 and bb_eval2 > 0 and bb_eval3 > 0 and bb_eval4 > 0 and bb_eval5 > 0  and bb_eval6 > 0 and bb_eval7 > 0 and bb_eval8 > 0and can_lowNow < can_lowBefore1 and can_lowNow < can_lowBefore2 and can_lowNow < can_lowBefore3 and can_gapBefore1 != 0 and can_gapBefore2 != 0 and can_gapBefore3 != 0 and can_gapBefore4 != 0 and can_gapBefore5 != 0 and can_highBefore1 != can_highBefore2 and can_highBefore1 != can_highBefore3 and can_highBefore1 != can_highBefore4 and can_highBefore1 != can_highBefore5:
 
                     # 기준 충족 종목 종가
                     print(item_list_for['market'],'하한가' + str(can_lowNow))
