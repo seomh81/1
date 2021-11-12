@@ -43,6 +43,7 @@ def start_buytrade(buy_amt, except_items):
 
                 # 1분봉 (최대 200개 요청가능) - 6개 요청(5분전부터)
                 df_candle = upbit.get_candle(item_list_for['market'], '3', 6)
+                #print(df_candle)
 
                 '''
                 vol_tradeNow = df_candle[0]['candle_acc_trade_volume']
@@ -68,6 +69,11 @@ def start_buytrade(buy_amt, except_items):
                 can_lowBefore4 = df_candle[4]['low_price']
                 can_lowBefore5 = df_candle[5]['low_price']
 
+                can_openNow = df_candle[0]['opening_price']
+                can_tradeNow = df_candle[0]['trade_price']
+                can_openBefore1 = df_candle[1]['opening_price']
+                can_tradeBefore1 = df_candle[1]['trade_price']
+
                 #can_gapNow = can_highNow - can_lowNow
                 can_gapBefore1 = can_highBefore1 - can_lowBefore1
                 can_gapBefore2 = can_highBefore2 - can_lowBefore2
@@ -79,7 +85,7 @@ def start_buytrade(buy_amt, except_items):
                 #vol_eval = vol_tradeNow - (vol_before1 + vol_before2 + vol_before3 + vol_before4 + vol_before5) * 0.5
 
                 # 볼린저밴드 15분봉
-                df_bb = upbit.get_bb(item_list_for['market'], '5', '200', 11) #15분봉으로 테스트
+                df_bb = upbit.get_bb(item_list_for['market'], '10', '200', 11) #15분봉으로 테스트
 
                 bb_now = df_bb[0]['BBL']
                 bb_Before1 = df_bb[1]['BBL']
@@ -113,9 +119,15 @@ def start_buytrade(buy_amt, except_items):
                 print("BBL", format((bb_now - can_lowNow) / bb_now * 100, '.2f'),"%",item_list_for['market'], "  BB추세", format(bb_eval1, '.4f') , "%---양수TRY / 제외종목:", except_items)
 
                 # 급등 시 매수 1%
-                if (can_highNow - can_lowNow) / can_highNow * 100 > 1:
+                if (can_tradeNow - can_openNow) / can_openNow * 100 > 1:
                     upbit.buycoin_mp(item_list_for['market'], buy_amt)
+                    except_items = except_items + ',' + item_list_for['market'].split('-')[1]
 
+
+                # 급락 시 매수 -5%
+                if (can_tradeBefore1 - can_openBefore1) / can_openBefore1 * 100 < -5:
+                    upbit.buycoin_tg(item_list_for['market'], buy_amt, can_lowNow)
+                    except_items = except_items + ',' + item_list_for['market'].split('-')[1]
 
 
                 # 볼린저밴드 15분봉 하단을 찍을 때 매수
