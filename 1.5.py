@@ -92,6 +92,7 @@ def start_buytrade(buy_amt, except_items):
                 # 볼린저밴드 15분봉
                 #df_bb = upbit.get_bb(item_list_for['market'], '10', '200', 11) #15분봉으로 테스트
 
+                bb_nowBBM = df_bb[0]['BBM']
                 bb_now = df_bb[0]['BBL']
                 bb_Before1 = df_bb[1]['BBL']
                 bb_Before2 = df_bb[2]['BBL']
@@ -124,13 +125,13 @@ def start_buytrade(buy_amt, except_items):
                 print("BBL", format((bb_now - can_lowNow) / bb_now * 100, '.2f'),"%",item_list_for['market'], "  BB추세", format(bb_eval1, '.4f') , "%---양수TRY / 제외종목:", except_items)
 
                 # 급등 시 매수 1.5%
-                if (can_tradeNow - can_openNow) / can_openNow * 100 > 1.5 and can_highNow > can_highBefore1 and can_highNow > can_highBefore2 and can_highNow > can_highBefore3 and can_highNow > can_highBefore4 and can_highNow > can_highBefore5:
+                if (can_tradeNow - can_openNow) / can_openNow * 100 > 1.5 and can_lowNow < bb_nowBBM and can_highNow > can_highBefore1 and can_highNow > can_highBefore2 and can_highNow > can_highBefore3 and can_highNow > can_highBefore4 and can_highNow > can_highBefore5:
                     upbit.buycoin_mp(item_list_for['market'], buy_amt)
                     except_items = except_items + ',' + item_list_for['market'].split('-')[1]
 
 
                 # 급락 시 매수 -3%
-                if (can_tradeBefore1 - can_openBefore1) / can_openBefore1 * 100 < -3 and can_highBefore1 < can_highNow:
+                if (can_tradeBefore1 - can_openBefore1) / can_openBefore1 * 100 < -3 and can_highNow > bb_nowBBM and can_highBefore1 < can_highNow:
                     upbit.buycoin_tg(item_list_for['market'], buy_amt, can_lowNow)
                     except_items = except_items + ',' + item_list_for['market'].split('-')[1]
 
