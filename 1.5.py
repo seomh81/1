@@ -177,7 +177,7 @@ def start_buytrade(buy_amt, except_items):
                 # 조회건수증가
                 data_cnt = data_cnt + 1
                 # 타임슬립
-                #time.sleep(0.04)
+                time.sleep(0.02)
 
     # ----------------------------------------
     # 모든 함수의 공통 부분(Exception 처리)
