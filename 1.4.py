@@ -152,7 +152,7 @@ def start_buytrade(buy_amt, except_items):
                     except_items = except_items + ',' + item_list_for['market'].split('-')[1]
 
 
-                time.sleep(0.03)
+                time.sleep(0.04)
 
                 #if bb_now >= can_lowNow and vol_eval >= 0 and bb_eval1 >= 0:
                     #print("TRIED !!")
