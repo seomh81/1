@@ -1,20 +1,25 @@
-import time
+# https://technfin.tistory.com/entry/%EC%BD%94%EC%9D%B8-%EC%9E%90%EB%8F%99%EB%A7%A4%EB%A7%A4-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8-%EC%83%98%ED%94%8C-%EC%98%88%EC%A0%9C-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%97%85%EB%B9%84%ED%8A%B8-%EB%B9%84%ED%8A%B8%EC%BD%94%EC%9D%B8-%EC%9E%90%EB%8F%99%EB%A7%A4%EB%A7%A4?category=867924
+
 import logging
 import requests
+import time
+import smtplib
 import jwt
+import sys
 import uuid
 import hashlib
 import math
+import numpy
 import os
 import pandas as pd
-import numpy
 
+from datetime import datetime, timedelta
 from urllib.parse import urlencode
 from decimal import Decimal
 
 # Keys
-access_key = 'n1inbLR7Rq8h8xsmMp8Z18ThaQqRL9IzV2ZIzK8A'
-secret_key = 'tqakzE54kMVviOZGwx4icd4jPqyAAOJQVpRfKNAm'
+access_key = 'n1inbLR7Rq8h8xsmMp8Z18ThaQqRL9IzV2ZIzK8A' ####API키 넣을것
+secret_key = 'tqakzE54kMVviOZGwx4icd4jPqyAAOJQVpRfKNAm' ####비번키 넣을것
 server_url = 'https://api.upbit.com'
 
 # 상수 설정
@@ -227,7 +232,7 @@ def buycoin_mp(target_item, buy_amount):
 
         logging.info("")
         logging.info("----------------------------------------------")
-        logging.info("시장가 매수 요청 완료! 결과:")
+        logging.info("시장가 매수 완료!")
         logging.info(rtn_data)
         logging.info("----------------------------------------------")
 
@@ -348,7 +353,7 @@ def sellcoin_mp(target_item, cancel_yn):
 
         logging.info("")
         logging.info("----------------------------------------------")
-        logging.info("시장가 매도 요청 완료! 결과:")
+        logging.info("시장가 매도 완료!")
         logging.info(rtn_data)
         logging.info("----------------------------------------------")
 
@@ -764,7 +769,65 @@ def get_accounts(except_yn, market_code):
     # ----------------------------------------
     except Exception:
         raise
+''' 잔고정보 수정 전 내용
+# -----------------------------------------------------------------------------
+# - Name : get_accounts
+# - Desc : 잔고정보 조회
+# - Input
+#   1) except_yn : KRW 및 소액 제외
+#   2) market_code : 마켓코드 추가(매도시 필요)
+# - Output
+#   1) 잔고 정보
+# -----------------------------------------------------------------------------
+# 계좌 조회
+def get_accounts(except_yn, market_code):
+    try:
 
+        rtn_data = []
+
+        # 소액 제외 기준
+        min_price = 9000
+
+        payload = {
+            'access_key': access_key,
+            'nonce': str(uuid.uuid4()),
+        }
+
+        jwt_token = jwt.encode(payload, secret_key)
+        authorize_token = 'Bearer {}'.format(jwt_token)
+        headers = {"Authorization": authorize_token}
+
+        res = send_request("GET", server_url + "/v1/accounts", "", headers)
+        account_data = res.json()
+
+        for account_data_for in account_data:
+
+            # KRW 및 소액 제외
+            if except_yn == "Y" or except_yn == "y":
+                if account_data_for['currency'] != "KRW" and Decimal(str(account_data_for['avg_buy_price'])) * (
+                        Decimal(str(account_data_for['balance'])) + Decimal(
+                    str(account_data_for['locked']))) >= Decimal(str(min_price)):
+                    rtn_data.append(
+                        {'market': market_code + '-' + account_data_for['currency'],
+                         'balance': account_data_for['balance'],
+                         'locked': account_data_for['locked'],
+                         'avg_buy_price': account_data_for['avg_buy_price'],
+                         'avg_buy_price_modified': account_data_for['avg_buy_price_modified']})
+            else:
+                rtn_data.append(
+                    {'market': market_code + '-' + account_data_for['currency'], 'balance': account_data_for['balance'],
+                     'locked': account_data_for['locked'],
+                     'avg_buy_price': account_data_for['avg_buy_price'],
+                     'avg_buy_price_modified': account_data_for['avg_buy_price_modified']})
+
+        return rtn_data
+
+    # ----------------------------------------
+    # Exception Raise
+    # ----------------------------------------
+    except Exception:
+        raise
+'''
 
 # -----------------------------------------------------------------------------
 # - Name : chg_account_to_comma
@@ -1143,7 +1206,7 @@ def get_bb(target_item, tick_kind, inq_range, loop_cnt):
             df = df['trade_price'].iloc[::-1]
 
             # 표준편차(곱)
-            unit = 2
+            unit = 2 #2 디폴트값
 
             band1 = unit * numpy.std(df[len(df) - 20:len(df)])
             bb_center = numpy.mean(df[len(df) - 20:len(df)])
@@ -1357,172 +1420,6 @@ def get_macd(candle_datas, loop_cnt):
 
 
 # -----------------------------------------------------------------------------
-# - Name : get_ma
-# - Desc : MA 조회
-# - Input
-#   1) candle_datas : 캔들 정보
-#   2) loop_cnt : 반복 횟수
-# - Output
-#   1) MA 값
-# -----------------------------------------------------------------------------
-def get_ma(candle_datas, loop_cnt):
-    try:
-        # MA 데이터 리턴용
-        ma_list = []
-
-        df = pd.DataFrame(candle_datas[0])
-        df = df.iloc[::-1]
-        df = df['trade_price']
-
-        # MA 계산
-
-        ma5 = df.rolling(window=5).mean()
-        ma10 = df.rolling(window=10).mean()
-        ma20 = df.rolling(window=20).mean()
-        ma60 = df.rolling(window=60).mean()
-        ma120 = df.rolling(window=120).mean()
-
-        for i in range(0, int(loop_cnt)):
-            ma_list.append(
-                {"type": "MA", "DT": candle_datas[0][i]['candle_date_time_kst'], "MA5": ma5[i], "MA10": ma10[i],
-                 "MA20": ma20[i], "MA60": ma60[i], "MA120": ma120[i]
-                    , "MA_5_10": str(Decimal(str(ma5[i])) - Decimal(str(ma10[i])))
-                    , "MA_10_20": str(Decimal(str(ma10[i])) - Decimal(str(ma20[i])))
-                    , "MA_20_60": str(Decimal(str(ma20[i])) - Decimal(str(ma60[i])))
-                    , "MA_60_120": str(Decimal(str(ma60[i])) - Decimal(str(ma120[i])))})
-
-        return ma_list
-
-    # ----------------------------------------
-    # 모든 함수의 공통 부분(Exception 처리)
-    # ----------------------------------------
-    except Exception:
-        raise
-
-
-# -----------------------------------------------------------------------------
-# - Name : get_bb
-# - Desc : 볼린저밴드 조회
-# - Input
-#   1) candle_datas : 캔들 정보
-# - Output
-#   1) 볼린저 밴드 값
-# -----------------------------------------------------------------------------
-def get_bb(candle_datas):
-    try:
-
-        # 볼린저밴드 데이터 리턴용
-        bb_list = []
-
-        # 캔들 데이터만큼 수행
-        for candle_data_for in candle_datas:
-            df = pd.DataFrame(candle_data_for)
-            dfDt = df['candle_date_time_kst'].iloc[::-1]
-            df = df['trade_price'].iloc[::-1]
-
-            # 표준편차(곱)
-            unit = 2
-
-            band1 = unit * numpy.std(df[len(df) - 20:len(df)])
-            bb_center = numpy.mean(df[len(df) - 20:len(df)])
-            band_high = bb_center + band1
-            band_low = bb_center - band1
-
-            bb_list.append({"type": "BB", "DT": dfDt[0], "BBH": round(band_high, 4), "BBM": round(bb_center, 4),
-                            "BBL": round(band_low, 4)})
-
-        return bb_list
-
-
-    # ----------------------------------------
-    # 모든 함수의 공통 부분(Exception 처리)
-    # ----------------------------------------
-    except Exception:
-        raise
-
-
-# -----------------------------------------------------------------------------
-# - Name : get_williams
-# - Desc : 윌리암스 %R 조회
-# - Input
-#   1) candle_datas : 캔들 정보
-# - Output
-#   1) 윌리암스 %R 값
-# -----------------------------------------------------------------------------
-def get_williams(candle_datas):
-    try:
-
-        # 윌리암스R 데이터 리턴용
-        williams_list = []
-
-        # 캔들 데이터만큼 수행
-        for candle_data_for in candle_datas:
-            df = pd.DataFrame(candle_data_for)
-            dfDt = df['candle_date_time_kst'].iloc[::-1]
-            df = df.iloc[:14]
-
-            # 계산식
-            # %R = (Highest High - Close)/(Highest High - Lowest Low) * -100
-            hh = numpy.max(df['high_price'])
-            ll = numpy.min(df['low_price'])
-            cp = df['trade_price'][0]
-
-            w = (hh - cp) / (hh - ll) * -100
-
-            williams_list.append(
-                {"type": "WILLIAMS", "DT": dfDt[0], "HH": round(hh, 4), "LL": round(ll, 4), "CP": round(cp, 4),
-                 "W": round(w, 4)})
-
-        return williams_list
-
-
-    # ----------------------------------------
-    # 모든 함수의 공통 부분(Exception 처리)
-    # ----------------------------------------
-    except Exception:
-        raise
-
-
-# -----------------------------------------------------------------------------
-# - Name : get_cci
-# - Desc : CCI 조회
-# - Input
-#   1) candle_data : 캔들 정보
-#   2) loop_cnt : 조회 건수
-# - Output
-#   1) CCI 값
-# -----------------------------------------------------------------------------
-def get_cci(candle_data, loop_cnt):
-    try:
-
-        # CCI 데이터 리턴용
-        cci_list = []
-
-        # 오름차순 정렬
-        df = pd.DataFrame(candle_data)
-        ordered_df = df.sort_values(by=['candle_date_time_kst'], ascending=[True])
-
-        # 계산식 : (Typical Price - Simple Moving Average) / (0.015 * Mean absolute Deviation)
-        ordered_df['TP'] = (ordered_df['high_price'] + ordered_df['low_price'] + ordered_df['trade_price']) / 3
-        ordered_df['SMA'] = ordered_df['TP'].rolling(window=20).mean()
-        ordered_df['MAD'] = ordered_df['TP'].rolling(window=20).apply(lambda x: pd.Series(x).mad())
-        ordered_df['CCI'] = (ordered_df['TP'] - ordered_df['SMA']) / (0.015 * ordered_df['MAD'])
-
-        # 개수만큼 조립
-        for i in range(0, loop_cnt):
-            cci_list.append({"type": "CCI", "DT": ordered_df['candle_date_time_kst'].loc[i],
-                             "CCI": round(ordered_df['CCI'].loc[i], 4)})
-
-        return cci_list
-
-    # ----------------------------------------
-    # 모든 함수의 공통 부분(Exception 처리)
-    # ----------------------------------------
-    except Exception:
-        raise
-
-
-# -----------------------------------------------------------------------------
 # - Name : get_indicators
 # - Desc : 보조지표 조회
 # - Input
@@ -1536,7 +1433,6 @@ def get_cci(candle_data, loop_cnt):
 #   3) MACD
 #   4) BB
 #   5) WILLIAMS %R
-#   6) CCI
 # -----------------------------------------------------------------------------
 def get_indicators(target_item, tick_kind, inq_range, loop_cnt):
     try:
@@ -1571,12 +1467,6 @@ def get_indicators(target_item, tick_kind, inq_range, loop_cnt):
             # WILLIAMS %R 조회
             williams_data = get_williams(candle_datas)
 
-            # MA 정보 조회
-            ma_data = get_ma(candle_datas, loop_cnt)
-
-            # CCI 정보 조회
-            cci_data = get_cci(candle_data, loop_cnt)
-
             if len(rsi_data) > 0:
                 indicator_data.append(rsi_data)
 
@@ -1591,12 +1481,6 @@ def get_indicators(target_item, tick_kind, inq_range, loop_cnt):
 
             if len(williams_data) > 0:
                 indicator_data.append(williams_data)
-
-            if len(ma_data) > 0:
-                indicator_data.append(ma_data)
-
-            if len(cci_data) > 0:
-                indicator_data.append(cci_data)
 
         return indicator_data
 
@@ -1745,40 +1629,6 @@ def get_order_chance(target_item):
     except Exception:
         raise
 
-
-# -----------------------------------------------------------------------------
-# - Name : get_max_min
-# - Desc : MAX/MIN 값 조회
-# - Input
-#   1) candle_datas : 캔들 정보
-#   2) col_name : 대상 컬럼
-# - Output
-#   1) MAX 값
-#   2) MIN 값
-# -----------------------------------------------------------------------------
-def get_max(candle_data, col_name_high, col_name_low):
-    try:
-        # MA 데이터 리턴용
-        max_min_list = []
-
-        df = pd.DataFrame(candle_data)
-        df = df.iloc[::-1]
-
-        # MAX 계산
-
-        max = numpy.max(df[col_name_high])
-        min = numpy.min(df[col_name_low])
-
-        max_min_list.append(
-            {"MAX": max, "MIN": min})
-
-        return max_min_list
-
-    # ----------------------------------------
-    # 모든 함수의 공통 부분(Exception 처리)
-    # ----------------------------------------
-    except Exception:
-        raise
 
 # -----------------------------------------------------------------------------
 # - Name : get_indicator_sel
