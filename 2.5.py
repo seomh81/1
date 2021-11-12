@@ -44,7 +44,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
             # -----------------------------------------------------------------
             for target_item in target_items:
                 for ticker in tickers:
-                    time.sleep(0.03)
+                    #time.sleep(0.03)
                     if target_item['market'] == ticker['market']:
 
                         # -----------------------------------------------------
