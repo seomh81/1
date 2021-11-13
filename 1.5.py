@@ -124,6 +124,7 @@ def start_buytrade(buy_amt, except_items):
 
                 print("BBL", format((bb_now - can_lowNow) / bb_now * 100, '.2f'),"%",item_list_for['market'], "  BB추세", format(bb_eval1, '.4f') , "%---양수TRY / 제외종목:", except_items)
 
+                '''
                 # 급등 시 매수 1.5%
                 if (can_tradeNow - can_openNow) / can_openNow * 100 > 1.5 and can_lowNow < bb_nowBBM and can_highNow > can_highBefore1 and can_highNow > can_highBefore2 and can_highNow > can_highBefore3 and can_highNow > can_highBefore4 and can_highNow > can_highBefore5:
                     upbit.buycoin_mp(item_list_for['market'], buy_amt)
@@ -134,20 +135,20 @@ def start_buytrade(buy_amt, except_items):
                 if (can_tradeBefore1 - can_openBefore1) / can_openBefore1 * 100 < -3 and can_highNow > bb_nowBBM and can_highBefore1 < can_highNow:
                     upbit.buycoin_tg(item_list_for['market'], buy_amt, can_lowNow)
                     except_items = except_items + ',' + item_list_for['market'].split('-')[1]
-
+                '''
 
                 # 볼린저밴드 15분봉 하단을 찍을 때 매수
                 if bb_now > can_lowNow and bb_eval1 > 0 and bb_eval2 > 0 and bb_eval3 > 0 and bb_eval4 > 0 and bb_eval5 > 0  and bb_eval6 > 0 and bb_eval7 > 0 and bb_eval8 > 0and can_lowNow < can_lowBefore1 and can_lowNow < can_lowBefore2 and can_lowNow < can_lowBefore3 and can_gapBefore1 != 0 and can_gapBefore2 != 0 and can_gapBefore3 != 0 and can_gapBefore4 != 0 and can_gapBefore5 != 0 and can_highBefore1 != can_highBefore2 and can_highBefore1 != can_highBefore3 and can_highBefore1 != can_highBefore4 and can_highBefore1 != can_highBefore5:
 
                     # 기준 충족 종목 종가
-                    print(item_list_for['market'],'하한가' + str(can_lowNow))
+                    #print(item_list_for['market'],'하한가' + str(can_lowNow))
 
                     # 지정가 매수
                     #print('지정가 매수 시작!')
                     #upbit.buycoin_tg(item_list_for['market'],buy_amt, can_lowNow)
 
                     # 시장가 매수
-                    print('시장가 매수 시작!')
+                    #print('시장가 매수 시작!')
                     upbit.buycoin_mp(item_list_for['market'],buy_amt)
                     #매도표현식 참조
                     #rtn_sellcoin_mp = upbit.sellcoin_mp(target_item['market'], 'Y')

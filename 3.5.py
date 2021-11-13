@@ -32,7 +32,7 @@ if __name__ == '__main__':
                 # ---------------------------------------------------------------------
                 # 미체결 주문 조회
                 locked_trade = upbit.get_order(item_list_for['market'])
-                logging.info("취소전")
+                #logging.info("취소전")
                 logging.info(locked_trade)
 
                 if locked_trade != []:
@@ -44,7 +44,7 @@ if __name__ == '__main__':
 
                     # 미체결 주문 재조회
                     locked_trade = upbit.get_order(item_list_for['market'])
-                    logging.info("취소후")
+                    #logging.info("취소후")
                     logging.info(locked_trade)
 
                 time.sleep(3)
