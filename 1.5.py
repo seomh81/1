@@ -45,7 +45,7 @@ def start_buytrade(buy_amt, except_items):
                 #df_candle = upbit.get_candle(item_list_for['market'], '3', 6)
                 #print(df_candle)
                 # 호출 수 줄이기
-                indicators = upbit.get_indicator_sel(item_list_for['market'], '5', 200, 11, ['BB', 'CANDLE'])
+                indicators = upbit.get_indicator_sel(item_list_for['market'], '10', 200, 11, ['BB', 'CANDLE'])
 
                 df_bb = indicators['BB']
                 df_candle = indicators['CANDLE']
