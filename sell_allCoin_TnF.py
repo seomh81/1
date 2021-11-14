@@ -7,7 +7,7 @@ import time
 
 # 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from lib import upbit_seomh as upbit
+from lib import upbit as upbit
 #from lib import upbit as upbit  # noqa
 
 # -----------------------------------------------------------------------------
@@ -41,7 +41,7 @@ if __name__ == '__main__':
             # 시장가 매도
             # ★ 실제 매도가 될 수 있어 아래 주석 처리함.
             # 실제 매도를 원하는 경우 아래 주석을 해제하면 됩니다.
-            upbit.sellcoin_mp(item_list_for['market']) ####해당 코드 주석처리로 설정
+            upbit.sellcoin_mp(item_list_for['market'],'Y') ####해당 코드 주석처리로 설정
             
             time.sleep(0.1)
 

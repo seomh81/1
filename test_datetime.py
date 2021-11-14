@@ -46,6 +46,9 @@ print(now)
 print(due_time)
 i=0
 '''
+
+
+'''
 i=0
 due_time = (datetime.now() + timedelta(seconds=5)).strftime('%M%S')
 
@@ -57,3 +60,9 @@ while True:
         now = datetime.now()
         due_time = (datetime.now() + timedelta(seconds=5)).strftime('%M%S')
         i = 0
+'''
+#2021-11-14T17:12:00
+
+now = str(datetime.now())
+know = now[0:10] + 'T' + now[11:19]
+print(know)
