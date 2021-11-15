@@ -43,10 +43,14 @@ def start_buytrade(buy_amt, except_items):
                 #df_candle = upbit.get_candle(item_list_for['market'], '3', 6)
                 #print(df_candle)
                 # 호출 수 줄이기
-                indicators = upbit.get_indicator_sel(item_list_for['market'], '15', 200, 11, ['BB', 'CANDLE'])
+                indicators = upbit.get_indicator_sel(item_list_for['market'], '15', 200, 11, ['RSI', 'BB', 'CANDLE'])
 
                 df_bb = indicators['BB']
                 df_candle = indicators['CANDLE']
+                df_rsi = indicators['RSI']
+
+                rsi_now = df_rsi[0]['RSI']
+                rsi_before1 = df_rsi[1]['RSI']
 
                 '''
                 vol_tradeNow = df_candle[0]['candle_acc_trade_volume']
@@ -121,7 +125,8 @@ def start_buytrade(buy_amt, except_items):
                 bb_eval7 = bb_gapBefore1 - bb_gapBefore8
                 bb_eval8 = bb_gapBefore1 - bb_gapBefore9
 
-                print("BBL", format((bb_now - can_lowNow) / bb_now * 100, '.2f'),"%",item_list_for['market'], "  BB trend", format(bb_eval1, '.4f') , "%+++TRY / except:", except_items)
+                #print("BBL", format((bb_now - can_lowNow) / bb_now * 100, '.2f'),"%",item_list_for['market'], "  BB trend", format(bb_eval1, '.4f') , "%+++TRY / except:", except_items)
+                print('1.6')
 
                 '''
                 # 급등 시 매수 1.5%
@@ -137,7 +142,7 @@ def start_buytrade(buy_amt, except_items):
                 '''
 
                 # 볼린저밴드 15분봉 하단을 찍을 때 매수
-                if bb_now > can_lowNow and bb_gapBefore0 > 0 and bb_eval1 > 0 and can_highBefore1 != can_highBefore2 and can_highBefore1 != can_highBefore3 and can_gapBefore1 != 0 and can_gapBefore2 != 0:# and bb_eval2 > 0 and bb_eval3 > 0 and bb_eval4 > 0 and bb_eval5 > 0  and bb_eval6 > 0 and bb_eval7 > 0 and bb_eval8 > 0 and can_lowNow < can_lowBefore1 and can_lowNow < can_lowBefore2 and can_lowNow < can_lowBefore3 and can_gapBefore1 != 0 and can_gapBefore2 != 0 and can_gapBefore3 != 0 and can_gapBefore4 != 0 and can_gapBefore5 != 0 and can_highBefore1 != can_highBefore2 and can_highBefore1 != can_highBefore3 and can_highBefore1 != can_highBefore4 and can_highBefore1 != can_highBefore5:
+                if bb_now > can_lowNow and rsi_now < 29.5:# and bb_gapBefore0 > 0 and bb_eval1 > 0  and bb_eval2 > 0 and bb_eval3 > 0and can_highBefore1 != can_highBefore2 and can_highBefore1 != can_highBefore3 and can_gapBefore1 != 0 and can_gapBefore2 != 0:# and bb_eval2 > 0 and bb_eval3 > 0 and bb_eval4 > 0 and bb_eval5 > 0  and bb_eval6 > 0 and bb_eval7 > 0 and bb_eval8 > 0 and can_lowNow < can_lowBefore1 and can_lowNow < can_lowBefore2 and can_lowNow < can_lowBefore3 and can_gapBefore1 != 0 and can_gapBefore2 != 0 and can_gapBefore3 != 0 and can_gapBefore4 != 0 and can_gapBefore5 != 0 and can_highBefore1 != can_highBefore2 and can_highBefore1 != can_highBefore3 and can_highBefore1 != can_highBefore4 and can_highBefore1 != can_highBefore5:
 
                     # 기준 충족 종목 종가
                     #print(item_list_for['market'],'하한가' + str(can_lowNow))
@@ -178,7 +183,7 @@ def start_buytrade(buy_amt, except_items):
                 # 조회건수증가
                 data_cnt = data_cnt + 1
                 # 타임슬립
-                time.sleep(0.08)
+                time.sleep(0.06)
 
     # ----------------------------------------
     # 모든 함수의 공통 부분(Exception 처리)

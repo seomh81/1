@@ -33,11 +33,12 @@ if __name__ == '__main__':
                 # 미체결 주문 조회
                 locked_trade = upbit.get_order(item_list_for['market'])
                 #logging.info("취소전")
-                logging.info(locked_trade)
+                #logging.info(locked_trade)
+                print('3.6')
 
                 if locked_trade != []:
                     # 미체결 주문 확인하면 5분간 대기 후 취소 진행
-                    time.sleep(120)
+                    time.sleep(240)
 
                     # 미체결 주문 취소
                     upbit.cancel_order(item_list_for['market'], 'BUY')
@@ -46,6 +47,7 @@ if __name__ == '__main__':
                     locked_trade = upbit.get_order(item_list_for['market'])
                     #logging.info("취소후")
                     logging.info(locked_trade)
+                    continue
 
                 time.sleep(3)
 

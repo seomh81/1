@@ -1,4 +1,4 @@
-# 스탑로스 기능 개선 (최고점 계산 개선)
+# 스탑로스 기능 개선 (최고점 계산 개선) 기준 0.3 / 트레일링스탑 -0.8 / 로스컷 -2
 
 import time
 import os
@@ -46,7 +46,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
             # -----------------------------------------------------------------
             for target_item in target_items:
                 for ticker in tickers:
-                    time.sleep(0.06)
+                    time.sleep(0.03)
                     if target_item['market'] == ticker['market']:
 
                         # -----------------------------------------------------
@@ -62,16 +62,17 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         #logging.info('- 평균매수가:' + str(target_item['avg_buy_price']))
                         #logging.info('- 현재가:' + str(ticker['trade_price']))
                         #logging.info('- 수익률:' + str(rev_pcnt))
-                        print('종목:' + str(target_item['market']) + '  수익률:' + str(rev_pcnt))
+                        #print('종목:' + str(target_item['market']) + '  수익률:' + str(rev_pcnt))
+                        print('2.6')
 
                         # -----------------------------------------------------
                         # 현재 수익률이 매도 수익률 이상인 경우에만 진행
                         # -----------------------------------------------------
-                        print(str(rev_pcnt))
+                        #print(str(rev_pcnt))
 
-                        if Decimal(str(rev_pcnt)) < -3:
+                        if Decimal(str(rev_pcnt)) < -2:
                             upbit.sellcoin_mp(target_item['market'], 'Y')
-                            print('-3% sold')
+                            print('-2% sold')
                             continue
 
 
@@ -118,7 +119,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
 
                         #logging.info('- 매수 후 최고가:' + str(higest_high_price))
                         #logging.info('- 고점대비 하락률:' + str(cur_dcnt_pcnt))
-                        print('gap from top:' + str(cur_dcnt_pcnt))
+                        print(str(target_item['market']), 'gap from top:' + str(cur_dcnt_pcnt))
 
                         if Decimal(str(cur_dcnt_pcnt)) < Decimal(str(dcnt_pcnt)):
 
@@ -133,6 +134,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                             logging.info('sold at mp! [' + str(target_item['market']) + ']')
                             #logging.info(rtn_sellcoin_mp)
                             #logging.info('------------------------------------------------------')
+                            continue
 
                         else:
                             #logging.info('- 고점 대비 하락률 조건에 맞지 않아 매도하지 않음!!!')
@@ -171,8 +173,8 @@ if __name__ == '__main__':
 
         # 1. 로그레벨
         log_level = 'I'#input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
-        sell_pcnt = 1.2#input("매도 수익률(ex:2%=2) : ")
-        dcnt_pcnt = -1#input("고점대비 하락률(ex:-1%=-1) : ")
+        sell_pcnt = 0.3#input("매도 수익률(ex:2%=2) : ")
+        dcnt_pcnt = -0.8#input("고점대비 하락률(ex:-1%=-1) : ")
 
         upbit.set_loglevel(log_level)
 
