@@ -62,13 +62,13 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         #logging.info('- 평균매수가:' + str(target_item['avg_buy_price']))
                         #logging.info('- 현재가:' + str(ticker['trade_price']))
                         #logging.info('- 수익률:' + str(rev_pcnt))
-                        #print('종목:' + str(target_item['market']) + '  수익률:' + str(rev_pcnt))
-                        print('2.6')
+                        print('종목:' + str(target_item['market']) + '  수익률:' + str(rev_pcnt))
+                        #print('2.6')
 
                         # -----------------------------------------------------
                         # 현재 수익률이 매도 수익률 이상인 경우에만 진행
                         # -----------------------------------------------------
-                        #print(str(rev_pcnt))
+                        print(str(rev_pcnt))
 
                         if Decimal(str(rev_pcnt)) < -2:
                             upbit.sellcoin_mp(target_item['market'], 'Y')
@@ -77,7 +77,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
 
 
                         if Decimal(str(rev_pcnt)) < Decimal(str(sell_pcnt)):
-                            #logging.info('- 현재 수익률이 매도 수익률 보다 낮아 진행하지 않음!!!')
+                            logging.info('- 현재 수익률이 매도 수익률 보다 낮아 진행하지 않음!!!')
                             #logging.info('------------------------------------------------------')
                             continue
 
@@ -117,8 +117,8 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         cur_dcnt_pcnt = round(((Decimal(str(ticker['trade_price'])) - Decimal(
                             str(higest_high_price))) / Decimal(str(higest_high_price))) * 100, 2)
 
-                        #logging.info('- 매수 후 최고가:' + str(higest_high_price))
-                        #logging.info('- 고점대비 하락률:' + str(cur_dcnt_pcnt))
+                        logging.info('- 매수 후 최고가:' + str(higest_high_price))
+                        logging.info('- 고점대비 하락률:' + str(cur_dcnt_pcnt))
                         print(str(target_item['market']), 'gap from top:' + str(cur_dcnt_pcnt))
 
                         if Decimal(str(cur_dcnt_pcnt)) < Decimal(str(dcnt_pcnt)):
@@ -128,7 +128,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                             # 실제 매도 로직은 안전을 위해 주석처리 하였습니다.
                             # 실제 매매를 원하시면 테스트를 충분히 거친 후 주석을 해제하시면 됩니다.
                             # ------------------------------------------------------------------
-                            #logging.info('시장가 매도 시작! [' + str(target_item['market']) + ']')
+                            logging.info('시장가 매도 시작! [' + str(target_item['market']) + ']')
                             upbit.sellcoin_mp(target_item['market'], 'Y')
                             #rtn_sellcoin_mp = upbit.sellcoin_mp(target_item['market'], 'Y')
                             logging.info('sold at mp! [' + str(target_item['market']) + ']')
@@ -137,7 +137,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                             continue
 
                         else:
-                            #logging.info('- 고점 대비 하락률 조건에 맞지 않아 매도하지 않음!!!')
+                            logging.info('- 고점 대비 하락률 조건에 맞지 않아 매도하지 않음!!!')
                             #logging.info('------------------------------------------------------')
                             pass
 
