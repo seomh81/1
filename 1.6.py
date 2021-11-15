@@ -137,7 +137,7 @@ def start_buytrade(buy_amt, except_items):
                 '''
 
                 # 볼린저밴드 15분봉 하단을 찍을 때 매수
-                if bb_now > can_lowNow and bb_gapBefore0 > 0 and bb_eval1 > 0 and bb_eval2 > 0 and bb_eval3 > 0:# and bb_eval4 > 0 and bb_eval5 > 0  and bb_eval6 > 0 and bb_eval7 > 0 and bb_eval8 > 0 and can_lowNow < can_lowBefore1 and can_lowNow < can_lowBefore2 and can_lowNow < can_lowBefore3 and can_gapBefore1 != 0 and can_gapBefore2 != 0 and can_gapBefore3 != 0 and can_gapBefore4 != 0 and can_gapBefore5 != 0 and can_highBefore1 != can_highBefore2 and can_highBefore1 != can_highBefore3 and can_highBefore1 != can_highBefore4 and can_highBefore1 != can_highBefore5:
+                if bb_now > can_lowNow and bb_gapBefore0 > 0 and bb_eval1 > 0 :# and bb_eval2 > 0 and bb_eval3 > 0 and bb_eval4 > 0 and bb_eval5 > 0  and bb_eval6 > 0 and bb_eval7 > 0 and bb_eval8 > 0 and can_lowNow < can_lowBefore1 and can_lowNow < can_lowBefore2 and can_lowNow < can_lowBefore3 and can_gapBefore1 != 0 and can_gapBefore2 != 0 and can_gapBefore3 != 0 and can_gapBefore4 != 0 and can_gapBefore5 != 0 and can_highBefore1 != can_highBefore2 and can_highBefore1 != can_highBefore3 and can_highBefore1 != can_highBefore4 and can_highBefore1 != can_highBefore5:
 
                     # 기준 충족 종목 종가
                     #print(item_list_for['market'],'하한가' + str(can_lowNow))
@@ -156,6 +156,7 @@ def start_buytrade(buy_amt, except_items):
                     # 매수 완료 종목은 매수 대상에서 제외
                     # ------------------------------------------------------------------
                     except_items = except_items + ',' + item_list_for['market'].split('-')[1]
+                    time.sleep(3)
 
 
 
@@ -177,7 +178,7 @@ def start_buytrade(buy_amt, except_items):
                 # 조회건수증가
                 data_cnt = data_cnt + 1
                 # 타임슬립
-                time.sleep(0.08)
+                time.sleep(0.2)
 
     # ----------------------------------------
     # 모든 함수의 공통 부분(Exception 처리)

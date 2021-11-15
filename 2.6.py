@@ -46,7 +46,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
             # -----------------------------------------------------------------
             for target_item in target_items:
                 for ticker in tickers:
-                    time.sleep(0.07)
+                    time.sleep(3)
                     if target_item['market'] == ticker['market']:
 
                         # -----------------------------------------------------
@@ -62,11 +62,18 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         #logging.info('- 평균매수가:' + str(target_item['avg_buy_price']))
                         #logging.info('- 현재가:' + str(ticker['trade_price']))
                         #logging.info('- 수익률:' + str(rev_pcnt))
-                        logging.info('- 종목:' + str(target_item['market']) + '- 수익률:' + str(rev_pcnt))
+                        print('종목:' + str(target_item['market']) + '  수익률:' + str(rev_pcnt))
 
                         # -----------------------------------------------------
                         # 현재 수익률이 매도 수익률 이상인 경우에만 진행
                         # -----------------------------------------------------
+                        print(str(rev_pcnt))
+
+                        if Decimal(str(rev_pcnt)) < -0.1:
+                            print('-0.1% 이하임 로스컷????')
+                            continue
+
+
                         if Decimal(str(rev_pcnt)) < Decimal(str(sell_pcnt)):
                             #logging.info('- 현재 수익률이 매도 수익률 보다 낮아 진행하지 않음!!!')
                             #logging.info('------------------------------------------------------')
