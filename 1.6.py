@@ -121,7 +121,7 @@ def start_buytrade(buy_amt, except_items):
                 bb_eval7 = bb_gapBefore1 - bb_gapBefore8
                 bb_eval8 = bb_gapBefore1 - bb_gapBefore9
 
-                print("BBL", format((bb_now - can_lowNow) / bb_now * 100, '.2f'),"%",item_list_for['market'], "  BB추세", format(bb_eval1, '.4f') , "%---양수TRY / 제외종목:", except_items)
+                print("BBL", format((bb_now - can_lowNow) / bb_now * 100, '.2f'),"%",item_list_for['market'], "  BB trend", format(bb_eval1, '.4f') , "%+++TRY / except:", except_items)
 
                 '''
                 # 급등 시 매수 1.5%
@@ -137,7 +137,7 @@ def start_buytrade(buy_amt, except_items):
                 '''
 
                 # 볼린저밴드 15분봉 하단을 찍을 때 매수
-                if bb_now > can_lowNow and bb_gapBefore0 > 0 and bb_eval1 > 0 :# and bb_eval2 > 0 and bb_eval3 > 0 and bb_eval4 > 0 and bb_eval5 > 0  and bb_eval6 > 0 and bb_eval7 > 0 and bb_eval8 > 0 and can_lowNow < can_lowBefore1 and can_lowNow < can_lowBefore2 and can_lowNow < can_lowBefore3 and can_gapBefore1 != 0 and can_gapBefore2 != 0 and can_gapBefore3 != 0 and can_gapBefore4 != 0 and can_gapBefore5 != 0 and can_highBefore1 != can_highBefore2 and can_highBefore1 != can_highBefore3 and can_highBefore1 != can_highBefore4 and can_highBefore1 != can_highBefore5:
+                if bb_now > can_lowNow and bb_gapBefore0 > 0 and bb_eval1 > 0 and can_highBefore1 != can_highBefore2 and can_highBefore1 != can_highBefore3 and can_gapBefore1 != 0 and can_gapBefore2 != 0:# and bb_eval2 > 0 and bb_eval3 > 0 and bb_eval4 > 0 and bb_eval5 > 0  and bb_eval6 > 0 and bb_eval7 > 0 and bb_eval8 > 0 and can_lowNow < can_lowBefore1 and can_lowNow < can_lowBefore2 and can_lowNow < can_lowBefore3 and can_gapBefore1 != 0 and can_gapBefore2 != 0 and can_gapBefore3 != 0 and can_gapBefore4 != 0 and can_gapBefore5 != 0 and can_highBefore1 != can_highBefore2 and can_highBefore1 != can_highBefore3 and can_highBefore1 != can_highBefore4 and can_highBefore1 != can_highBefore5:
 
                     # 기준 충족 종목 종가
                     #print(item_list_for['market'],'하한가' + str(can_lowNow))
@@ -165,7 +165,7 @@ def start_buytrade(buy_amt, except_items):
                     #print("TRIED !!")
 
                 if data_cnt == 0 or data_cnt % 100 == 0:
-                    print("매수 진행 중...[" + str(data_cnt) + "]")
+                    print("gathering...[" + str(data_cnt) + "]")
 
 
 
@@ -193,7 +193,7 @@ if __name__ == '__main__':
 
 
     buy_amt = 6000
-    print("매수금액:" + str(buy_amt))
+    print("buy:" + str(buy_amt))
 
     # 매수로직 시작
     try:

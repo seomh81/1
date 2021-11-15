@@ -46,7 +46,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
             # -----------------------------------------------------------------
             for target_item in target_items:
                 for ticker in tickers:
-                    time.sleep(3)
+                    time.sleep(0.1)
                     if target_item['market'] == ticker['market']:
 
                         # -----------------------------------------------------
@@ -69,8 +69,9 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         # -----------------------------------------------------
                         print(str(rev_pcnt))
 
-                        if Decimal(str(rev_pcnt)) < -0.1:
-                            print('-0.1% 이하임 로스컷????')
+                        if Decimal(str(rev_pcnt)) < -3:
+                            upbit.sellcoin_mp(target_item['market'], 'Y')
+                            print('-3% sold')
                             continue
 
 
@@ -116,7 +117,8 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                             str(higest_high_price))) / Decimal(str(higest_high_price))) * 100, 2)
 
                         #logging.info('- 매수 후 최고가:' + str(higest_high_price))
-                        logging.info('- 고점대비 하락률:' + str(cur_dcnt_pcnt))
+                        #logging.info('- 고점대비 하락률:' + str(cur_dcnt_pcnt))
+                        print('gap from top:' + str(cur_dcnt_pcnt))
 
                         if Decimal(str(cur_dcnt_pcnt)) < Decimal(str(dcnt_pcnt)):
 
@@ -128,7 +130,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                             #logging.info('시장가 매도 시작! [' + str(target_item['market']) + ']')
                             upbit.sellcoin_mp(target_item['market'], 'Y')
                             #rtn_sellcoin_mp = upbit.sellcoin_mp(target_item['market'], 'Y')
-                            logging.info('시장가 매도 종료! [' + str(target_item['market']) + ']')
+                            logging.info('sold at mp! [' + str(target_item['market']) + ']')
                             #logging.info(rtn_sellcoin_mp)
                             #logging.info('------------------------------------------------------')
 
@@ -175,9 +177,9 @@ if __name__ == '__main__':
         upbit.set_loglevel(log_level)
 
         logging.info("*********************************************************")
-        logging.info("1. 로그레벨 : " + str(log_level))
-        logging.info("2. 매도 수익률 : " + str(sell_pcnt))
-        logging.info("3. 고점대비 하락률 : " + str(dcnt_pcnt))
+        logging.info("1. Log lv : " + str(log_level))
+        logging.info("2. sell point : " + str(sell_pcnt))
+        logging.info("3. gap from top : " + str(dcnt_pcnt))
         logging.info("*********************************************************")
 
         # 매수 로직 시작
