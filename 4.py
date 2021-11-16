@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 import traceback
 import pandas as pd
 import numpy
+from multiprocessing import Pool
 
 from decimal import Decimal
 
@@ -276,7 +277,7 @@ def start_buytrade(buy_amt, except_items):
 
                     # 지정가 매수
                     print('target start!')
-                    #upbit.buycoin_tg(item_list_for['market'],buy_amt, can_lowNow)
+                    upbit.buycoin_tg(item_list_for['market'],buy_amt, can_lowNow)
 
                     # 시장가 매수
                     #print('시장가 매수 시작!')
@@ -358,15 +359,35 @@ if __name__ == '__main__':
 
     sell_pcnt = -1  # input("매도 수익률(ex:2%=2) : ")
     dcnt_pcnt = -1  # input("고점대비 하락률(ex:-1%=-1) : ")
-    print("target: " + str(sell_pcnt) + " || gap: " + str(dcnt_pcnt))
+    print("target: " + str(sell_pcnt) + " | gap: " + str(dcnt_pcnt))
+
+    except_items = ''
+    start_buytrade(buy_amt, except_items)
+
+    '''
+    p1 = Process(target=start_buytrade, args=(buy_amt, except_items))
+    p2 = Process(target=start_selltrade, args=(sell_pcnt, dcnt_pcnt))
+    p1.start()
+    p2.start()
+    '''
+
+    '''
+    pool = Pool(processes = 4)
+    pool.map(start_buytrade, buy_amt, except_items)
+    pool.close()
+    pool.join()
+    '''
 
     # 매수로직 시작
+    '''
     try:
         except_items = ''
         while True:
             start_buytrade(buy_amt, except_items)
+    
 
 
     except Exception:
 
         raise
+    '''
