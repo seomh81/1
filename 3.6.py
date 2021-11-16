@@ -38,7 +38,7 @@ if __name__ == '__main__':
 
                 if locked_trade != []:
                     # 미체결 주문 확인하면 5분간 대기 후 취소 진행
-                    time.sleep(240)
+                    time.sleep(60)
 
                     # 미체결 주문 취소
                     upbit.cancel_order(item_list_for['market'], 'BUY')
@@ -49,7 +49,7 @@ if __name__ == '__main__':
                     logging.info(locked_trade)
                     continue
 
-                time.sleep(3)
+                time.sleep(2)
 
     except KeyboardInterrupt:
         logging.error("KeyboardInterrupt Exception 발생!")

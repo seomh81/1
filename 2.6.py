@@ -1,5 +1,3 @@
-# 스탑로스 기능 개선 (최고점 계산 개선) 기준 0.3 / 트레일링스탑 -0.8 / 로스컷 -2
-
 import time
 import os
 import sys
@@ -46,7 +44,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
             # -----------------------------------------------------------------
             for target_item in target_items:
                 for ticker in tickers:
-                    time.sleep(0.03)
+                    time.sleep(0.1)
                     if target_item['market'] == ticker['market']:
 
                         # -----------------------------------------------------
@@ -56,29 +54,19 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         rev_pcnt = round(((Decimal(str(ticker['trade_price'])) - Decimal(
                             str(target_item['avg_buy_price']))) / Decimal(str(target_item['avg_buy_price']))) * 100, 2)
 
-                        #logging.info('')
-                        #logging.info('------------------------------------------------------')
-                        #logging.info('- 종목:' + str(target_item['market']))
-                        #logging.info('- 평균매수가:' + str(target_item['avg_buy_price']))
-                        #logging.info('- 현재가:' + str(ticker['trade_price']))
-                        #logging.info('- 수익률:' + str(rev_pcnt))
-                        print('종목:' + str(target_item['market']) + '  수익률:' + str(rev_pcnt))
-                        #print('2.6')
+                        logging.info('')
+                        logging.info('------------------------------------------------------')
+                        logging.info('- 종목:' + str(target_item['market']))
+                        logging.info('- 평균매수가:' + str(target_item['avg_buy_price']))
+                        logging.info('- 현재가:' + str(ticker['trade_price']))
+                        logging.info('- 수익률:' + str(rev_pcnt))
 
                         # -----------------------------------------------------
                         # 현재 수익률이 매도 수익률 이상인 경우에만 진행
                         # -----------------------------------------------------
-                        print(str(rev_pcnt))
-
-                        if Decimal(str(rev_pcnt)) < -2:
-                            upbit.sellcoin_mp(target_item['market'], 'Y')
-                            print('-2% sold')
-                            continue
-
-
                         if Decimal(str(rev_pcnt)) < Decimal(str(sell_pcnt)):
                             logging.info('- 현재 수익률이 매도 수익률 보다 낮아 진행하지 않음!!!')
-                            #logging.info('------------------------------------------------------')
+                            logging.info('------------------------------------------------------')
                             continue
 
                         # -------------------------------------------------
@@ -96,15 +84,12 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         # ------------------------------------------------------------------
                         # 캔들 조회
                         # ------------------------------------------------------------------
-                        candles = upbit.get_candle(target_item['market'], '60', 200)
+                        candles = upbit.get_candle(target_item['market'], '15', 200)
 
                         # ------------------------------------------------------------------
                         # 최근 매수일자 다음날부터 현재까지의 최고가를 계산
                         # ------------------------------------------------------------------
                         df = pd.DataFrame(candles)
-                        #logging.info(df)
-                        #df.to_excel('candle.xlsx', index=False)
-
                         mask = df['candle_date_time_kst'] > order_done_filtered[0]['created_at']
                         filtered_df = df.loc[mask]
 
@@ -119,7 +104,6 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
 
                         logging.info('- 매수 후 최고가:' + str(higest_high_price))
                         logging.info('- 고점대비 하락률:' + str(cur_dcnt_pcnt))
-                        print(str(target_item['market']), 'gap from top:' + str(cur_dcnt_pcnt))
 
                         if Decimal(str(cur_dcnt_pcnt)) < Decimal(str(dcnt_pcnt)):
 
@@ -129,17 +113,14 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                             # 실제 매매를 원하시면 테스트를 충분히 거친 후 주석을 해제하시면 됩니다.
                             # ------------------------------------------------------------------
                             logging.info('시장가 매도 시작! [' + str(target_item['market']) + ']')
-                            upbit.sellcoin_mp(target_item['market'], 'Y')
-                            #rtn_sellcoin_mp = upbit.sellcoin_mp(target_item['market'], 'Y')
-                            logging.info('sold at mp! [' + str(target_item['market']) + ']')
-                            #logging.info(rtn_sellcoin_mp)
-                            #logging.info('------------------------------------------------------')
-                            continue
+                            rtn_sellcoin_mp = upbit.sellcoin_mp(target_item['market'], 'Y')
+                            logging.info('시장가 매도 종료! [' + str(target_item['market']) + ']')
+                            logging.info(rtn_sellcoin_mp)
+                            logging.info('------------------------------------------------------')
 
                         else:
                             logging.info('- 고점 대비 하락률 조건에 맞지 않아 매도하지 않음!!!')
-                            #logging.info('------------------------------------------------------')
-                            pass
+                            logging.info('------------------------------------------------------')
 
 
     # ---------------------------------------
@@ -173,15 +154,15 @@ if __name__ == '__main__':
 
         # 1. 로그레벨
         log_level = 'I'#input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
-        sell_pcnt = 0.3#input("매도 수익률(ex:2%=2) : ")
-        dcnt_pcnt = -0.8#input("고점대비 하락률(ex:-1%=-1) : ")
+        sell_pcnt = -1#input("매도 수익률(ex:2%=2) : ")
+        dcnt_pcnt = -1#input("고점대비 하락률(ex:-1%=-1) : ")
 
         upbit.set_loglevel(log_level)
 
         logging.info("*********************************************************")
-        logging.info("1. Log lv : " + str(log_level))
-        logging.info("2. sell point : " + str(sell_pcnt))
-        logging.info("3. gap from top : " + str(dcnt_pcnt))
+        logging.info("1. 로그레벨 : " + str(log_level))
+        logging.info("2. 매도 수익률 : " + str(sell_pcnt))
+        logging.info("3. 고점대비 하락률 : " + str(dcnt_pcnt))
         logging.info("*********************************************************")
 
         # 매수 로직 시작
