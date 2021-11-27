@@ -1,4 +1,4 @@
-# 신규 old_1.7.py -> old_4.py -> 4.py
+# 신규 old_1.7.py -> old_4.py
 import logging
 import sys
 import os
@@ -7,7 +7,6 @@ from datetime import datetime, timedelta
 import traceback
 import pandas as pd
 import numpy
-import dateutil.parser
 
 from decimal import Decimal
 
@@ -47,41 +46,8 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
             # -----------------------------------------------------------------
             for target_item in target_items:
                 for ticker in tickers:
-                    time.sleep(0.05)
+                    #time.sleep(0.1)
                     if target_item['market'] == ticker['market']:
-
-                        # -------------------------------------------------
-                        # 고점을 계산하기 위해 최근 매수일시 조회
-                        # 1. 해당 종목에 대한 거래 조회(done, cancel)
-                        # 2. 거래일시를 최근순으로 정렬
-                        # 3. 매수 거래만 필터링
-                        # 4. 가장 최근 거래일자부터 현재까지 고점을 조회
-                        # -------------------------------------------------
-                        order_done = upbit.get_order_status(target_item['market'], 'done') + upbit.get_order_status(
-                            target_item['market'], 'cancel')
-                        order_done_sorted = upbit.orderby_dict(order_done, 'created_at', True)
-                        order_done_filtered = upbit.filter_dict(order_done_sorted, 'side', 'bid')
-
-                        # -------------------------------------------------
-                        # 매수 직후 나타나는 오류 체크용 마지막 매수 시간 차이 계산
-                        # -------------------------------------------------
-                        # 마지막 매수 시간
-                        last_buy_dt = datetime.strptime(
-                            dateutil.parser.parse(order_done_filtered[0]['created_at']).strftime('%Y-%m-%d %H:%M:%S'),
-                            '%Y-%m-%d %H:%M:%S')
-
-                        # 현재 시간 추출
-                        current_dt = datetime.strptime(datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                                                       '%Y-%m-%d %H:%M:%S')
-
-                        # 시간 차이 추출
-                        diff = current_dt - last_buy_dt
-
-                        # 매수 후 1분간은 진행하지 않음(업비트 오류 방지 용)
-                        if diff.seconds < 60:
-                            logging.info('- 매수 직후 발생하는 오류를 방지하기 위해 진행하지 않음!!!')
-                            logging.info('------------------------------------------------------')
-                            continue
 
                         # -----------------------------------------------------
                         # 수익률 계산
@@ -105,10 +71,22 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                             logging.info('------------------------------------------------------')
                             continue
 
+                        # -------------------------------------------------
+                        # 고점을 계산하기 위해 최근 매수일자 조회
+                        # 1. 해당 종목에 대한 거래 조회(done, cancel)
+                        # 2. 거래일시를 최근순으로 정렬
+                        # 3. 매수 거래만 필터링
+                        # 4. 가장 최근 거래일자부터 현재까지 고점을 조회
+                        # -------------------------------------------------
+                        order_done = upbit.get_order_status(target_item['market'], 'done') + upbit.get_order_status(
+                            target_item['market'], 'cancel')
+                        order_done_sorted = upbit.orderby_dict(order_done, 'created_at', True)
+                        order_done_filtered = upbit.filter_dict(order_done_sorted, 'side', 'bid')
+
                         # ------------------------------------------------------------------
                         # 캔들 조회
                         # ------------------------------------------------------------------
-                        candles = upbit.get_candle(target_item['market'], '60', 200)
+                        candles = upbit.get_candle(target_item['market'], '15', 200)
 
                         # ------------------------------------------------------------------
                         # 최근 매수일자 다음날부터 현재까지의 최고가를 계산
@@ -116,18 +94,18 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         df = pd.DataFrame(candles)
                         mask = df['candle_date_time_kst'] > order_done_filtered[0]['created_at']
                         filtered_df = df.loc[mask]
-                        highest_high_price = numpy.max(filtered_df['high_price'])
+
+                        higest_high_price = numpy.max(filtered_df['high_price'])
 
                         # -----------------------------------------------------
                         # 고점대비 하락률
                         # ((현재가 - 최고가) / 최고가) * 100
                         # -----------------------------------------------------
                         cur_dcnt_pcnt = round(((Decimal(str(ticker['trade_price'])) - Decimal(
-                            str(highest_high_price))) / Decimal(str(highest_high_price))) * 100, 2)
+                            str(higest_high_price))) / Decimal(str(higest_high_price))) * 100, 2)
 
-                        logging.info('- 매수 후 최고가:' + str(highest_high_price))
+                        logging.info('- 매수 후 최고가:' + str(higest_high_price))
                         logging.info('- 고점대비 하락률:' + str(cur_dcnt_pcnt))
-                        logging.info('- 최종 매수시간:' + str(last_buy_dt))
 
                         if Decimal(str(cur_dcnt_pcnt)) < Decimal(str(dcnt_pcnt)):
 
@@ -145,6 +123,8 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         else:
                             logging.info('- 고점 대비 하락률 조건에 맞지 않아 매도하지 않음!!!')
                             logging.info('------------------------------------------------------')
+            print('change to buy')
+            start_buytrade(buy_amt, except_items)
 
 
     # ---------------------------------------
@@ -152,6 +132,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
     # ----------------------------------------
     except Exception:
         raise
+
 
 
 # -----------------------------------------------------------------------------
@@ -180,9 +161,10 @@ def start_buytrade(buy_amt, except_items):
             # 전체 종목 반복
             for item_list_for in item_list:
 
+
                 # 1분봉 (최대 200개 요청가능) - 6개 요청(5분전부터)
-                # df_candle = upbit.get_candle(item_list_for['market'], '3', 6)
-                # print(df_candle)
+                #df_candle = upbit.get_candle(item_list_for['market'], '3', 6)
+                #print(df_candle)
                 # 호출 수 줄이기
                 indicators = upbit.get_indicator_sel(item_list_for['market'], '15', 200, 11, ['RSI', 'BB', 'CANDLE'])
 
@@ -202,8 +184,8 @@ def start_buytrade(buy_amt, except_items):
                 vol_before5 = df_candle[5]['candle_acc_trade_volume']
                 '''
 
-                # can_tradeNow = df_candle[0]['trade_price']
-                # can_highNow = df_candle[0]['high_price']
+                #can_tradeNow = df_candle[0]['trade_price']
+                #can_highNow = df_candle[0]['high_price']
                 can_highBefore1 = df_candle[1]['high_price']
                 can_highBefore2 = df_candle[2]['high_price']
                 can_highBefore3 = df_candle[3]['high_price']
@@ -222,18 +204,18 @@ def start_buytrade(buy_amt, except_items):
                 can_openBefore1 = df_candle[1]['opening_price']
                 can_tradeBefore1 = df_candle[1]['trade_price']
 
-                # can_gapNow = can_highNow - can_lowNow
+                #can_gapNow = can_highNow - can_lowNow
                 can_gapBefore1 = can_highBefore1 - can_lowBefore1
                 can_gapBefore2 = can_highBefore2 - can_lowBefore2
                 can_gapBefore3 = can_highBefore3 - can_lowBefore3
                 can_gapBefore4 = can_highBefore4 - can_lowBefore4
                 can_gapBefore5 = can_highBefore5 - can_lowBefore5
 
-                # can_eval = can_gapNow - (can_gapBefore1 + can_gapBefore2)# + can_gapBefore3 + can_gapBefore4 + can_gapBefore5) * 1
-                # vol_eval = vol_tradeNow - (vol_before1 + vol_before2 + vol_before3 + vol_before4 + vol_before5) * 0.5
+                #can_eval = can_gapNow - (can_gapBefore1 + can_gapBefore2)# + can_gapBefore3 + can_gapBefore4 + can_gapBefore5) * 1
+                #vol_eval = vol_tradeNow - (vol_before1 + vol_before2 + vol_before3 + vol_before4 + vol_before5) * 0.5
 
                 # 볼린저밴드 15분봉
-                # df_bb = upbit.get_bb(item_list_for['market'], '10', '200', 11) #15분봉으로 테스트
+                #df_bb = upbit.get_bb(item_list_for['market'], '10', '200', 11) #15분봉으로 테스트
 
                 bb_nowBBM = df_bb[0]['BBM']
                 bb_now = df_bb[0]['BBL']
@@ -266,8 +248,8 @@ def start_buytrade(buy_amt, except_items):
                 bb_eval7 = bb_gapBefore1 - bb_gapBefore8
                 bb_eval8 = bb_gapBefore1 - bb_gapBefore9
 
-                print("BBL", format((bb_now - can_lowNow) / bb_now * 100, '.2f'), "%", item_list_for['market'], "| RSI",
-                      format(rsi_now, '.4f'), "%  +TRY | except:", except_items)
+                print("BBL", format((bb_now - can_lowNow) / bb_now * 100, '.2f'),"%",item_list_for['market'], "  BB trend", format(bb_eval1, '.4f') , "%+++TRY / except:", except_items)
+
 
                 '''
                 # 급등 시 매수 1.5%
@@ -284,30 +266,30 @@ def start_buytrade(buy_amt, except_items):
 
                 # 볼린저밴드 15분봉 하단을 찍을 때 매수
                 if bb_now > can_lowNow and rsi_now <= 30:
-                    print('It was close')
+                    print('It was closed')
                     continue
 
-                if bb_now > can_lowNow and rsi_before1 <= 30 and rsi_now > rsi_before1:  # and bb_gapBefore0 > 0 and bb_eval1 > 0  and bb_eval2 > 0 and bb_eval3 > 0and can_highBefore1 != can_highBefore2 and can_highBefore1 != can_highBefore3 and can_gapBefore1 != 0 and can_gapBefore2 != 0:# and bb_eval2 > 0 and bb_eval3 > 0 and bb_eval4 > 0 and bb_eval5 > 0  and bb_eval6 > 0 and bb_eval7 > 0 and bb_eval8 > 0 and can_lowNow < can_lowBefore1 and can_lowNow < can_lowBefore2 and can_lowNow < can_lowBefore3 and can_gapBefore1 != 0 and can_gapBefore2 != 0 and can_gapBefore3 != 0 and can_gapBefore4 != 0 and can_gapBefore5 != 0 and can_highBefore1 != can_highBefore2 and can_highBefore1 != can_highBefore3 and can_highBefore1 != can_highBefore4 and can_highBefore1 != can_highBefore5:
+                if bb_now > can_lowNow and rsi_before1 <=30 and rsi_now > rsi_before1:# and bb_gapBefore0 > 0 and bb_eval1 > 0  and bb_eval2 > 0 and bb_eval3 > 0and can_highBefore1 != can_highBefore2 and can_highBefore1 != can_highBefore3 and can_gapBefore1 != 0 and can_gapBefore2 != 0:# and bb_eval2 > 0 and bb_eval3 > 0 and bb_eval4 > 0 and bb_eval5 > 0  and bb_eval6 > 0 and bb_eval7 > 0 and bb_eval8 > 0 and can_lowNow < can_lowBefore1 and can_lowNow < can_lowBefore2 and can_lowNow < can_lowBefore3 and can_gapBefore1 != 0 and can_gapBefore2 != 0 and can_gapBefore3 != 0 and can_gapBefore4 != 0 and can_gapBefore5 != 0 and can_highBefore1 != can_highBefore2 and can_highBefore1 != can_highBefore3 and can_highBefore1 != can_highBefore4 and can_highBefore1 != can_highBefore5:
 
                     # 기준 충족 종목 종가
-                    # print(item_list_for['market'],'하한가' + str(can_lowNow))
+                    #print(item_list_for['market'],'하한가' + str(can_lowNow))
 
                     # 지정가 매수
                     print('target start!')
-                    upbit.buycoin_tg(item_list_for['market'], buy_amt, can_lowNow)
-
-                    time.sleep(30)
+                    #upbit.buycoin_tg(item_list_for['market'],buy_amt, can_lowNow)
 
                     # 시장가 매수
-                    # print('시장가 매수 시작!')
-                    # upbit.buycoin_mp(item_list_for['market'],buy_amt)
-                    # 매도표현식 참조
-                    # rtn_sellcoin_mp = upbit.sellcoin_mp(target_item['market'], 'Y')
+                    #print('시장가 매수 시작!')
+                    #upbit.buycoin_mp(item_list_for['market'],buy_amt)
+                    #매도표현식 참조
+                    #rtn_sellcoin_mp = upbit.sellcoin_mp(target_item['market'], 'Y')
 
                     # ------------------------------------------------------------------
                     # 매수 완료 종목은 매수 대상에서 제외
                     # ------------------------------------------------------------------
                     except_items = except_items + ',' + item_list_for['market'].split('-')[1]
+
+
 
                     try:
                         # ---------------------------------------------------------------------
@@ -327,44 +309,44 @@ def start_buytrade(buy_amt, except_items):
                     except:
                         continue
 
-                # if bb_now >= can_lowNow and vol_eval >= 0 and bb_eval1 >= 0:
-                # print("TRIED !!")
+
+                #if bb_now >= can_lowNow and vol_eval >= 0 and bb_eval1 >= 0:
+                    #print("TRIED !!")
 
                 if data_cnt == 0 or data_cnt % 100 == 0:
-                    # print("gathering...[" + str(data_cnt) + "]")
+                    #print("gathering...[" + str(data_cnt) + "]")
                     continue
+
+
 
                 now = datetime.now().strftime('%H%M')
 
                 if due_time == now:
                     except_items = ''
-                    time.sleep(1)
                     due_time = (datetime.now() + timedelta(hours=3)).strftime('%H%M')
                     continue
 
                 # 조회건수증가
                 data_cnt = data_cnt + 1
                 # 타임슬립
-                time.sleep(0.02)
+                #time.sleep(0.02)
 
                 continue
 
             print('change to sell')
             start_selltrade(sell_pcnt, dcnt_pcnt)
-            continue
 
     # ----------------------------------------
     # 모든 함수의 공통 부분(Exception 처리)
     # ----------------------------------------
     except Exception:
         raise
-
-
 # -----------------------------------------------------------------------------
 # - Name : main
 # - Desc : 메인
 # -----------------------------------------------------------------------------
 if __name__ == '__main__':
+
     print("***** USAGE ******")
     print("[1] 로그레벨(D:DEBUG, E:ERROR, 그외:INFO)")
 
@@ -376,35 +358,15 @@ if __name__ == '__main__':
 
     sell_pcnt = -1  # input("매도 수익률(ex:2%=2) : ")
     dcnt_pcnt = -1  # input("고점대비 하락률(ex:-1%=-1) : ")
-    print("target: " + str(sell_pcnt) + " | gap: " + str(dcnt_pcnt))
-
-    except_items = ''
-    start_buytrade(buy_amt, except_items)
-
-    '''
-    p1 = Process(target=start_buytrade, args=(buy_amt, except_items))
-    p2 = Process(target=start_selltrade, args=(sell_pcnt, dcnt_pcnt))
-    p1.start()
-    p2.start()
-    '''
-
-    '''
-    pool = Pool(processes = 4)
-    pool.map(start_buytrade, buy_amt, except_items)
-    pool.close()
-    pool.join()
-    '''
+    print("target: " + str(sell_pcnt) + " || gap: " + str(dcnt_pcnt))
 
     # 매수로직 시작
-    '''
     try:
         except_items = ''
         while True:
             start_buytrade(buy_amt, except_items)
 
 
-
     except Exception:
 
         raise
-    '''

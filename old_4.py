@@ -1,4 +1,4 @@
-# 신규 1.7.py -> 4.py
+# 신규 old_1.7.py -> old_4.py
 import logging
 import sys
 import os
@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 import traceback
 import pandas as pd
 import numpy
+from multiprocessing import Pool
 
 from decimal import Decimal
 
@@ -125,6 +126,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                             logging.info('------------------------------------------------------')
             print('change to buy')
             start_buytrade(buy_amt, except_items)
+            continue
 
 
     # ---------------------------------------
@@ -248,7 +250,7 @@ def start_buytrade(buy_amt, except_items):
                 bb_eval7 = bb_gapBefore1 - bb_gapBefore8
                 bb_eval8 = bb_gapBefore1 - bb_gapBefore9
 
-                print("BBL", format((bb_now - can_lowNow) / bb_now * 100, '.2f'),"%",item_list_for['market'], "  BB trend", format(bb_eval1, '.4f') , "%+++TRY / except:", except_items)
+                print("BBL", format((bb_now - can_lowNow) / bb_now * 100, '.2f'),"%",item_list_for['market'], "| RSI", format(rsi_now, '.4f') , "%  +TRY | except:", except_items)
 
 
                 '''
@@ -276,7 +278,9 @@ def start_buytrade(buy_amt, except_items):
 
                     # 지정가 매수
                     print('target start!')
-                    #upbit.buycoin_tg(item_list_for['market'],buy_amt, can_lowNow)
+                    upbit.buycoin_tg(item_list_for['market'],buy_amt, can_lowNow)
+
+                    time.sleep(30)
 
                     # 시장가 매수
                     #print('시장가 매수 시작!')
@@ -323,6 +327,7 @@ def start_buytrade(buy_amt, except_items):
 
                 if due_time == now:
                     except_items = ''
+                    time.sleep(1)
                     due_time = (datetime.now() + timedelta(hours=3)).strftime('%H%M')
                     continue
 
@@ -335,6 +340,7 @@ def start_buytrade(buy_amt, except_items):
 
             print('change to sell')
             start_selltrade(sell_pcnt, dcnt_pcnt)
+            continue
 
     # ----------------------------------------
     # 모든 함수의 공통 부분(Exception 처리)
@@ -358,15 +364,35 @@ if __name__ == '__main__':
 
     sell_pcnt = -1  # input("매도 수익률(ex:2%=2) : ")
     dcnt_pcnt = -1  # input("고점대비 하락률(ex:-1%=-1) : ")
-    print("target: " + str(sell_pcnt) + " || gap: " + str(dcnt_pcnt))
+    print("target: " + str(sell_pcnt) + " | gap: " + str(dcnt_pcnt))
+
+    except_items = ''
+    start_buytrade(buy_amt, except_items)
+
+    '''
+    p1 = Process(target=start_buytrade, args=(buy_amt, except_items))
+    p2 = Process(target=start_selltrade, args=(sell_pcnt, dcnt_pcnt))
+    p1.start()
+    p2.start()
+    '''
+
+    '''
+    pool = Pool(processes = 4)
+    pool.map(start_buytrade, buy_amt, except_items)
+    pool.close()
+    pool.join()
+    '''
 
     # 매수로직 시작
+    '''
     try:
         except_items = ''
         while True:
             start_buytrade(buy_amt, except_items)
+    
 
 
     except Exception:
 
         raise
+    '''
