@@ -13,8 +13,8 @@ from urllib.parse import urlencode
 from decimal import Decimal
 
 # Keys
-access_key = '7BiohT5Qx4xPsyhGeDa5JPBbymUHhfLQLijWqdcq'
-secret_key = 'fGxIXjMTmHQIEMoZEXqxfFuTd7jn3XHx3ZgiP8hT'
+access_key = 'xwKqn7Q6JtbUxgVuEYu31Q8hNA62HZjX1eKbxUpr'
+secret_key = 'sXP8opxgHcWgD0EKd3ovnULVs8S1QnsaSLc5OTbi'
 server_url = 'https://api.upbit.com'
 
 # 상수 설정
