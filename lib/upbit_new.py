@@ -14,11 +14,11 @@ from decimal import Decimal
 from datetime import datetime
 
 # Keys
-access_key = 'n1inbLR7Rq8h8xsmMp8Z18ThaQqRL9IzV2ZIzK8A'
-secret_key = 'tqakzE54kMVviOZGwx4icd4jPqyAAOJQVpRfKNAm'
+access_key = 'KIWClaivOHmbP8i7xoil9C66bOxBvYlvNoSECQh6'
+secret_key = 'yI5q2N26dPt2UOnEExMHdkRfKxltgm9aA2HCb08d'
 server_url = 'https://api.upbit.com'
 line_target_url = 'https://notify-api.line.me/api/notify'
-line_token = '라인 메신저에서 발급받은 Token'
+line_token = '9mpayGJB0EnNpFlllEsUu6TCbrMLQWOnthhjg2nN9KB'
 
 # 상수 설정
 min_order_amt = 5000
