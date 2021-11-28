@@ -42,7 +42,7 @@ def start_buytrade(buy_amt):
 
                 rsi_val = False
                 mfi_val = False
-                ocl_val = False
+                #ocl_val = False
 
                 logging.info('체크중....[' + str(target_item['market']) + ']')
 
@@ -107,21 +107,23 @@ def start_buytrade(buy_amt):
                 # macd[2]['OCL'] : 2일전
                 # macd[3]['OCL'] : 3일전
                 # --------------------------------------------------------------
+                '''
                 if (Decimal(str(macd[0]['OCL'])) > Decimal(str(macd[1]['OCL'])) > Decimal(str(macd[2]['OCL']))
                         and Decimal(str(macd[3]['OCL'])) > Decimal(str(macd[2]['OCL']))
                         and Decimal(str(macd[1]['OCL'])) < Decimal(str(0))
                         and Decimal(str(macd[2]['OCL'])) < Decimal(str(0))
                         and Decimal(str(macd[3]['OCL'])) < Decimal(str(0))):
                     ocl_val = True
+                '''
 
                 # --------------------------------------------------------------
                 # 매수대상 발견
                 # --------------------------------------------------------------
-                if rsi_val and mfi_val and ocl_val:
+                if rsi_val and mfi_val:# and ocl_val:
                     logging.info('매수대상 발견....[' + str(target_item['market']) + ']')
                     logging.info('RSI : ' + str(rsi))
                     logging.info('MFI : ' + str(mfi))
-                    logging.info('MACD : ' + str(macd))
+                    #logging.info('MACD : ' + str(macd))
 
                     # ------------------------------------------------------------------
                     # 기매수 여부 판단
