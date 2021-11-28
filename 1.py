@@ -52,7 +52,7 @@ def start_buytrade(buy_amt):
                 # 2. 속도를 위해 원하는 지표만 조회(RSI, MFI, MACD, CANDLE)
                 # -------------------------------------------------------------
                 indicators = upbit.get_indicator_sel(target_item['market'], '15', 200, 5,
-                                                     ['RSI', 'MFI', 'MACD', 'CANDLE'])
+                                                     ['RSI', 'MFI', 'MACD', 'BB', 'CANDLE'])
 
                 # --------------------------------------------------------------
                 # 최근 상장하여 캔들 갯수 부족으로 보조 지표를 구하기 어려운 건은 제외
@@ -67,7 +67,17 @@ def start_buytrade(buy_amt):
                 rsi = indicators['RSI']
                 mfi = indicators['MFI']
                 macd = indicators['MACD']
+                bb = indicators['BB']
                 candle = indicators['CANDLE']
+
+                # --------------------------------------------------------------
+                # 볼린저 밴드 추가
+                # --------------------------------------------------------------
+                if bb[0]['BBH'] > candle[0]['low_price'] and (candle[0]['low_price'] - candle[1]['low_price']) / candle[1]['low_price'] < -1:
+                    logging.info('시장가 매수 시작! [' + str(target_item['market']) + ']')
+                    rtn_buycoin_mp = upbit.buycoin_mp(target_item['market'], buy_amt)
+                    logging.info('시장가 매수 종료! [' + str(target_item['market']) + ']')
+                    logging.info(rtn_buycoin_mp)
 
                 # --------------------------------------------------------------
                 # 매수 로직
