@@ -106,7 +106,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         # ------------------------------------------------------------------
                         # 캔들 조회
                         # ------------------------------------------------------------------
-                        candles = upbit.get_candle(target_item['market'], '15', 200)
+                        candles = upbit.get_candle(target_item['market'], '30', 200)
 
                         # ------------------------------------------------------------------
                         # 최근 매수일자 다음날부터 현재까지의 최고가를 계산
@@ -176,7 +176,7 @@ if __name__ == '__main__':
 
         # 1. 로그레벨
         log_level = 'I'#input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
-        sell_pcnt = -50#input("매도 수익률(ex:2%=2) : ")
+        sell_pcnt = -10#input("매도 수익률(ex:2%=2) : ")
         dcnt_pcnt = -1#input("고점대비 하락률(ex:-1%=-1) : ")
 
         upbit.set_loglevel(log_level)
