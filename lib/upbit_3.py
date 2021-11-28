@@ -11,11 +11,14 @@ import numpy
 
 from urllib.parse import urlencode
 from decimal import Decimal
+from datetime import datetime
 
 # Keys
-access_key = 'KIWClaivOHmbP8i7xoil9C66bOxBvYlvNoSECQh6'
-secret_key = 'yI5q2N26dPt2UOnEExMHdkRfKxltgm9aA2HCb08d'
+access_key = 'doqlo6ggcsA1YPQt6hdpysxXjeAOcIpoOJM71YYm'
+secret_key = 'DEOTGl232F7xdeGVdIz5wm3ufVF6qjfRuDgXx6nr'
 server_url = 'https://api.upbit.com'
+line_target_url = 'https://notify-api.line.me/api/notify'
+line_token = '9mpayGJB0EnNpFlllEsUu6TCbrMLQWOnthhjg2nN9KB'
 
 # 상수 설정
 min_order_amt = 5000
@@ -124,6 +127,7 @@ def send_request(reqType, reqUrl, reqParam, reqHeader):
             else:
                 logging.error("기타 에러:" + str(response.status_code))
                 logging.error(response.status_code)
+                logging.error(response)
                 break
 
             # 요청 가능회수 초과 에러 발생시에는 다시 요청
@@ -665,6 +669,8 @@ def get_krwbal():
 
         data = res.json()
 
+        logging.debug(data)
+
         for dataFor in data:
             if (dataFor['currency']) == "KRW":
                 krw_balance = math.floor(Decimal(str(dataFor['balance'])))
@@ -810,6 +816,7 @@ def get_ticker(target_itemlist):
 
         querystring = {"markets": target_itemlist}
         response = send_request("GET", url, querystring, "")
+
         rtn_data = response.json()
 
         return rtn_data
@@ -916,6 +923,49 @@ def get_order(target_item):
         query = {
             'market': target_item,
             'state': 'wait',
+        }
+
+        query_string = urlencode(query).encode()
+
+        m = hashlib.sha512()
+        m.update(query_string)
+        query_hash = m.hexdigest()
+
+        payload = {
+            'access_key': access_key,
+            'nonce': str(uuid.uuid4()),
+            'query_hash': query_hash,
+            'query_hash_alg': 'SHA512',
+        }
+
+        jwt_token = jwt.encode(payload, secret_key)
+        authorize_token = 'Bearer {}'.format(jwt_token)
+        headers = {"Authorization": authorize_token}
+
+        res = send_request("GET", server_url + "/v1/orders", query, headers)
+        rtn_data = res.json()
+
+        return rtn_data
+
+    # ----------------------------------------
+    # 모든 함수의 공통 부분(Exception 처리)
+    # ----------------------------------------
+    except Exception:
+        raise
+
+
+# -----------------------------------------------------------------------------
+# - Name : get_order
+# - Desc : 미체결 주문 조회
+# - Input
+#   1) side : 주문상태
+# - Output
+#   1) 주문 내역 리스트
+# -----------------------------------------------------------------------------
+def get_order_list(side):
+    try:
+        query = {
+            'state': side,
         }
 
         query_string = urlencode(query).encode()
@@ -1495,8 +1545,13 @@ def get_williams(candle_datas):
 def get_cci(candle_data, loop_cnt):
     try:
 
+        cci_val = 20
+
         # CCI 데이터 리턴용
         cci_list = []
+
+        # 사용하지 않는 캔들 갯수 정리(속도 개선)
+        del candle_data[cci_val * 2:]
 
         # 오름차순 정렬
         df = pd.DataFrame(candle_data)
@@ -1504,8 +1559,8 @@ def get_cci(candle_data, loop_cnt):
 
         # 계산식 : (Typical Price - Simple Moving Average) / (0.015 * Mean absolute Deviation)
         ordered_df['TP'] = (ordered_df['high_price'] + ordered_df['low_price'] + ordered_df['trade_price']) / 3
-        ordered_df['SMA'] = ordered_df['TP'].rolling(window=20).mean()
-        ordered_df['MAD'] = ordered_df['TP'].rolling(window=20).apply(lambda x: pd.Series(x).mad())
+        ordered_df['SMA'] = ordered_df['TP'].rolling(window=cci_val).mean()
+        ordered_df['MAD'] = ordered_df['TP'].rolling(window=cci_val).apply(lambda x: pd.Series(x).mad())
         ordered_df['CCI'] = (ordered_df['TP'] - ordered_df['SMA']) / (0.015 * ordered_df['MAD'])
 
         # 개수만큼 조립
@@ -1780,6 +1835,33 @@ def get_max(candle_data, col_name_high, col_name_low):
     except Exception:
         raise
 
+
+# -----------------------------------------------------------------------------
+# - Name : send_line_msg
+# - Desc : 라인 메세지 전송
+# - Input
+#   1) message : 메세지
+# - Output
+#   1) response : 발송결과(200:정상)
+# -----------------------------------------------------------------------------
+def send_line_message(message):
+    try:
+        headers = {'Authorization': 'Bearer ' + line_token}
+        data = {'message': message}
+
+        response = requests.post(line_target_url, headers=headers, data=data)
+
+        logging.debug(response)
+
+        return response
+
+    # ----------------------------------------
+    # 모든 함수의 공통 부분(Exception 처리)
+    # ----------------------------------------
+    except Exception:
+        raise
+
+
 # -----------------------------------------------------------------------------
 # - Name : get_indicator_sel
 # - Desc : 보조지표 조회(원하는 지표만)
@@ -1849,6 +1931,114 @@ def get_indicator_sel(target_item, tick_kind, inq_range, loop_cnt, indi_type):
                 indicator_data['CANDLE'] = candle_data
 
         return indicator_data
+
+    # ----------------------------------------
+    # 모든 함수의 공통 부분(Exception 처리)
+    # ----------------------------------------
+    except Exception:
+        raise
+
+
+# -----------------------------------------------------------------------------
+# - Name : send_msg
+# - Desc : 메세지 전송
+# - Input
+#   1) sent_list : 메세지 발송 내역
+#   2) key : 메세지 키
+#   3) contents : 메세지 내용
+#   4) msg_intval : 메세지 발송주기
+# - Output
+#   1) sent_list : 메세지 발송 내역
+# -----------------------------------------------------------------------------
+def send_msg(sent_list, key, contents, msg_intval):
+    try:
+
+        # msg_intval = 'N' 이면 메세지 발송하지 않음
+        if msg_intval.upper() != 'N':
+
+            # 발송여부 체크
+            sent_yn = False
+
+            # 발송이력
+            sent_dt = ''
+
+            # 발송내역에 해당 키 존재 시 발송 이력 추출
+            for sent_list_for in sent_list:
+                if key in sent_list_for.values():
+                    sent_yn = True
+                    sent_dt = datetime.strptime(sent_list_for['SENT_DT'], '%Y-%m-%d %H:%M:%S')
+
+            # 기 발송 건
+            if sent_yn:
+
+                logging.info('기존 발송 건')
+
+                # 현재 시간 추출
+                current_dt = datetime.strptime(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+
+                # 시간 차이 추출
+                diff = current_dt - sent_dt
+
+                # 발송 시간이 지난 경우에는 메세지 발송
+                if diff.seconds >= int(msg_intval):
+
+                    logging.info('발송 주기 도래 건으로 메시지 발송 처리!')
+
+                    # 메세지 발송
+                    send_line_message(contents)
+
+                    # 기존 메시지 발송이력 삭제
+                    for sent_list_for in sent_list[:]:
+                        if key in sent_list_for.values():
+                            sent_list.remove(sent_list_for)
+
+                    # 새로운 발송이력 추가
+                    sent_list.append({'KEY': key, 'SENT_DT': datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
+
+                else:
+                    logging.info('발송 주기 미 도래 건!')
+
+            # 최초 발송 건
+            else:
+                logging.info('최초 발송 건')
+
+                # 메세지 발송
+                send_line_message(contents)
+
+                # 새로운 발송이력 추가
+                sent_list.append({'KEY': key, 'SENT_DT': datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
+
+        return sent_list
+
+    # ----------------------------------------
+    # 모든 함수의 공통 부분(Exception 처리)
+    # ----------------------------------------
+    except Exception:
+        raise
+
+
+# -----------------------------------------------------------------------------
+# - Name : read_file
+# - Desc : 파일 읽기
+# - Input
+# 1. name : 파일 명
+# - Output
+# 1. 파일 내용
+# -----------------------------------------------------------------------------
+def read_file(name):
+    try:
+
+        path = './conf/' + str(name) + '.txt'
+
+        f = open(path, 'r')
+        line = f.readline()
+        f.close()
+
+        logging.debug(line)
+
+        contents = line
+
+        return contents
 
     # ----------------------------------------
     # 모든 함수의 공통 부분(Exception 처리)
