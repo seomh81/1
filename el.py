@@ -19,4 +19,4 @@ while True:
         #라인에 보내기 내용보내기
         upbit.send_line_message(title['title'])
 
-    time.sleep(3600)
+    time.sleep(14400)
