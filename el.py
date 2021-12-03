@@ -5,7 +5,7 @@ from lib import upbit_new as upbit
 
 while True:
 
-    time.sleep(10)
+    time.sleep(3)
 
     search_keyword = '엘리베이터'
     url = f'https://search.naver.com/search.naver?where=news&sm=tab_jum&query={search_keyword}'
@@ -28,7 +28,6 @@ while True:
     if t1 != t1:
         upbit.send_line_message(title['title'])
 
-
-
+    time.sleep(3)
 
     #time.sleep(14400)
