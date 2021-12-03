@@ -5,6 +5,8 @@ from lib import upbit_new as upbit
 
 while True:
 
+    time.sleep(10)
+
     search_keyword = '엘리베이터'
     url = f'https://search.naver.com/search.naver?where=news&sm=tab_jum&query={search_keyword}'
 
@@ -14,9 +16,19 @@ while True:
 
     print('총', len(news_titles), '개의 뉴스 제목이 있습니다')
     print()
+    t1 = ''
     for title in news_titles:
-        print(title['title'])
+        #print(title['title'])
+        t2 = title['title']
+        t1 = t1 + '\n' + t2
         #라인에 보내기 내용보내기
+        #upbit.send_line_message(title['title'])
+    print(t1)
+
+    if t1 != t1:
         upbit.send_line_message(title['title'])
 
-    time.sleep(14400)
+
+
+
+    #time.sleep(14400)
