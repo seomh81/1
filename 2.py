@@ -48,7 +48,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                 for ticker in tickers:
                     if target_item['market'] == ticker['market']:
 
-                        time.sleep(1)
+                        time.sleep(2)
 
                         # -------------------------------------------------
                         # 고점을 계산하기 위해 최근 매수일시 조회
