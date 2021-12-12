@@ -49,7 +49,7 @@ if __name__ == '__main__':
                     logging.info(locked_trade)
                     continue
 
-                time.sleep(5)
+                time.sleep(3)
 
     except KeyboardInterrupt:
         logging.error("KeyboardInterrupt Exception 발생!")
