@@ -48,6 +48,8 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                 for ticker in tickers:
                     if target_item['market'] == ticker['market']:
 
+                        time.sleep(1)
+
                         # -------------------------------------------------
                         # 고점을 계산하기 위해 최근 매수일시 조회
                         # 1. 해당 종목에 대한 거래 조회(done, cancel)
@@ -145,7 +147,6 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                             logging.info('------------------------------------------------------')
 
 
-                        time.sleep(1)
 
 
     # ---------------------------------------
