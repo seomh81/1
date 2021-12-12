@@ -6,7 +6,7 @@ import traceback
 
 # 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from lib import upbit_3 as upbit  # noqa
+from lib import upbit_1 as upbit  # noqa
 
 # -----------------------------------------------------------------------------
 # - Name : main
@@ -49,7 +49,7 @@ if __name__ == '__main__':
                     logging.info(locked_trade)
                     continue
 
-                #time.sleep(2)
+                time.sleep(5)
 
     except KeyboardInterrupt:
         logging.error("KeyboardInterrupt Exception 발생!")
