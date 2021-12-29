@@ -2,8 +2,6 @@ import pymysql
 from tkinter import *
 from tkinter import messagebox
 
-conn = pymysql.connect(host='smh.myds.me', user='tkek', password='***', db='smh', charset='utf8mb4')
-cur = conn.cursor()
 
 ## 함수 선언부
 
@@ -13,8 +11,8 @@ def insertData():
     data1, data2, data3, data4 = "", "", "", ""
     sql = ""
 
-    # conn = pymysql.connect(host='smh.myds.me', user='tkek', password='***', db='smh', charset='utf8mb4')
-    # cur = conn.cursor()
+    conn = pymysql.connect(host='smh.myds.me', user='tkek', password='***', db='smh', charset='utf8mb4')
+    cur = conn.cursor()
 
     data1 = edt1.get()
     data2 = edt2.get()
@@ -37,8 +35,8 @@ def insertData():
 def selectData():
     strData1, strData2, strData3, strData4 = [], [], [], []
 
-    # conn = pymysql.connect(host='smh.myds.me', user='tkek', password='***', db='smh', charset='utf8mb4')
-    # cur = conn.cursor()
+    conn = pymysql.connect(host='smh.myds.me', user='tkek', password='***', db='smh', charset='utf8mb4')
+    cur = conn.cursor()
     cur.execute("SELECT * FROM userTable")
 
     strData1.append("사용자ID")
@@ -101,16 +99,16 @@ btnInsert.pack(side=LEFT, padx=10, pady=10)
 btnSelect = Button(edtFrame, text="조회", command=selectData)
 btnSelect.pack(side=LEFT, padx=10, pady=10)
 
-listData1 = Listbox(listFrame, bg='yellow')
+listData1 = Listbox(listFrame, bg='white')
 listData1.pack(side=LEFT, fill=BOTH, expand=1)
 
-listData2 = Listbox(listFrame, bg='yellow')
+listData2 = Listbox(listFrame, bg='white')
 listData2.pack(side=LEFT, fill=BOTH, expand=1)
 
-listData3 = Listbox(listFrame, bg='yellow')
+listData3 = Listbox(listFrame, bg='white')
 listData3.pack(side=LEFT, fill=BOTH, expand=1)
 
-listData4 = Listbox(listFrame, bg='yellow')
+listData4 = Listbox(listFrame, bg='white')
 listData4.pack(side=LEFT, fill=BOTH, expand=1)
 
 window.mainloop()
