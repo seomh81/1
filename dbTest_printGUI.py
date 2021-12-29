@@ -2,6 +2,8 @@ import pymysql
 from tkinter import *
 from tkinter import messagebox
 
+conn = pymysql.connect(host='smh.myds.me', user='tkek', password='***', db='smh', charset='utf8mb4')
+cur = conn.cursor()
 
 ## 함수 선언부
 
@@ -11,8 +13,8 @@ def insertData():
     data1, data2, data3, data4 = "", "", "", ""
     sql = ""
 
-    conn = pymysql.connect(host='smh.myds.me', user='tkek', password='Tkek1234!!', db='smh', charset='utf8mb4')
-    cur = conn.cursor()
+    # conn = pymysql.connect(host='smh.myds.me', user='tkek', password='***', db='smh', charset='utf8mb4')
+    # cur = conn.cursor()
 
     data1 = edt1.get()
     data2 = edt2.get()
@@ -35,8 +37,8 @@ def insertData():
 def selectData():
     strData1, strData2, strData3, strData4 = [], [], [], []
 
-    conn = pymysql.connect(host='smh.myds.me', user='tkek', password='***', db='smh', charset='utf8mb4')
-    cur = conn.cursor()
+    # conn = pymysql.connect(host='smh.myds.me', user='tkek', password='***', db='smh', charset='utf8mb4')
+    # cur = conn.cursor()
     cur.execute("SELECT * FROM userTable")
 
     strData1.append("사용자ID")
@@ -52,7 +54,7 @@ def selectData():
     while (True):
         row = cur.fetchone()  # 위에서 커서 실행으로 셀렉트한 테이블값을 한줄씩 row에 입력 후 다음줄로
         if row == None:
-            break;
+            break
         strData1.append(row[0])  # 리스트 strData1에 테이블 셀렉트한 첫번째 값 row[0] 입력
         strData2.append(row[1])
         strData3.append(row[2])
@@ -76,7 +78,7 @@ window = Tk()
 window.geometry("600x300")
 window.title("GUI 데이터 입력")
 
-edtFrame = Frame(window);
+edtFrame = Frame(window)
 edtFrame.pack()
 listFrame = Frame(window)
 listFrame.pack(side=BOTTOM, fill=BOTH, expand=1)
