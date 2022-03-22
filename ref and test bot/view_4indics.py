@@ -7,7 +7,7 @@ import traceback
 # 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from lib import upbit_for4indics as upbit ####별도 작성한 모듈에러 불러옴
-#from lib import upbit as upbit  # noqa
+#from module import upbit as upbit  # noqa
 
 # -----------------------------------------------------------------------------
 # - Name : main

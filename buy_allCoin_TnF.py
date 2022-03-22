@@ -7,8 +7,8 @@ import time
 
 # 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-#from lib import upbit
-from lib import upbit_seomh as upbit  # noqa
+#from module import upbit
+from module import upbit_seomh as upbit  # noqa
 
 # -----------------------------------------------------------------------------
 # - Name : main

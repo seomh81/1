@@ -7,14 +7,15 @@ import asyncio
 import logging
 import traceback
 import websockets
+import psycopg2
 
 # 실행 환경에 따른 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from module import upbit
+from module import upbit_websocket as upbit
 
 # 프로그램 정보
-pgm_name = 'websocket'
-pgm_name_kr = '업비트 Ticker 웹소켓'
+pgm_name = 'save_ticker_pg'
+pgm_name_kr = '업비트 TICKER 웹소켓 데이터 저장(PostgreSQL)'
 
 
 # -----------------------------------------------------------------------------
@@ -47,8 +48,15 @@ def get_subscribe_items():
 # -----------------------------------------------------------------------------
 async def upbit_ws_client():
     try:
+
+        # 처리 Count 용
+        data_cnt = 0
+
         # 중복 실행 방지용
         seconds = 0
+
+        # 종목별 시퀀스
+        item_seq = {}
 
         # 구독 데이터 조회
         subscribe_items = get_subscribe_items()
@@ -69,16 +77,54 @@ async def upbit_ws_client():
 
         subscribe_data = json.dumps(subscribe_fmt)
 
+        # PostgreSQL 데이터 베이스 연결
+        conn = psycopg2.connect(host=upbit.get_env_keyvalue('132.226.171.188')
+                                , dbname=upbit.get_env_keyvalue('upbit_db')
+                                , user=upbit.get_env_keyvalue('upbit')
+                                , password=upbit.get_env_keyvalue('seo22082208')
+                                , port=upbit.get_env_keyvalue('5432'))
+
+        # 자동 커밋
+        conn.autocommit = True
+
+        # 커서 획득
+        cur = conn.cursor()
+
+        # INSERT SQL 준비
+        sql = "INSERT INTO TICKER_DATA (DATETIME,CODE,OPENING_PRICE,HIGH_PRICE,LOW_PRICE,TRADE_PRICE,PREV_CLOSING_PRICE,CHANGE,CHANGE_PRICE,SIGNED_CHANGE_PRICE \
+                                       ,CHANGE_RATE,SIGNED_CHANGE_RATE,TRADE_VOLUME,ACC_TRADE_VOLUME,ACC_TRADE_VOLUME_24H,ACC_TRADE_PRICE,ACC_TRADE_PRICE_24H,TRADE_DATE,TRADE_TIME,TRADE_TIMESTAMP \
+                                       ,ASK_BID,ACC_ASK_VOLUME,ACC_BID_VOLUME,HIGHEST_52_WEEK_PRICE,HIGHEST_52_WEEK_DATE,LOWEST_52_WEEK_PRICE,LOWEST_52_WEEK_DATE,MARKET_STATE,IS_TRADING_SUSPENDED,DELISTING_DATE \
+                                       ,MARKET_WARNING,TIMESTAMP,STREAM_TYPE,SYS_DATETIME) \
+                                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,CURRENT_TIMESTAMP);"
+
         async with websockets.connect(upbit.ws_url) as websocket:
 
             await websocket.send(subscribe_data)
 
             while True:
+                # 5초 단위 종목 개수 변동여부 확인 용
                 period = datetime.datetime.now()
 
                 data = await websocket.recv()
                 data = json.loads(data)
-                logging.info(data)
+
+                # 저장용 데이터 조립
+                args = (datetime.datetime.fromtimestamp(int(data['tms'] / 1000)), data['cd'], data['op'], data['hp'],
+                        data['lp'], data['tp'], data['pcp'], data['c'], data['cp'], data['scp']
+                        , data['cr'], data['scr'], data['tv'], data['atv'], data['atv24h'], data['atp'], data['atp24h'],
+                        data['tdt'], data['ttm'], data['ttms']
+                        , data['ab'], data['aav'], data['abv'], data['h52wp'], data['h52wdt'], data['l52wp'],
+                        data['l52wdt'], data['ms'], data['its'], data['dd']
+                        , data['mw'], data['tms'], data['st'])
+
+                # 데이터 저장
+                cur.execute(sql, args)
+
+                # 데이터 저장 로깅
+                data_cnt = data_cnt + 1
+                if data_cnt % 1000 == 0:
+                    logging.info("[" + str(datetime.datetime.now()) + "] [TICKER_DATA] Inserting Data....[" + str(
+                        data_cnt) + "]")
 
                 # 5초마다 종목 정보 재 조회 후 추가된 종목이 있으면 웹소켓 다시 시작
                 if (period.second % 5) == 0 and seconds != period.second:
@@ -87,16 +133,16 @@ async def upbit_ws_client():
 
                     # 종목 재조회
                     re_subscribe_items = get_subscribe_items()
-                    logging.info('\n\n')
-                    logging.info('*************************************************')
-                    logging.info('기존 종목[' + str(len(subscribe_items)) + '] : ' + str(subscribe_items))
-                    logging.info('종목 재조회[' + str(len(re_subscribe_items)) + '] : ' + str(re_subscribe_items))
-                    logging.info('*************************************************')
-                    logging.info('\n\n')
 
                     # 현재 종목과 다르면 웹소켓 다시 시작
                     if subscribe_items != re_subscribe_items:
                         logging.info('종목 달리짐! 웹소켓 다시 시작')
+                        logging.info('\n\n')
+                        logging.info('*************************************************')
+                        logging.info('기존 종목[' + str(len(subscribe_items)) + '] : ' + str(subscribe_items))
+                        logging.info('종목 재조회[' + str(len(re_subscribe_items)) + '] : ' + str(re_subscribe_items))
+                        logging.info('*************************************************')
+                        logging.info('\n\n')
                         await websocket.close()
                         time.sleep(1)
                         await upbit_ws_client()

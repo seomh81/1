@@ -1,7 +1,7 @@
 import requests
 import time
 from bs4 import BeautifulSoup
-from lib import upbit_new as upbit
+from module import upbit_new as upbit
 
 t4 = ''
 t44 = ''

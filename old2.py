@@ -12,7 +12,7 @@ from datetime import datetime
 
 # 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from lib import upbit_2 as upbit
+from module import upbit_2 as upbit
 
 
 # -----------------------------------------------------------------------------

@@ -1,29 +1,62 @@
-# https://technfin.tistory.com/entry/%EC%BD%94%EC%9D%B8-%EC%9E%90%EB%8F%99%EB%A7%A4%EB%A7%A4-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8-%EC%83%98%ED%94%8C-%EC%98%88%EC%A0%9C-%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EC%97%85%EB%B9%84%ED%8A%B8-%EB%B9%84%ED%8A%B8%EC%BD%94%EC%9D%B8-%EC%9E%90%EB%8F%99%EB%A7%A4%EB%A7%A4?category=867924
-
-import logging
-import requests
-import time
-import smtplib
+import os
 import jwt
 import sys
+import time
 import uuid
-import hashlib
 import math
 import numpy
-import os
+import hashlib
+import logging
+import requests
+import telegram
 import pandas as pd
 
-from datetime import datetime, timedelta
 from urllib.parse import urlencode
 from decimal import Decimal
-
-# Keys
-access_key = 'yVvWqSZtWJNaTjFQxTvFysQYB9f0tghvg5KQgE5H' ####API키 넣을것
-secret_key = 'nFvtjmEhdDoqvgQEJfqfiop16CBopV8lOgfTh0BU' ####비번키 넣을것
-server_url = 'https://api.upbit.com'
+from datetime import datetime
+from ast import literal_eval
 
 # 상수 설정
 min_order_amt = 5000
+
+# UPBIT URL
+server_url = 'https://api.upbit.com'
+ws_url = 'wss://api.upbit.com/websocket/v1'
+
+# 오라클 DB 관련
+os.environ['TNS_ADMIN'] = "/usr/lib/oracle/21/client64/lib/network/admin"
+os.environ["NLS_LANG"] = ".UTF8"
+
+# LINE MESSENGER URL
+line_target_url = 'https://notify-api.line.me/api/notify'
+
+
+# -----------------------------------------------------------------------------
+# - Name : get_env_keyvalue
+# - Desc : 환경변수 읽어오기
+# - Input
+#   1) key : key
+# - Output
+#   1) Value : 키에 대한 값
+# -----------------------------------------------------------------------------
+def get_env_keyvalue(key):
+    try:
+        path = './env/env.txt'
+
+        f = open(path, 'r', encoding='UTF8')
+        line = f.readline()
+        f.close()
+
+        env_dict = literal_eval(line)
+        logging.debug(env_dict)
+
+        return env_dict[key]
+
+    # ----------------------------------------
+    # 모든 함수의 공통 부분(Exception 처리)
+    # ----------------------------------------
+    except Exception:
+        raise
 
 
 # -----------------------------------------------------------------------------
@@ -129,6 +162,7 @@ def send_request(reqType, reqUrl, reqParam, reqHeader):
             else:
                 logging.error("기타 에러:" + str(response.status_code))
                 logging.error(response.status_code)
+                logging.error(response)
                 break
 
             # 요청 가능회수 초과 에러 발생시에는 다시 요청
@@ -217,13 +251,13 @@ def buycoin_mp(target_item, buy_amount):
         query_hash = m.hexdigest()
 
         payload = {
-            'access_key': access_key,
+            'access_key': get_env_keyvalue('access_key'),
             'nonce': str(uuid.uuid4()),
             'query_hash': query_hash,
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, secret_key)
+        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -232,7 +266,7 @@ def buycoin_mp(target_item, buy_amount):
 
         logging.info("")
         logging.info("----------------------------------------------")
-        logging.info("시장가 매수 완료!")
+        logging.info("시장가 매수 요청 완료! 결과:")
         logging.info(rtn_data)
         logging.info("----------------------------------------------")
 
@@ -276,13 +310,13 @@ def buycoin_tg(target_item, buy_amount, buy_price):
         query_hash = m.hexdigest()
 
         payload = {
-            'access_key': access_key,
+            'access_key': get_env_keyvalue('access_key'),
             'nonce': str(uuid.uuid4()),
             'query_hash': query_hash,
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, secret_key)
+        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -338,13 +372,13 @@ def sellcoin_mp(target_item, cancel_yn):
         query_hash = m.hexdigest()
 
         payload = {
-            'access_key': access_key,
+            'access_key': get_env_keyvalue('access_key'),
             'nonce': str(uuid.uuid4()),
             'query_hash': query_hash,
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, secret_key)
+        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -353,7 +387,7 @@ def sellcoin_mp(target_item, cancel_yn):
 
         logging.info("")
         logging.info("----------------------------------------------")
-        logging.info("시장가 매도 완료!")
+        logging.info("시장가 매도 요청 완료! 결과:")
         logging.info(rtn_data)
         logging.info("----------------------------------------------")
 
@@ -396,13 +430,13 @@ def sellcoin_tg(target_item, sell_price):
         query_hash = m.hexdigest()
 
         payload = {
-            'access_key': access_key,
+            'access_key': get_env_keyvalue('access_key'),
             'nonce': str(uuid.uuid4()),
             'query_hash': query_hash,
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, secret_key)
+        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -448,11 +482,11 @@ def get_balance(target_item):
             max_cnt = max_cnt + 1
 
             payload = {
-                'access_key': access_key,
+                'access_key': get_env_keyvalue('access_key'),
                 'nonce': str(uuid.uuid4()),
             }
 
-            jwt_token = jwt.encode(payload, secret_key)
+            jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
             authorize_token = 'Bearer {}'.format(jwt_token)
             headers = {"Authorization": authorize_token}
 
@@ -658,17 +692,19 @@ def get_krwbal():
         fee_rate = 0.05
 
         payload = {
-            'access_key': access_key,
+            'access_key': get_env_keyvalue('access_key'),
             'nonce': str(uuid.uuid4()),
         }
 
-        jwt_token = jwt.encode(payload, secret_key)
+        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
         res = send_request("GET", server_url + "/v1/accounts", "", headers)
 
         data = res.json()
+
+        logging.debug(data)
 
         for dataFor in data:
             if (dataFor['currency']) == "KRW":
@@ -725,11 +761,11 @@ def get_accounts(except_yn, market_code):
         min_price = 5000
 
         payload = {
-            'access_key': access_key,
+            'access_key': get_env_keyvalue('access_key'),
             'nonce': str(uuid.uuid4()),
         }
 
-        jwt_token = jwt.encode(payload, secret_key)
+        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key'))
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -769,65 +805,7 @@ def get_accounts(except_yn, market_code):
     # ----------------------------------------
     except Exception:
         raise
-''' 잔고정보 수정 전 내용
-# -----------------------------------------------------------------------------
-# - Name : get_accounts
-# - Desc : 잔고정보 조회
-# - Input
-#   1) except_yn : KRW 및 소액 제외
-#   2) market_code : 마켓코드 추가(매도시 필요)
-# - Output
-#   1) 잔고 정보
-# -----------------------------------------------------------------------------
-# 계좌 조회
-def get_accounts(except_yn, market_code):
-    try:
 
-        rtn_data = []
-
-        # 소액 제외 기준
-        min_price = 9000
-
-        payload = {
-            'access_key': access_key,
-            'nonce': str(uuid.uuid4()),
-        }
-
-        jwt_token = jwt.encode(payload, secret_key)
-        authorize_token = 'Bearer {}'.format(jwt_token)
-        headers = {"Authorization": authorize_token}
-
-        res = send_request("GET", server_url + "/v1/accounts", "", headers)
-        account_data = res.json()
-
-        for account_data_for in account_data:
-
-            # KRW 및 소액 제외
-            if except_yn == "Y" or except_yn == "y":
-                if account_data_for['currency'] != "KRW" and Decimal(str(account_data_for['avg_buy_price'])) * (
-                        Decimal(str(account_data_for['balance'])) + Decimal(
-                    str(account_data_for['locked']))) >= Decimal(str(min_price)):
-                    rtn_data.append(
-                        {'market': market_code + '-' + account_data_for['currency'],
-                         'balance': account_data_for['balance'],
-                         'locked': account_data_for['locked'],
-                         'avg_buy_price': account_data_for['avg_buy_price'],
-                         'avg_buy_price_modified': account_data_for['avg_buy_price_modified']})
-            else:
-                rtn_data.append(
-                    {'market': market_code + '-' + account_data_for['currency'], 'balance': account_data_for['balance'],
-                     'locked': account_data_for['locked'],
-                     'avg_buy_price': account_data_for['avg_buy_price'],
-                     'avg_buy_price_modified': account_data_for['avg_buy_price_modified']})
-
-        return rtn_data
-
-    # ----------------------------------------
-    # Exception Raise
-    # ----------------------------------------
-    except Exception:
-        raise
-'''
 
 # -----------------------------------------------------------------------------
 # - Name : chg_account_to_comma
@@ -873,6 +851,7 @@ def get_ticker(target_itemlist):
 
         querystring = {"markets": target_itemlist}
         response = send_request("GET", url, querystring, "")
+
         rtn_data = response.json()
 
         return rtn_data
@@ -944,13 +923,13 @@ def cancel_order_uuid(order_uuid):
         query_hash = m.hexdigest()
 
         payload = {
-            'access_key': access_key,
+            'access_key': get_env_keyvalue('access_key'),
             'nonce': str(uuid.uuid4()),
             'query_hash': query_hash,
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, secret_key)
+        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -988,13 +967,56 @@ def get_order(target_item):
         query_hash = m.hexdigest()
 
         payload = {
-            'access_key': access_key,
+            'access_key': get_env_keyvalue('access_key'),
             'nonce': str(uuid.uuid4()),
             'query_hash': query_hash,
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, secret_key)
+        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
+        authorize_token = 'Bearer {}'.format(jwt_token)
+        headers = {"Authorization": authorize_token}
+
+        res = send_request("GET", server_url + "/v1/orders", query, headers)
+        rtn_data = res.json()
+
+        return rtn_data
+
+    # ----------------------------------------
+    # 모든 함수의 공통 부분(Exception 처리)
+    # ----------------------------------------
+    except Exception:
+        raise
+
+
+# -----------------------------------------------------------------------------
+# - Name : get_order
+# - Desc : 미체결 주문 조회
+# - Input
+#   1) side : 주문상태
+# - Output
+#   1) 주문 내역 리스트
+# -----------------------------------------------------------------------------
+def get_order_list(side):
+    try:
+        query = {
+            'state': side,
+        }
+
+        query_string = urlencode(query).encode()
+
+        m = hashlib.sha512()
+        m.update(query_string)
+        query_hash = m.hexdigest()
+
+        payload = {
+            'access_key': get_env_keyvalue('access_key'),
+            'nonce': str(uuid.uuid4()),
+            'query_hash': query_hash,
+            'query_hash_alg': 'SHA512',
+        }
+
+        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -1420,6 +1442,177 @@ def get_macd(candle_datas, loop_cnt):
 
 
 # -----------------------------------------------------------------------------
+# - Name : get_ma
+# - Desc : MA 조회
+# - Input
+#   1) candle_datas : 캔들 정보
+#   2) loop_cnt : 반복 횟수
+# - Output
+#   1) MA 값
+# -----------------------------------------------------------------------------
+def get_ma(candle_datas, loop_cnt):
+    try:
+        # MA 데이터 리턴용
+        ma_list = []
+
+        df = pd.DataFrame(candle_datas[0])
+        df = df.iloc[::-1]
+        df = df['trade_price']
+
+        # MA 계산
+
+        ma5 = df.rolling(window=5).mean()
+        ma10 = df.rolling(window=10).mean()
+        ma20 = df.rolling(window=20).mean()
+        ma60 = df.rolling(window=60).mean()
+        ma120 = df.rolling(window=120).mean()
+
+        for i in range(0, int(loop_cnt)):
+            ma_list.append(
+                {"type": "MA", "DT": candle_datas[0][i]['candle_date_time_kst'], "MA5": ma5[i], "MA10": ma10[i],
+                 "MA20": ma20[i], "MA60": ma60[i], "MA120": ma120[i]
+                    , "MA_5_10": str(Decimal(str(ma5[i])) - Decimal(str(ma10[i])))
+                    , "MA_10_20": str(Decimal(str(ma10[i])) - Decimal(str(ma20[i])))
+                    , "MA_20_60": str(Decimal(str(ma20[i])) - Decimal(str(ma60[i])))
+                    , "MA_60_120": str(Decimal(str(ma60[i])) - Decimal(str(ma120[i])))})
+
+        return ma_list
+
+    # ----------------------------------------
+    # 모든 함수의 공통 부분(Exception 처리)
+    # ----------------------------------------
+    except Exception:
+        raise
+
+
+# -----------------------------------------------------------------------------
+# - Name : get_bb
+# - Desc : 볼린저밴드 조회
+# - Input
+#   1) candle_datas : 캔들 정보
+# - Output
+#   1) 볼린저 밴드 값
+# -----------------------------------------------------------------------------
+def get_bb(candle_datas):
+    try:
+
+        # 볼린저밴드 데이터 리턴용
+        bb_list = []
+
+        # 캔들 데이터만큼 수행
+        for candle_data_for in candle_datas:
+            df = pd.DataFrame(candle_data_for)
+            dfDt = df['candle_date_time_kst'].iloc[::-1]
+            df = df['trade_price'].iloc[::-1]
+
+            # 표준편차(곱)
+            unit = 2
+
+            band1 = unit * numpy.std(df[len(df) - 20:len(df)])
+            bb_center = numpy.mean(df[len(df) - 20:len(df)])
+            band_high = bb_center + band1
+            band_low = bb_center - band1
+
+            bb_list.append({"type": "BB", "DT": dfDt[0], "BBH": round(band_high, 4), "BBM": round(bb_center, 4),
+                            "BBL": round(band_low, 4)})
+
+        return bb_list
+
+
+    # ----------------------------------------
+    # 모든 함수의 공통 부분(Exception 처리)
+    # ----------------------------------------
+    except Exception:
+        raise
+
+
+# -----------------------------------------------------------------------------
+# - Name : get_williams
+# - Desc : 윌리암스 %R 조회
+# - Input
+#   1) candle_datas : 캔들 정보
+# - Output
+#   1) 윌리암스 %R 값
+# -----------------------------------------------------------------------------
+def get_williams(candle_datas):
+    try:
+
+        # 윌리암스R 데이터 리턴용
+        williams_list = []
+
+        # 캔들 데이터만큼 수행
+        for candle_data_for in candle_datas:
+            df = pd.DataFrame(candle_data_for)
+            dfDt = df['candle_date_time_kst'].iloc[::-1]
+            df = df.iloc[:14]
+
+            # 계산식
+            # %R = (Highest High - Close)/(Highest High - Lowest Low) * -100
+            hh = numpy.max(df['high_price'])
+            ll = numpy.min(df['low_price'])
+            cp = df['trade_price'][0]
+
+            w = (hh - cp) / (hh - ll) * -100
+
+            williams_list.append(
+                {"type": "WILLIAMS", "DT": dfDt[0], "HH": round(hh, 4), "LL": round(ll, 4), "CP": round(cp, 4),
+                 "W": round(w, 4)})
+
+        return williams_list
+
+
+    # ----------------------------------------
+    # 모든 함수의 공통 부분(Exception 처리)
+    # ----------------------------------------
+    except Exception:
+        raise
+
+
+# -----------------------------------------------------------------------------
+# - Name : get_cci
+# - Desc : CCI 조회
+# - Input
+#   1) candle_data : 캔들 정보
+#   2) loop_cnt : 조회 건수
+# - Output
+#   1) CCI 값
+# -----------------------------------------------------------------------------
+def get_cci(candle_data, loop_cnt):
+    try:
+
+        cci_val = 20
+
+        # CCI 데이터 리턴용
+        cci_list = []
+
+        # 사용하지 않는 캔들 갯수 정리(속도 개선)
+        del candle_data[cci_val * 2:]
+
+        # 오름차순 정렬
+        df = pd.DataFrame(candle_data)
+        ordered_df = df.sort_values(by=['candle_date_time_kst'], ascending=[True])
+
+        # 계산식 : (Typical Price - Simple Moving Average) / (0.015 * Mean absolute Deviation)
+        ordered_df['TP'] = (ordered_df['high_price'] + ordered_df['low_price'] + ordered_df['trade_price']) / 3
+        ordered_df['SMA'] = ordered_df['TP'].rolling(window=cci_val).mean()
+        ordered_df['MAD'] = ordered_df['TP'].rolling(window=cci_val).apply(lambda x: pd.Series(x).mad())
+        ordered_df['CCI'] = (ordered_df['TP'] - ordered_df['SMA']) / (0.015 * ordered_df['MAD'])
+
+        # 개수만큼 조립
+        for i in range(0, loop_cnt):
+            cci_list.append({"type": "CCI", "DT": ordered_df['candle_date_time_kst'].loc[i],
+                             "CCI": round(ordered_df['CCI'].loc[i], 4)})
+
+        return cci_list
+
+    # ----------------------------------------
+    # 모든 함수의 공통 부분(Exception 처리)
+    # ----------------------------------------
+    except Exception:
+        raise
+
+
+# -----------------------------------------------------------------------------
 # - Name : get_indicators
 # - Desc : 보조지표 조회
 # - Input
@@ -1433,6 +1626,7 @@ def get_macd(candle_datas, loop_cnt):
 #   3) MACD
 #   4) BB
 #   5) WILLIAMS %R
+#   6) CCI
 # -----------------------------------------------------------------------------
 def get_indicators(target_item, tick_kind, inq_range, loop_cnt):
     try:
@@ -1467,6 +1661,12 @@ def get_indicators(target_item, tick_kind, inq_range, loop_cnt):
             # WILLIAMS %R 조회
             williams_data = get_williams(candle_datas)
 
+            # MA 정보 조회
+            ma_data = get_ma(candle_datas, loop_cnt)
+
+            # CCI 정보 조회
+            cci_data = get_cci(candle_data, loop_cnt)
+
             if len(rsi_data) > 0:
                 indicator_data.append(rsi_data)
 
@@ -1481,6 +1681,12 @@ def get_indicators(target_item, tick_kind, inq_range, loop_cnt):
 
             if len(williams_data) > 0:
                 indicator_data.append(williams_data)
+
+            if len(ma_data) > 0:
+                indicator_data.append(ma_data)
+
+            if len(cci_data) > 0:
+                indicator_data.append(cci_data)
 
         return indicator_data
 
@@ -1515,13 +1721,13 @@ def get_order_status(target_item, status):
         query_hash = m.hexdigest()
 
         payload = {
-            'access_key': access_key,
+            'access_key': get_env_keyvalue('access_key'),
             'nonce': str(uuid.uuid4()),
             'query_hash': query_hash,
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, secret_key)
+        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -1608,13 +1814,13 @@ def get_order_chance(target_item):
         query_hash = m.hexdigest()
 
         payload = {
-            'access_key': access_key,
+            'access_key': get_env_keyvalue('access_key'),
             'nonce': str(uuid.uuid4()),
             'query_hash': query_hash,
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, secret_key)
+        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -1630,125 +1836,333 @@ def get_order_chance(target_item):
         raise
 
 
-# 볼린저밴트 5분봉 하단 점을 찍고 올라가면 매수 모니터링은 1분봉기준
-# 저가 매수 로직만 세팅
-
-import sys
-import os
-import time
-
-# 공통 모듈 Import
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from module import oldupbit as upbit  # noqa
-
-
 # -----------------------------------------------------------------------------
-# - Name : start_buytrade
-# - Desc : 매수 로직
+# - Name : get_max_min
+# - Desc : MAX/MIN 값 조회
 # - Input
-# 1) minute_interval : 몇 분봉을 볼지 정함
-# 2) minute_check : 몇개의 봉을 기준삼을지 정함
-# 3) buy_amt : 매수금액
+#   1) candle_datas : 캔들 정보
+#   2) col_name : 대상 컬럼
+# - Output
+#   1) MAX 값
+#   2) MIN 값
 # -----------------------------------------------------------------------------
-def start_buytrade(buy_amt, except_items):
+def get_max(candle_data, col_name_high, col_name_low):
     try:
-        data_cnt = 0
+        # MA 데이터 리턴용
+        max_min_list = []
 
-        # 매수 될 때까지 반복 수행
-        while True:
+        df = pd.DataFrame(candle_data)
+        df = df.iloc[::-1]
 
-            # 전체 종목 추출
-            # 1. KRW마켓  ``
-            # 2. 제외할 ticker
-            item_list = get_items('KRW', except_items)
+        # MAX 계산
 
-            # 전체 종목 반복
-            for item_list_for in item_list:
+        max = numpy.max(df[col_name_high])
+        min = numpy.min(df[col_name_low])
 
-                # 1분봉 (최대 200개 요청가능) - 6개 요청(5분전부터)
-                df_candle = get_candle(item_list_for['market'], '1', 6)
+        max_min_list.append(
+            {"MAX": max, "MIN": min})
 
-                vol_tradeNow = df_candle[0]['candle_acc_trade_volume']
-                vol_before1 = df_candle[1]['candle_acc_trade_volume']
-                vol_before2 = df_candle[2]['candle_acc_trade_volume']
-                vol_before3 = df_candle[3]['candle_acc_trade_volume']
-                vol_before4 = df_candle[4]['candle_acc_trade_volume']
-                vol_before5 = df_candle[5]['candle_acc_trade_volume']
-
-                can_tradeNow = df_candle[0]['trade_price']
-                can_highNow = df_candle[0]['high_price']
-                can_highBefore1 = df_candle[1]['high_price']
-                can_highBefore2 = df_candle[2]['high_price']
-                can_highBefore3 = df_candle[3]['high_price']
-                can_highBefore4 = df_candle[4]['high_price']
-                can_highBefore5 = df_candle[5]['high_price']
-                can_lowNow = df_candle[0]['low_price']
-                can_lowBefore1 = df_candle[1]['low_price']
-                can_lowBefore2 = df_candle[2]['low_price']
-                can_lowBefore3 = df_candle[3]['low_price']
-                can_lowBefore4 = df_candle[4]['low_price']
-                can_lowBefore5 = df_candle[5]['low_price']
-
-                can_gapNow = can_highNow - can_lowNow
-                can_gapBefore1 = can_highBefore1 - can_lowBefore1
-                can_gapBefore2 = can_highBefore2 - can_lowBefore2
-                can_gapBefore3 = can_highBefore3 - can_lowBefore3
-                can_gapBefore4 = can_highBefore4 - can_lowBefore4
-                can_gapBefore5 = can_highBefore5 - can_lowBefore5
-
-                can_eval = can_gapNow - (can_gapBefore1 + can_gapBefore2)# + can_gapBefore3 + can_gapBefore4 + can_gapBefore5) * 1
-                vol_eval = vol_tradeNow - (vol_before1 + vol_before2 + vol_before3 + vol_before4 + vol_before5) * 1
-
-                # 볼린저밴드 5분봉
-                df_bb = upbit.get_bb(item_list_for['market'], '15', '200', 1) #15분봉으로 테스트
-
-                bb_now = df_bb[0]['BBL']
-
-                print("BBL", format((bb_now - can_lowNow) / bb_now * 100, '.2f'),"%",item_list_for['market'], "거래량",format(vol_eval * 100 / (vol_tradeNow + vol_before1 + vol_before2 + vol_before3 + vol_before4 + vol_before5),'.0f'), "%     양수TRY / 제외종목:", except_items)
-
-                # 볼린저밴드 15분봉 하단을 찍을 때 매수
-                if bb_now > can_lowNow and vol_eval > 0 and can_lowNow < can_lowBefore1 and can_lowNow < can_lowBefore2 and can_lowNow < can_lowBefore3 and can_gapBefore1 != 0 and can_gapBefore2 != 0 and can_gapBefore3 != 0 and can_gapBefore4 != 0 and can_gapBefore5 != 0:
-
-                    # 기준 충족 종목 종가
-                    print(item_list_for['market'],'하한가' + str(can_lowNow))
-
-                    # 지정가 매수
-                    print('지정가 매수 시작!')
-                    buycoin_tg(item_list_for['market'],buy_amt, can_lowNow)
-
-                    # ------------------------------------------------------------------
-                    # 매수 완료 종목은 매수 대상에서 제외
-                    # ------------------------------------------------------------------
-                    except_items = except_items + ',' + item_list_for['market'].split('-')[1]
-
-
-                #time.sleep(0.02)
-
-                if bb_now >= can_lowNow and vol_eval >= 0:
-                    print("TRIED !!")
-
-                if data_cnt == 0 or data_cnt % 100 == 0:
-                    print("매수 진행 중...[" + str(data_cnt) + "]")
-
-                # 조회건수증가
-                data_cnt = data_cnt + 1
+        return max_min_list
 
     # ----------------------------------------
     # 모든 함수의 공통 부분(Exception 처리)
     # ----------------------------------------
     except Exception:
         raise
+
+
 # -----------------------------------------------------------------------------
-# - Name : main
-# - Desc : 메인
+# - Name : send_line_msg
+# - Desc : 라인 메세지 전송
+# - Input
+#   1) message : 메세지
+# - Output
+#   1) response : 발송결과(200:정상)
 # -----------------------------------------------------------------------------
-if __name__ == '__main__':
+def send_line_message(message):
+    try:
+        headers = {'Authorization': 'Bearer ' + get_env_keyvalue('line_token')}
+        data = {'message': message}
+
+        response = requests.post(line_target_url, headers=headers, data=data)
+
+        logging.debug(response)
+
+        return response
+
+    # ----------------------------------------
+    # 모든 함수의 공통 부분(Exception 처리)
+    # ----------------------------------------
+    except Exception:
+        raise
 
 
-    buy_amt = 10000
-    except_items = ''
+# -----------------------------------------------------------------------------
+# - Name : get_indicator_sel
+# - Desc : 보조지표 조회(원하는 지표만)
+# - Input
+#   1) target_item : 대상 종목
+#   2) tick_kind : 캔들 종류 (1, 3, 5, 10, 15, 30, 60, 240 - 분, D-일, W-주, M-월)
+#   3) inq_range : 캔들 조회 범위
+#   4) loop_cnt : 지표 반복계산 횟수
+#   5) 보조지표 : 리스트
+# - Output
+#   1) 보조지표
+# -----------------------------------------------------------------------------
+def get_indicator_sel(target_item, tick_kind, inq_range, loop_cnt, indi_type):
+    try:
 
-    print("매수금액:" + str(buy_amt))
+        # 보조지표 리턴용
+        indicator_data = {}
 
-    # 매수로직 시작
-    start_buytrade(buy_amt, except_items)
+        # 캔들 데이터 조회용
+        candle_datas = []
+
+        # 캔들 추출
+        candle_data = get_candle(target_item, tick_kind, inq_range)
+
+        if len(candle_data) >= 30:
+
+            # 조회 횟수별 candle 데이터 조합
+            for i in range(0, int(loop_cnt)):
+                candle_datas.append(candle_data[i:int(len(candle_data))])
+
+            if 'RSI' in indi_type:
+                # RSI 정보 조회
+                rsi_data = get_rsi(candle_datas)
+                indicator_data['RSI'] = rsi_data
+
+            if 'MFI' in indi_type:
+                # MFI 정보 조회
+                mfi_data = get_mfi(candle_datas)
+                indicator_data['MFI'] = mfi_data
+
+            if 'MACD' in indi_type:
+                # MACD 정보 조회
+                macd_data = get_macd(candle_datas, loop_cnt)
+                indicator_data['MACD'] = macd_data
+
+            if 'BB' in indi_type:
+                # BB 정보 조회
+                bb_data = get_bb(candle_datas)
+                indicator_data['BB'] = bb_data
+
+            if 'WILLIAMS' in indi_type:
+                # WILLIAMS %R 조회
+                williams_data = get_williams(candle_datas)
+                indicator_data['WILLIAMS'] = williams_data
+
+            if 'MA' in indi_type:
+                # MA 정보 조회
+                ma_data = get_ma(candle_datas, loop_cnt)
+                indicator_data['MA'] = ma_data
+
+            if 'CCI' in indi_type:
+                # CCI 정보 조회
+                cci_data = get_cci(candle_data, loop_cnt)
+                indicator_data['CCI'] = cci_data
+
+            if 'CANDLE' in indi_type:
+                indicator_data['CANDLE'] = candle_data
+
+        return indicator_data
+
+    # ----------------------------------------
+    # 모든 함수의 공통 부분(Exception 처리)
+    # ----------------------------------------
+    except Exception:
+        raise
+
+
+# -----------------------------------------------------------------------------
+# - Name : send_msg
+# - Desc : 메세지 전송
+# - Input
+#   1) sent_list : 메세지 발송 내역
+#   2) key : 메세지 키
+#   3) contents : 메세지 내용
+#   4) msg_intval : 메세지 발송주기
+# - Output
+#   1) sent_list : 메세지 발송 내역
+# -----------------------------------------------------------------------------
+def send_msg(sent_list, key, contents, msg_intval):
+    try:
+
+        # msg_intval = 'N' 이면 메세지 발송하지 않음
+        if msg_intval.upper() != 'N':
+
+            # 발송여부 체크
+            sent_yn = False
+
+            # 발송이력
+            sent_dt = ''
+
+            # 발송내역에 해당 키 존재 시 발송 이력 추출
+            for sent_list_for in sent_list:
+                if key in sent_list_for.values():
+                    sent_yn = True
+                    sent_dt = datetime.strptime(sent_list_for['SENT_DT'], '%Y-%m-%d %H:%M:%S')
+
+            # 기 발송 건
+            if sent_yn:
+
+                logging.info('기존 발송 건')
+
+                # 현재 시간 추출
+                current_dt = datetime.strptime(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+
+                # 시간 차이 추출
+                diff = current_dt - sent_dt
+
+                # 발송 시간이 지난 경우에는 메세지 발송
+                if diff.seconds >= int(msg_intval):
+
+                    logging.info('발송 주기 도래 건으로 메시지 발송 처리!')
+
+                    # 메세지 발송
+                    # 2022.02.04 Telegram Message로 보내도록 수정
+                    # send_line_message(contents)
+                    send_telegram_message(contents)
+
+                    # 기존 메시지 발송이력 삭제
+                    for sent_list_for in sent_list[:]:
+                        if key in sent_list_for.values():
+                            sent_list.remove(sent_list_for)
+
+                    # 새로운 발송이력 추가
+                    sent_list.append({'KEY': key, 'SENT_DT': datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
+
+                else:
+                    logging.info('발송 주기 미 도래 건!')
+
+            # 최초 발송 건
+            else:
+                logging.info('최초 발송 건')
+
+                # 메세지 발송
+                send_line_message(contents)
+
+                # 새로운 발송이력 추가
+                sent_list.append({'KEY': key, 'SENT_DT': datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
+
+        return sent_list
+
+    # ----------------------------------------
+    # 모든 함수의 공통 부분(Exception 처리)
+    # ----------------------------------------
+    except Exception:
+        raise
+
+
+# -----------------------------------------------------------------------------
+# - Name : read_file
+# - Desc : 파일 조회
+# - Input
+# 1. name : File Name
+# - Output
+# 1. 변수값
+# -----------------------------------------------------------------------------
+def read_file(name):
+    try:
+
+        file_to_listofdict = []
+
+        path = './conf/' + str(name) + '.txt'
+
+        f = open(path, 'r', encoding='UTF8')
+        lines = f.read().splitlines()
+        f.close()
+
+        for line in lines:
+            txt_to_dict = literal_eval(line)
+            file_to_listofdict.append(txt_to_dict)
+
+        return file_to_listofdict
+
+    # ----------------------------------------
+    # 모든 함수의 공통 부분(Exception 처리)
+    # ----------------------------------------
+    except FileNotFoundError:
+        logging.info('파일이 존재하지 않습니다! 파일을 생성합니다. 파일명[' + str(name) + '.txt]')
+
+        with open(path, "w", encoding="utf-8") as f:
+            f.close()
+
+        logging.info('파일 생성 완료. 파일명[' + str(name) + '.txt]')
+        return None
+
+    except Exception:
+        raise
+
+
+# -----------------------------------------------------------------------------
+# - Name : send_telegram_msg
+# - Desc : 텔레그램 메세지 전송
+# - Input
+#   1) message : 메세지
+# -----------------------------------------------------------------------------
+def send_telegram_message(message):
+    try:
+        # 텔레그램 메세지 발송
+        bot = telegram.Bot(get_env_keyvalue('telegram_token'))
+        res = bot.sendMessage(chat_id=get_env_keyvalue('telegram_id'), text=message)
+
+        return res
+
+    # ----------------------------------------
+    # 모든 함수의 공통 부분(Exception 처리)
+    # ----------------------------------------
+    except Exception:
+        raise
+
+
+# -----------------------------------------------------------------------------
+# - Name : write_config
+# - Desc : 파일 쓰기(새로쓰기)
+# - Input
+# 1. name : Config File Name
+# 2. req_val : 변수값
+# - Output
+# -----------------------------------------------------------------------------
+def write_config(name, req_val):
+    try:
+
+        # 파일명
+        file_name = './conf/' + str(name) + '.txt'
+
+        # 파일에 저장
+        with open(file_name, "w", encoding="utf-8") as f:
+            f.write(str(req_val))
+            f.close()
+
+    # ----------------------------------------
+    # 모든 함수의 공통 부분(Exception 처리)
+    # ----------------------------------------
+    except Exception:
+        raise
+
+
+# -----------------------------------------------------------------------------
+# - Name : write_config_append
+# - Desc : 파일 쓰기(추가)
+# - Input
+# 1. name : Config File Name
+# 2. req_val : 변수값
+# - Output
+# -----------------------------------------------------------------------------
+def write_config_append(name, req_val):
+    try:
+
+        # 파일명
+        file_name = './conf/' + str(name) + '.txt'
+
+        # 파일에 저장(추가하기)
+        with open(file_name, "a", encoding="utf-8") as f:
+            f.write(str(req_val))
+            f.close()
+
+    # ----------------------------------------
+    # 모든 함수의 공통 부분(Exception 처리)
+    # ----------------------------------------
+    except Exception:
+        raise

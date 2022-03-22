@@ -3,7 +3,7 @@ import logging
 import traceback
 import time
 
-from lib import upbit_new as upbit
+from module import upbit_new as upbit
 from datetime import datetime
 from decimal import Decimal
 
