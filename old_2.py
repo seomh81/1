@@ -10,7 +10,7 @@ from decimal import Decimal
 
 # 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from lib import upbit
+from lib import oldupbit
 
 
 # -----------------------------------------------------------------------------
@@ -31,13 +31,13 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
             # ------------------------------------------------------------------
             # 보유 종목조회
             # ------------------------------------------------------------------
-            target_items = upbit.get_accounts('Y', 'KRW')
+            target_items = oldupbit.get_accounts('Y', 'KRW')
 
             # ------------------------------------------------------------------
             # 보유 종목 현재가 조회
             # ------------------------------------------------------------------
-            target_items_comma = upbit.chg_account_to_comma(target_items)
-            tickers = upbit.get_ticker(target_items_comma)
+            target_items_comma = oldupbit.chg_account_to_comma(target_items)
+            tickers = oldupbit.get_ticker(target_items_comma)
 
             # -----------------------------------------------------------------
             # 보유 종목별 진행
@@ -76,15 +76,15 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         # 3. 매수 거래만 필터링
                         # 4. 가장 최근 거래일자부터 현재까지 고점을 조회
                         # -------------------------------------------------
-                        order_done = upbit.get_order_status(target_item['market'], 'done') + upbit.get_order_status(
+                        order_done = oldupbit.get_order_status(target_item['market'], 'done') + upbit.get_order_status(
                             target_item['market'], 'cancel')
                         order_done_sorted = upbit.orderby_dict(order_done, 'created_at', True)
-                        order_done_filtered = upbit.filter_dict(order_done_sorted, 'side', 'bid')
+                        order_done_filtered = oldupbit.filter_dict(order_done_sorted, 'side', 'bid')
 
                         # ------------------------------------------------------------------
                         # 캔들 조회
                         # ------------------------------------------------------------------
-                        candles = upbit.get_candle(target_item['market'], '15', 200)
+                        candles = oldupbit.get_candle(target_item['market'], '15', 200)
 
                         # ------------------------------------------------------------------
                         # 최근 매수일자 다음날부터 현재까지의 최고가를 계산
@@ -113,7 +113,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                             # 실제 매매를 원하시면 테스트를 충분히 거친 후 주석을 해제하시면 됩니다.
                             # ------------------------------------------------------------------
                             logging.info('시장가 매도 시작! [' + str(target_item['market']) + ']')
-                            rtn_sellcoin_mp = upbit.sellcoin_mp(target_item['market'], 'Y')
+                            rtn_sellcoin_mp = oldupbit.sellcoin_mp(target_item['market'], 'Y')
                             logging.info('시장가 매도 종료! [' + str(target_item['market']) + ']')
                             logging.info(rtn_sellcoin_mp)
                             logging.info('------------------------------------------------------')
@@ -157,7 +157,7 @@ if __name__ == '__main__':
         sell_pcnt = 2#input("매도 수익률(ex:2%=2) : ")
         dcnt_pcnt = -1#input("고점대비 하락률(ex:-1%=-1) : ")
 
-        upbit.set_loglevel(log_level)
+        oldupbit.set_loglevel(log_level)
 
         logging.info("*********************************************************")
         logging.info("1. 로그레벨 : " + str(log_level))

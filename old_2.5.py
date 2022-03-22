@@ -10,7 +10,7 @@ from decimal import Decimal
 
 # 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from lib import upbit
+from lib import oldupbit
 
 
 # -----------------------------------------------------------------------------
@@ -36,7 +36,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
             # ------------------------------------------------------------------
             # 보유 종목 현재가 조회
             # ------------------------------------------------------------------
-            target_items_comma = upbit.chg_account_to_comma(target_items)
+            target_items_comma = oldupbit.chg_account_to_comma(target_items)
             tickers = upbit.get_ticker(target_items_comma)
 
             # -----------------------------------------------------------------
@@ -76,7 +76,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         # 3. 매수 거래만 필터링
                         # 4. 가장 최근 거래일자부터 현재까지 고점을 조회
                         # -------------------------------------------------
-                        order_done = upbit.get_order_status(target_item['market'], 'done') + upbit.get_order_status(
+                        order_done = upbit.get_order_status(target_item['market'], 'done') + oldupbit.get_order_status(
                             target_item['market'], 'cancel')
                         order_done_sorted = upbit.orderby_dict(order_done, 'created_at', True)
                         order_done_filtered = upbit.filter_dict(order_done_sorted, 'side', 'bid')

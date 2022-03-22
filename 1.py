@@ -1,188 +1,175 @@
-'''
-
-매수 모니터링:
-    업비트 모든 코인 추적
-    5분봉 기준 9개 캔들로 추적
-매수 기준:
-    현 거래량이 이전 8개(40분)보다 0.01% 초과할 때
-    현 가격이 이전 8개 고가를 초과할 때 + 이전 가격의 0.01% 초과할 때
-    시장가 매수 6000원
-매도 모니터링:
-    매수와 동일
-매도 기준:
-    종가가
-
-'''
-
-import logging
+import time
 import os
 import sys
-import time
+import logging
 import traceback
-import upbitpy
-import pyupbit
-import requests
+
 from decimal import Decimal
-import datetime
 
 # 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from lib import upbit_3 as upbit  # noqa
+from module import upbit
 
 
 # -----------------------------------------------------------------------------
 # - Name : start_buytrade
 # - Desc : 매수 로직
 # - Input
-# 1) minute_interval : 몇 분봉을 볼지 정함
-# 2) minute_check : 몇개의 봉을 기준삼을지 정함
-# 3) buy_amt : 매수금액
+# 1) buy_amt : 매수금액
 # -----------------------------------------------------------------------------
-def start_buytrade(buy_amt):  # (minute_interval, minute_check, buy_amt):
+def start_buytrade(buy_amt):
     try:
 
-        data_cnt = 0
-
-        # 매수 될 때까지 반복 수행
+        # ----------------------------------------------------------------------
+        # 반복 수행
+        # ----------------------------------------------------------------------
         while True:
 
-            # 전체 종목 추출
-            # 1. KRW마켓
-            # 2. BTC, ETH 제외
-            item_list = upbit.get_items('KRW', '')  # 'BTC,ETH')
+            logging.info("*********************************************************")
+            logging.info("1. 로그레벨 : " + str(log_level))
+            logging.info("2. 매수금액 : " + str(buy_amt))
+            logging.info("*********************************************************")
 
-            # 전체 종목 반복
-            for item_list_for in item_list:
+            # -----------------------------------------------------------------
+            # 전체 종목 리스트 추출
+            # -----------------------------------------------------------------
+            target_items = upbit.get_items('KRW', '')
 
-                # 해당 종목의 RSI 지표 산출
-                # 1. 10분봉 기준 RSI 지표 산출
-                # rsi_data = upbit.get_indicators(item_list_for['market'], '10', 200, 5)
+            # -----------------------------------------------------------------
+            # 종목별 체크
+            # -----------------------------------------------------------------
+            for target_item in target_items:
 
-                # 1분봉 (최대 200개 요청가능) - 10개 요청(9분전부터)
-                df = pyupbit.get_ohlcv(item_list_for['market'], "minute1", 10)
-                # df = pyupbit.get_ohlcv(item_list_for['market'], "minute%d"%(minute_interval), minute_check)
-                # print(df)
-                timenow = datetime.datetime.now()
-                # print(timenow)
-                # print(item_list_for['market'])
-                '''
-                # 아래 코드 축약
-                m_check = 0
-                i_check = minute_check
-                while m_check < minute_check:
-                    i_check = 10
-                '''
+                rsi_val = False
+                mfi_val = False
+                ocl_val = False
 
-                v_b10 = int(df.iloc[0]['volume']) #9분 전 거래량
+                logging.info('체크중....[' + str(target_item['market']) + ']')
 
-                v_b9 = float(df.iloc[-9]['volume'])
-                v_b8 = float(df.iloc[-8]['volume'])
-                v_b7 = float(df.iloc[-7]['volume'])
-                v_b6 = float(df.iloc[-6]['volume'])
+                # -------------------------------------------------------------
+                # 종목별 보조지표를 조회
+                # 1. 조회 기준 : 일캔들, 최근 5개 지표 조회
+                # 2. 속도를 위해 원하는 지표만 조회(RSI, MFI, MACD, CANDLE)
+                # -------------------------------------------------------------
+                indicators = upbit.get_indicator_sel(target_item['market'], 'D', 200, 5,
+                                                     ['RSI', 'MFI', 'MACD', 'CANDLE'])
 
-                v_b5 = float(df.iloc[-5]['volume'])
-                v_b4 = float(df.iloc[-4]['volume'])
-                v_b3 = float(df.iloc[-3]['volume'])
-                v_b2 = float(df.iloc[-2]['volume'])
-                v_now = float(df.iloc[-1]['volume'])  # 현 거래량
+                # --------------------------------------------------------------
+                # 최근 상장하여 캔들 갯수 부족으로 보조 지표를 구하기 어려운 건은 제외
+                # --------------------------------------------------------------
+                if 'CANDLE' not in indicators or len(indicators['CANDLE']) < 200:
+                    logging.info('캔들 데이터 부족으로 데이터 산출 불가...[' + str(target_item['market']) + ']')
+                    continue
 
-                print(v_b9)
+                # --------------------------------------------------------------
+                # 보조 지표 추출
+                # --------------------------------------------------------------
+                rsi = indicators['RSI']
+                mfi = indicators['MFI']
+                macd = indicators['MACD']
+                candle = indicators['CANDLE']
 
-                l_b9 = float(df.iloc[-9]['low'])
-                l_b8 = float(df.iloc[-8]['low'])
-                l_b7 = float(df.iloc[-7]['low'])
-                l_b6 = float(df.iloc[-6]['low'])
+                # --------------------------------------------------------------
+                # 매수 로직
+                # 1. RSI : 2일전 < 30미만, 3일전 > 2일전, 1일전 > 2일전, 현재 > 1일전
+                # 2. MFI : 2일전 < 20미만, 3일전 > 2일전, 1일전 > 2일전, 현재 > 1일전
+                # 3. MACD(OCL) : 3일전 < 0, 2일전 < 0, 1일전 < 0, 3일전 > 2일전, 1일전 > 2일전, 현재 > 1일전
+                # --------------------------------------------------------------
 
-                l_b5 = float(df.iloc[-5]['low'])
-                l_b4 = float(df.iloc[-4]['low'])
-                l_b3 = float(df.iloc[-3]['low'])
-                l_b2 = float(df.iloc[-2]['low'])
-                l_b1 = float(df.iloc[-1]['low'])  # 현 하한가
-                h_b4 = float(df.iloc[-4]['high'])
-                h_b3 = float(df.iloc[-3]['high'])
-                h_b2 = float(df.iloc[-2]['high'])
-                h_b1 = float(df.iloc[-1]['high'])  # 현 상한가
-                c_now = float(df.iloc[-1]['close'])  # 현 종가
+                # --------------------------------------------------------------
+                # RSI : 2일전 < 30미만, 3일전 > 2일전, 1일전 > 2일전, 현재 > 1일전
+                # rsi[0]['RSI'] : 현재
+                # rsi[1]['RSI'] : 1일전
+                # rsi[2]['RSI'] : 2일전
+                # rsi[3]['RSI'] : 3일전
+                # --------------------------------------------------------------
+                if (Decimal(str(rsi[0]['RSI'])) > Decimal(str(rsi[1]['RSI'])) > Decimal(str(rsi[2]['RSI']))
+                        and Decimal(str(rsi[3]['RSI'])) > Decimal(str(rsi[2]['RSI']))
+                        and Decimal(str(rsi[2]['RSI'])) < Decimal(str(30))):
+                    rsi_val = True
 
-                hl_b4 = (h_b4 - l_b4)
-                hl_b3 = (h_b3 - l_b3)
-                hl_b2 = (h_b2 - l_b2)
-                gap_ck = hl_b2 + hl_b3  # + hl_b4
-                diff_now = h_b1 - h_b2 - gap_ck
+                # --------------------------------------------------------------
+                # MFI : 2일전 < 20미만, 3일전 > 2일전, 1일전 > 2일전, 현재 > 1일전
+                # mfi[0]['MFI'] : 현재
+                # mfi[1]['MFI'] : 1일전
+                # mfi[2]['MFI'] : 2일전
+                # mfi[3]['MFI'] : 3일전
+                # --------------------------------------------------------------
+                if (Decimal(str(mfi[0]['MFI'])) > Decimal(str(mfi[1]['MFI'])) > Decimal(str(mfi[2]['MFI']))
+                        and Decimal(str(mfi[3]['MFI'])) > Decimal(str(mfi[2]['MFI']))
+                        and Decimal(str(mfi[2]['MFI'])) < Decimal(str(20))):
+                    mfi_val = True
 
-                # 10분 동안 거래량 기준 계산 기준 보정
-                v_sum = v_b2 + v_b3 + v_b4  # + v_b5# + v_b6 + v_b7 + v_b8 + v_b9# + v_b10
-                v_sum *= 1.5
-                l_b2 *= 1.0001
+                # --------------------------------------------------------------
+                # MACD(OCL) : 3일전 < 0, 2일전 < 0, 1일전 < 0, 3일전 > 2일전, 1일전 > 2일전, 현재 > 1일전
+                # macd[0]['OCL'] : 현재
+                # macd[1]['OCL'] : 1일전
+                # macd[2]['OCL'] : 2일전
+                # macd[3]['OCL'] : 3일전
+                # --------------------------------------------------------------
+                if (Decimal(str(macd[0]['OCL'])) > Decimal(str(macd[1]['OCL'])) > Decimal(str(macd[2]['OCL']))
+                        and Decimal(str(macd[3]['OCL'])) > Decimal(str(macd[2]['OCL']))
+                        and Decimal(str(macd[1]['OCL'])) < Decimal(str(0))
+                        and Decimal(str(macd[2]['OCL'])) < Decimal(str(0))
+                        and Decimal(str(macd[3]['OCL'])) < Decimal(str(0))):
+                    ocl_val = True
 
-                if diff_now > 1 and v_now > v_sum:
-                    ok_no = "OK"
-                else:
-                    ok_no = "NO"
+                # --------------------------------------------------------------
+                # 매수대상 발견
+                # --------------------------------------------------------------
+                if rsi_val and mfi_val and ocl_val:
+                    logging.info('매수대상 발견....[' + str(target_item['market']) + ']')
+                    logging.info('RSI : ' + str(rsi))
+                    logging.info('MFI : ' + str(mfi))
+                    logging.info('MACD : ' + str(macd))
 
-                mc_check = (c_now - l_b2)*100 / l_b2
-                mv_check = (v_now - v_sum) * 100 / v_sum
-                print(ok_no, "  ★ 가격차 " + str(int(diff_now)) + " 원", item_list_for['market'],
-                      "종가 " + str(int(c_now)) + "원", "■ 거래량 " + str(int(mv_check)) + "%")
-                print("  ★   가격 "+str(int(mc_check))+"%",item_list_for['market'], "■  거래량 "+str(int(mv_check))+"%")
+                    # ------------------------------------------------------------------
+                    # 기매수 여부 판단
+                    # ------------------------------------------------------------------
+                    accounts = upbit.get_accounts('Y', 'KRW')
+                    account = list(filter(lambda x: x.get('market') == target_item['market'], accounts))
 
-                # 100시간 전 거래량
-                # firstVolume = int(df.iloc[0]['volume'])
-                # 현재 종가
-                # curClose = int(df.iloc[-1]['close'])
-                # 현재 거래량
-                # curVolume = int(df.iloc[-1]['volume'])
-                # GCP에서 돌리는 경우 타임슬립 빼자
-                # time.sleep(0.1)
+                    # 이미 매수한 종목이면 다시 매수하지 않음
+                    # sell_bot.py에서 매도 처리되면 보유 종목에서 사라지고 다시 매수 가능
+                    if len(account) > 0:
+                        logging.info('기 매수 종목으로 매수하지 않음....[' + str(target_item['market']) + ']')
+                        continue
 
-                # 10분 전체 거래량 합보다 현 거래량이 클 경우 매수
-                if diff_now > 1 and c_now > hl_b2 + 1 and c_now > hl_b3 + 1 and c_now > hl_b4 + 1 and hl_b2 != 0 and hl_b3 != 0 and hl_b4 != 0 and v_now > v_sum:
-                    # if v_now > v_sum and c_now > l_b2 and c_now > l_b3 and c_now > l_b4 and c_now > l_b5 and c_now > l_b6 and c_now > l_b7 and c_now > l_b8 and c_now > l_b9:
-                    # 기준 충족 종목 로깅
-                    logging.info(item_list_for)
+                    # ------------------------------------------------------------------
+                    # 매수금액 설정
+                    # 1. M : 수수료를 제외한 최대 가능 KRW 금액만큼 매수
+                    # 2. 금액 : 입력한 금액만큼 매수
+                    # ------------------------------------------------------------------
+                    available_amt = upbit.get_krwbal()['available_krw']
 
-                    # 기준 충족 종목 종가
-                    logging.info('종가' + str(c_now))
+                    if buy_amt == 'M':
+                        buy_amt = available_amt
 
+                    # ------------------------------------------------------------------
+                    # 입력 금액이 주문 가능금액보다 작으면 종료
+                    # ------------------------------------------------------------------
+                    if Decimal(str(available_amt)) < Decimal(str(buy_amt)):
+                        logging.info('주문 가능금액[' + str(available_amt) + ']이 입력한 주문금액[' + str(buy_amt) + '] 보다 작습니다.')
+                        continue
+
+                    # ------------------------------------------------------------------
+                    # 최소 주문 금액(업비트 기준 5000원) 이상일 때만 매수로직 수행
+                    # ------------------------------------------------------------------
+                    if Decimal(str(buy_amt)) < Decimal(str(upbit.min_order_amt)):
+                        logging.info('주문금액[' + str(buy_amt) + ']이 최소 주문금액[' + str(upbit.min_order_amt) + '] 보다 작습니다.')
+                        continue
+
+                    # ------------------------------------------------------------------
                     # 시장가 매수
-                    #logging.info('시장가 매수 시작!')
-                    #upbit.buycoin_mp(item_list_for['market'], buy_amt)
+                    # 실제 매수 로직은 안전을 위해 주석처리 하였습니다.
+                    # 실제 매매를 원하시면 테스트를 충분히 거친 후 주석을 해제하시면 됩니다.
+                    # ------------------------------------------------------------------
+                    logging.info('시장가 매수 시작! [' + str(target_item['market']) + ']')
+                    # rtn_buycoin_mp = upbit.buycoin_mp(target_item['market'], buy_amt)
+                    logging.info('시장가 매수 종료! [' + str(target_item['market']) + ']')
+                    # logging.info(rtn_buycoin_mp)
 
-                    # 지정가 매수
-                    logging.info('지정가 매수 시장!')
-                    upbit.buycoin_mp(item_list_for['market'], buy_amt, l_b1)
-
-                    # 매수 시간 처리 고려(3초정도)
-                    time.sleep(3)
-
-
-                '''
-                # RSI 값이 기준값 미만으로 떨어지면 매수
-                if Decimal(rsi_data[0][0]['RSI']) < Decimal(rsi_buy_value):
-                    # 기준 충족 종목 로깅
-                    logging.info(item_list_for)
-
-                    # 기준 충족 종목 RSI 데이터
-                    logging.info(rsi_data)
-
-                    # 시장가 매수
-                    logging.info('시장가 매수 시작!')
-                    upbit.buycoin_mp(item_list_for['market'], buy_amt)
-
-                    # 매수 시간 처리 고려
-                    time.sleep(3)
-
-                    # 매도 로직 호출
-                    start_selltrade(item_list_for['market'], rsi_sell_value, rsi_buy_value, buy_amt)
-                '''
-
-                if data_cnt == 0 or data_cnt % 100 == 0:
-                    logging.info("매수 로직 가동중...[" + str(data_cnt) + "]")
-
-                # 조회건수증가
-                data_cnt = data_cnt + 1
-
-    # ----------------------------------------
+    # ---------------------------------------
     # 모든 함수의 공통 부분(Exception 처리)
     # ----------------------------------------
     except Exception:
@@ -198,26 +185,32 @@ if __name__ == '__main__':
     # noinspection PyBroadException
     try:
 
-        print("***** USAGE ******")
-        print("[1] 로그레벨(D:DEBUG, E:ERROR, 그외:INFO)")
-
-        # 로그레벨(D:DEBUG, E:ERROR, 그외:INFO)
-        upbit.set_loglevel('I')
-
         # ---------------------------------------------------------------------
-        # Logic Start!
+        # 입력 받을 변수
+        #
+        # 1. 로그레벨
+        #   1) 레벨 값 : D:DEBUG, E:ERROR, 그 외:INFO
+        #
+        # 2. 매수금액
+        #   1) M : 수수료를 제외한 최대 가능 금액으로 매수
+        #   2) 금액 : 입력한 금액만 매수(수수료 포함)
+        #
+        # 3. 매수 제외종목
+        #   1) 종목코드(콤마구분자) : BTC,ETH
         # ---------------------------------------------------------------------
-        # minute_interval = input("몇 분봉으로 볼까요?(ex. 1,3,5,10,15,30,60,240분봉) 기준 5:")
-        # minute_check = input("몇개 봉을 기준 삼을까요?(ex. 최대 200) 기준 10:")
-        # buy_amt = input("매수금액(ex:최소 5000 이상):")
-        buy_amt = 6000
 
-        # logging.info("매수 기준 RSI 값:" + str(minute_interval))
-        # logging.info("매도 기준 RSI 값:" + str(minute_check))
-        logging.info("매수금액:" + str(buy_amt))
+        # 1. 로그레벨
+        log_level = input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
+        buy_amt = input("매수금액(M:최대, 10000:1만원) : ").upper()
 
-        # 매수로직 시작
-        # start_buytrade(minute_interval, minute_check, buy_amt)
+        upbit.set_loglevel(log_level)
+
+        logging.info("*********************************************************")
+        logging.info("1. 로그레벨 : " + str(log_level))
+        logging.info("2. 매수금액 : " + str(buy_amt))
+        logging.info("*********************************************************")
+
+        # 매수 로직 시작
         start_buytrade(buy_amt)
 
     except KeyboardInterrupt:

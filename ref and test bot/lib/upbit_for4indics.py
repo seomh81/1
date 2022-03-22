@@ -1,4 +1,4 @@
-### 원본 upbit.py 로직이 엉킨 것 같아서 4개 인디케이터에 대한 것을 별도로 작성00u9jo8iky7hvfv                             qqqqawqsywyn s
+### 원본 oldupbit.py 로직이 엉킨 것 같아서 4개 인디케이터에 대한 것을 별도로 작성00u9jo8iky7hvfv                             qqqqawqsywyn s
 
 import logging
 import requests
