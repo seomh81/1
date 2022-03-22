@@ -135,9 +135,9 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                             # 실제 매매를 원하시면 테스트를 충분히 거친 후 주석을 해제하시면 됩니다.
                             # ------------------------------------------------------------------
                             logging.info('시장가 매도 시작! [' + str(target_item['market']) + ']')
-                            # rtn_sellcoin_mp = upbit.sellcoin_mp(target_item['market'], 'Y')
+                            rtn_sellcoin_mp = upbit.sellcoin_mp(target_item['market'], 'Y')
                             logging.info('시장가 매도 종료! [' + str(target_item['market']) + ']')
-                            # logging.info(rtn_sellcoin_mp)
+                            logging.info(rtn_sellcoin_mp)
                             logging.info('------------------------------------------------------')
 
                         else:
@@ -176,7 +176,7 @@ if __name__ == '__main__':
 
         # 1. 로그레벨
         log_level = 'I' #input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
-        sell_pcnt = 2 #input("매도 수익률(ex:2%=2) : ")
+        sell_pcnt = 1 #input("매도 수익률(ex:2%=2) : ")
         dcnt_pcnt = -1 #input("고점대비 하락률(ex:-1%=-1) : ")
 
         upbit.set_loglevel(log_level)
