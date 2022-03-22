@@ -8,7 +8,7 @@ from decimal import Decimal
 
 # 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from module import upbit
+from lib import upbit
 
 
 # -----------------------------------------------------------------------------
@@ -200,8 +200,8 @@ if __name__ == '__main__':
         # ---------------------------------------------------------------------
 
         # 1. 로그레벨
-        log_level = input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
-        buy_amt = input("매수금액(M:최대, 10000:1만원) : ").upper()
+        log_level = 'I' #input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
+        buy_amt = 6000 #input("매수금액(M:최대, 10000:1만원) : ").upper()
 
         upbit.set_loglevel(log_level)
 
