@@ -9,7 +9,7 @@ if [ -z "$PID" ]
 then
         echo "$timestamp"
         echo 'MONITORING PROCESS DEAD'
-        ~/1/cron/monitoring.sh
+        ~/1/cron/1monitoring.sh
 else
         echo "$timestamp"
         echo 'MONITORING PROCESS IS RUNNING'
