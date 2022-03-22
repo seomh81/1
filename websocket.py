@@ -10,7 +10,7 @@ import websockets
 
 # 실행 환경에 따른 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from module import upbit
+from lib import upbit
 
 # 프로그램 정보
 pgm_name = 'websocket'
