@@ -51,7 +51,7 @@ def start_buytrade(buy_amt):
                 # 1. 조회 기준 : 일캔들, 최근 5개 지표 조회
                 # 2. 속도를 위해 원하는 지표만 조회(RSI, MFI, MACD, CANDLE)
                 # -------------------------------------------------------------
-                indicators = upbit.get_indicator_sel(target_item['market'], 'D', 200, 5,
+                indicators = upbit.get_indicator_sel(target_item['market'], '15', 200, 5,
                                                      ['RSI', 'MFI', 'MACD', 'CANDLE'])
 
                 # --------------------------------------------------------------
@@ -87,41 +87,41 @@ def start_buytrade(buy_amt):
                         and Decimal(str(rsi[3]['RSI'])) > Decimal(str(rsi[2]['RSI']))
                         and Decimal(str(rsi[2]['RSI'])) < Decimal(str(30))):
                     rsi_val = True
-
-                # --------------------------------------------------------------
-                # MFI : 2일전 < 20미만, 3일전 > 2일전, 1일전 > 2일전, 현재 > 1일전
-                # mfi[0]['MFI'] : 현재
-                # mfi[1]['MFI'] : 1일전
-                # mfi[2]['MFI'] : 2일전
-                # mfi[3]['MFI'] : 3일전
-                # --------------------------------------------------------------
-                if (Decimal(str(mfi[0]['MFI'])) > Decimal(str(mfi[1]['MFI'])) > Decimal(str(mfi[2]['MFI']))
-                        and Decimal(str(mfi[3]['MFI'])) > Decimal(str(mfi[2]['MFI']))
-                        and Decimal(str(mfi[2]['MFI'])) < Decimal(str(20))):
-                    mfi_val = True
-
-                # --------------------------------------------------------------
-                # MACD(OCL) : 3일전 < 0, 2일전 < 0, 1일전 < 0, 3일전 > 2일전, 1일전 > 2일전, 현재 > 1일전
-                # macd[0]['OCL'] : 현재
-                # macd[1]['OCL'] : 1일전
-                # macd[2]['OCL'] : 2일전
-                # macd[3]['OCL'] : 3일전
-                # --------------------------------------------------------------
-                if (Decimal(str(macd[0]['OCL'])) > Decimal(str(macd[1]['OCL'])) > Decimal(str(macd[2]['OCL']))
-                        and Decimal(str(macd[3]['OCL'])) > Decimal(str(macd[2]['OCL']))
-                        and Decimal(str(macd[1]['OCL'])) < Decimal(str(0))
-                        and Decimal(str(macd[2]['OCL'])) < Decimal(str(0))
-                        and Decimal(str(macd[3]['OCL'])) < Decimal(str(0))):
-                    ocl_val = True
+                #
+                # # --------------------------------------------------------------
+                # # MFI : 2일전 < 20미만, 3일전 > 2일전, 1일전 > 2일전, 현재 > 1일전
+                # # mfi[0]['MFI'] : 현재
+                # # mfi[1]['MFI'] : 1일전
+                # # mfi[2]['MFI'] : 2일전
+                # # mfi[3]['MFI'] : 3일전
+                # # --------------------------------------------------------------
+                # if (Decimal(str(mfi[0]['MFI'])) > Decimal(str(mfi[1]['MFI'])) > Decimal(str(mfi[2]['MFI']))
+                #         and Decimal(str(mfi[3]['MFI'])) > Decimal(str(mfi[2]['MFI']))
+                #         and Decimal(str(mfi[2]['MFI'])) < Decimal(str(20))):
+                #     mfi_val = True
+                #
+                # # --------------------------------------------------------------
+                # # MACD(OCL) : 3일전 < 0, 2일전 < 0, 1일전 < 0, 3일전 > 2일전, 1일전 > 2일전, 현재 > 1일전
+                # # macd[0]['OCL'] : 현재
+                # # macd[1]['OCL'] : 1일전
+                # # macd[2]['OCL'] : 2일전
+                # # macd[3]['OCL'] : 3일전
+                # # --------------------------------------------------------------
+                # if (Decimal(str(macd[0]['OCL'])) > Decimal(str(macd[1]['OCL'])) > Decimal(str(macd[2]['OCL']))
+                #         and Decimal(str(macd[3]['OCL'])) > Decimal(str(macd[2]['OCL']))
+                #         and Decimal(str(macd[1]['OCL'])) < Decimal(str(0))
+                #         and Decimal(str(macd[2]['OCL'])) < Decimal(str(0))
+                #         and Decimal(str(macd[3]['OCL'])) < Decimal(str(0))):
+                #     ocl_val = True
 
                 # --------------------------------------------------------------
                 # 매수대상 발견
                 # --------------------------------------------------------------
-                if rsi_val and mfi_val and ocl_val:
+                if rsi_val: # and mfi_val and ocl_val:
                     logging.info('매수대상 발견....[' + str(target_item['market']) + ']')
                     logging.info('RSI : ' + str(rsi))
-                    logging.info('MFI : ' + str(mfi))
-                    logging.info('MACD : ' + str(macd))
+                    # logging.info('MFI : ' + str(mfi))
+                    # logging.info('MACD : ' + str(macd))
 
                     # ------------------------------------------------------------------
                     # 기매수 여부 판단
@@ -165,9 +165,9 @@ def start_buytrade(buy_amt):
                     # 실제 매매를 원하시면 테스트를 충분히 거친 후 주석을 해제하시면 됩니다.
                     # ------------------------------------------------------------------
                     logging.info('시장가 매수 시작! [' + str(target_item['market']) + ']')
-                    # rtn_buycoin_mp = upbit.buycoin_mp(target_item['market'], buy_amt)
+                    rtn_buycoin_mp = upbit.buycoin_mp(target_item['market'], buy_amt)
                     logging.info('시장가 매수 종료! [' + str(target_item['market']) + ']')
-                    # logging.info(rtn_buycoin_mp)
+                    logging.info(rtn_buycoin_mp)
 
     # ---------------------------------------
     # 모든 함수의 공통 부분(Exception 처리)
