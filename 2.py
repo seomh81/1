@@ -96,6 +96,18 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         logging.info('- 수익률:' + str(rev_pcnt))
 
                         # -----------------------------------------------------
+                        # 손절!!! -3.1%
+                        # -----------------------------------------------------
+                        if Decimal(str(rev_pcnt)) < -3.1:
+                            logging.info('- 손절, -3.1% 이하!!!!!!!!!!!!!!!!!!!!!!!!!')
+                            logging.info('시장가 매도 시작! [' + str(target_item['market']) + ']')
+                            rtn_sellcoin_mp = upbit.sellcoin_mp(target_item['market'], 'Y')
+                            logging.info('시장가 매도 종료! [' + str(target_item['market']) + ']')
+                            logging.info(rtn_sellcoin_mp)
+                            logging.info('------------------------------------------------------')
+                            continue
+
+                        # -----------------------------------------------------
                         # 현재 수익률이 매도 수익률 이상인 경우에만 진행
                         # -----------------------------------------------------
                         if Decimal(str(rev_pcnt)) < Decimal(str(sell_pcnt)):
@@ -106,7 +118,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         # ------------------------------------------------------------------
                         # 캔들 조회
                         # ------------------------------------------------------------------
-                        candles = upbit.get_candle(target_item['market'], '60', 200)
+                        candles = upbit.get_candle(target_item['market'], '30', 200)
 
                         # ------------------------------------------------------------------
                         # 최근 매수일자 다음날부터 현재까지의 최고가를 계산
@@ -145,6 +157,10 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                             logging.info('------------------------------------------------------')
 
 
+
+
+
+
     # ---------------------------------------
     # 모든 함수의 공통 부분(Exception 처리)
     # ----------------------------------------
@@ -176,8 +192,8 @@ if __name__ == '__main__':
 
         # 1. 로그레벨
         log_level = 'I' #input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
-        sell_pcnt = 4 #input("매도 수익률(ex:2%=2) : ")
-        dcnt_pcnt = -3 #input("고점대비 하락률(ex:-1%=-1) : ")
+        sell_pcnt = 1.5 #input("매도 수익률(ex:2%=2) : ")
+        dcnt_pcnt = -2.1 #input("고점대비 하락률(ex:-1%=-1) : ")
 
         upbit.set_loglevel(log_level)
 
