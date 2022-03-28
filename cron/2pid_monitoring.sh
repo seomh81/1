@@ -1,6 +1,6 @@
 #!/bin/bash
 
-timestamp=`date +%Y/%m/%d/%H:%M`
+timestamp=`date +%Y/%m/%d_%H:%M`
 
 # BUY PROCESS CHECK
 PID=`ps -ef |grep -w '~/1/2.py' |grep -v grep|awk '{print $2}'`
