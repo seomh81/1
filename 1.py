@@ -41,8 +41,8 @@ def start_buytrade(buy_amt):
             for target_item in target_items:
 
                 rsi_val = False
-                mfi_val = False
-                ocl_val = False
+                # mfi_val = False
+                # ocl_val = False
 
                 logging.info('체크중....[' + str(target_item['market']) + ']')
 
@@ -65,9 +65,9 @@ def start_buytrade(buy_amt):
                 # 보조 지표 추출
                 # --------------------------------------------------------------
                 rsi = indicators['RSI']
-                mfi = indicators['MFI']
-                macd = indicators['MACD']
-                candle = indicators['CANDLE']
+                # mfi = indicators['MFI']
+                # macd = indicators['MACD']
+                # candle = indicators['CANDLE']
 
                 # --------------------------------------------------------------
                 # 매수 로직
@@ -85,7 +85,7 @@ def start_buytrade(buy_amt):
                 # --------------------------------------------------------------
                 if (Decimal(str(rsi[0]['RSI'])) > Decimal(str(rsi[1]['RSI'])) > Decimal(str(rsi[2]['RSI']))
                         and Decimal(str(rsi[3]['RSI'])) > Decimal(str(rsi[2]['RSI']))
-                        and Decimal(str(rsi[2]['RSI'])) < Decimal(str(26))):
+                        and Decimal(str(rsi[2]['RSI'])) < Decimal(str(27))):
                     rsi_val = True
                 #
                 # # --------------------------------------------------------------
@@ -201,7 +201,7 @@ if __name__ == '__main__':
 
         # 1. 로그레벨
         log_level = 'I' #input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
-        buy_amt = 7000 #input("매수금액(M:최대, 10000:1만원) : ").upper()
+        buy_amt = 10000 #input("매수금액(M:최대, 10000:1만원) : ").upper()
 
         upbit.set_loglevel(log_level)
 
