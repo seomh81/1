@@ -5,7 +5,7 @@ timestamp=`date +%Y/%m/%d_%H:%M`
 # BUY PROCESS CHECK
 PID=`ps -ef |grep -w '~/1/1.py' |grep -v grep|awk '{print $2}'`
 
-if [ -z "$PID" ]
+if [ -z "$PID" ];
 then
         echo "$timestamp"
         echo 'MONITORING PROCESS DEAD'
