@@ -3,13 +3,13 @@
 timestamp=`date +%Y/%m/%d_%H:%M`
 
 # BUY PROCESS CHECK
-PID=`ps -ef |grep "python3" |grep -v 'grep'|awk '{print $2}'`
+PID=`ps -ef |grep -w '~/1/1.py' |grep -v grep|awk '{print $2}'`
 
 if [ -z "$PID" ];
 then
         echo "$timestamp"
         echo 'MONITORING PROCESS DEAD'
-        ~/1/cron/2monitoring.sh
+        ~/1/cron/1monitoring.sh
 else
         echo "$timestamp"
         echo 'MONITORING PROCESS IS RUNNING'
