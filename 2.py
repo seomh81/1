@@ -96,10 +96,10 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         logging.info('- 수익률:' + str(rev_pcnt))
 
                         # -----------------------------------------------------
-                        # 손절!!! -3.1%
+                        # 손절!!! -2%
                         # -----------------------------------------------------
-                        if Decimal(str(rev_pcnt)) < -3.1:
-                            logging.info('- 손절, -3.1% 이하!!!!!!!!!!!!!!!!!!!!!!!!!')
+                        if Decimal(str(rev_pcnt)) < -2:
+                            logging.info('- 손절, -2% 이하!!!!!!!!!!!!!!!!!!!!!!!!!')
                             logging.info('시장가 매도 시작! [' + str(target_item['market']) + ']')
                             rtn_sellcoin_mp = upbit.sellcoin_mp(target_item['market'], 'Y')
                             logging.info('시장가 매도 종료! [' + str(target_item['market']) + ']')
@@ -192,8 +192,8 @@ if __name__ == '__main__':
 
         # 1. 로그레벨
         log_level = 'I' #input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
-        sell_pcnt = 1.9 #input("매도 수익률(ex:2%=2) : ")
-        dcnt_pcnt = -2.5 #input("고점대비 하락률(ex:-1%=-1) : ")
+        sell_pcnt = 1.0 #input("매도 수익률(ex:2%=2) : ")
+        dcnt_pcnt = -1.5 #input("고점대비 하락률(ex:-1%=-1) : ")
 
         upbit.set_loglevel(log_level)
 
