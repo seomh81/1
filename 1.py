@@ -57,7 +57,7 @@ def start_buytrade(buy_amt):
                 # --------------------------------------------------------------
                 # 최근 상장하여 캔들 갯수 부족으로 보조 지표를 구하기 어려운 건은 제외
                 # --------------------------------------------------------------
-                if 'CANDLE' not in indicators or len(indicators['CANDLE']) < 2:
+                if 'CANDLE' not in indicators or len(indicators['CANDLE']) < 10:
                     logging.info('캔들 데이터 부족으로 데이터 산출 불가...[' + str(target_item['market']) + ']')
                     continue
 
@@ -201,7 +201,7 @@ if __name__ == '__main__':
 
         # 1. 로그레벨
         log_level = 'I' #input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
-        buy_amt = 6000 #input("매수금액(M:최대, 10000:1만원) : ").upper()
+        buy_amt = 10000 #input("매수금액(M:최대, 10000:1만원) : ").upper()
 
         upbit.set_loglevel(log_level)
 
