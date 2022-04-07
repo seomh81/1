@@ -97,7 +97,10 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         logging.info('- 현재가:' + str(ticker['trade_price']))
                         logging.info('- 수익률:' + str(rev_pcnt))
 
-                        if Decimal(str(rev_pcnt)) < Decimal(str(dcnt_pcnt)):
+                        #손절 기준
+                        loss_cut = dcnt_pcnt + 0.3
+
+                        if Decimal(str(rev_pcnt)) < Decimal(str(loss_cut)):
 
                             # ------------------------------------------------------------------
                             # 시장가 매도
@@ -191,8 +194,8 @@ if __name__ == '__main__':
 
         # 1. 로그레벨
         log_level = 'I' #input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
-        sell_pcnt = -1 #input("매도 수익률(ex:2%=2) : ")
-        dcnt_pcnt = -1.5 #input("고점대비 하락률(ex:-1%=-1) : ")
+        sell_pcnt = -0.1 #input("매도 수익률(ex:2%=2) : ")
+        dcnt_pcnt = -0.8 #input("고점대비 하락률(ex:-1%=-1) : ")
 
         upbit.set_loglevel(log_level)
 
