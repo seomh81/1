@@ -76,7 +76,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         diff = current_dt - last_buy_dt
 
                         # 매수 후 1분간은 진행하지 않음(업비트 오류 방지 용)
-                        if diff.seconds < 60:
+                        if diff.seconds < 120:
                             logging.info('- 매수 직후 발생하는 오류를 방지하기 위해 진행하지 않음!!!')
                             logging.info('------------------------------------------------------')
                             continue
@@ -98,7 +98,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         logging.info('- 수익률:' + str(rev_pcnt))
 
                         #손절 기준
-                        loss_cut = dcnt_pcnt + 0.3
+                        loss_cut = dcnt_pcnt
 
                         if Decimal(str(rev_pcnt)) < Decimal(str(loss_cut)):
 
@@ -116,10 +116,10 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         # -----------------------------------------------------
                         # 현재 수익률이 매도 수익률 이상인 경우에만 진행
                         # -----------------------------------------------------
-                        if Decimal(str(rev_pcnt)) < Decimal(str(sell_pcnt)):
-                            logging.info('- 현재 수익률이 매도 수익률 보다 낮아 진행하지 않음!!!')
-                            logging.info('------------------------------------------------------')
-                            continue
+                        # if Decimal(str(rev_pcnt)) < Decimal(str(sell_pcnt)):
+                        #     logging.info('- 현재 수익률이 매도 수익률 보다 낮아 진행하지 않음!!!')
+                        #     logging.info('------------------------------------------------------')
+                        #     continue
 
                         # ------------------------------------------------------------------
                         # 캔들 조회
@@ -194,8 +194,8 @@ if __name__ == '__main__':
 
         # 1. 로그레벨
         log_level = 'I' #input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
-        sell_pcnt = -0.1 #input("매도 수익률(ex:2%=2) : ")
-        dcnt_pcnt = -0.8 #input("고점대비 하락률(ex:-1%=-1) : ")
+        sell_pcnt = -0.5 #input("매도 수익률(ex:2%=2) : ")
+        dcnt_pcnt = -0.5 #input("고점대비 하락률(ex:-1%=-1) : ")
 
         upbit.set_loglevel(log_level)
 
