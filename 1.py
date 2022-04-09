@@ -85,7 +85,7 @@ def start_buytrade(buy_amt):
                 # --------------------------------------------------------------
                 if (Decimal(str(rsi[0]['RSI'])) > Decimal(str(rsi[1]['RSI'])) > Decimal(str(rsi[2]['RSI']))
                         and Decimal(str(rsi[3]['RSI'])) > Decimal(str(rsi[2]['RSI']))
-                        and Decimal(str(rsi[2]['RSI'])) < Decimal(str(21))):
+                        and Decimal(str(rsi[2]['RSI'])) < Decimal(str(25))):
                     rsi_val = True
 
                 # --------------------------------------------------------------
@@ -97,7 +97,7 @@ def start_buytrade(buy_amt):
                 # --------------------------------------------------------------
                 if (Decimal(str(mfi[0]['MFI'])) > Decimal(str(mfi[1]['MFI'])) > Decimal(str(mfi[2]['MFI']))
                         and Decimal(str(mfi[3]['MFI'])) > Decimal(str(mfi[2]['MFI']))
-                        and Decimal(str(mfi[2]['MFI'])) < Decimal(str(21))):
+                        and Decimal(str(mfi[2]['MFI'])) < Decimal(str(25))):
                     mfi_val = True
 
                 # --------------------------------------------------------------
