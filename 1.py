@@ -51,7 +51,7 @@ def start_buytrade(buy_amt):
                 # 1. 조회 기준 : 일캔들, 최근 5개 지표 조회
                 # 2. 속도를 위해 원하는 지표만 조회(RSI, MFI, MACD, CANDLE)
                 # -------------------------------------------------------------
-                indicators = upbit.get_indicator_sel(target_item['market'], '5', 200, 5,
+                indicators = upbit.get_indicator_sel(target_item['market'], '1', 200, 5,
                                                      ['RSI', 'MFI', 'MACD', 'CANDLE'])
 
                 # --------------------------------------------------------------
@@ -85,7 +85,7 @@ def start_buytrade(buy_amt):
                 # --------------------------------------------------------------
                 if (Decimal(str(rsi[0]['RSI'])) > Decimal(str(rsi[1]['RSI'])) > Decimal(str(rsi[2]['RSI']))
                         and Decimal(str(rsi[3]['RSI'])) > Decimal(str(rsi[2]['RSI']))
-                        and Decimal(str(rsi[2]['RSI'])) < Decimal(str(30))):
+                        and Decimal(str(rsi[2]['RSI'])) < Decimal(str(21))):
                     rsi_val = True
 
                 # --------------------------------------------------------------
@@ -97,7 +97,7 @@ def start_buytrade(buy_amt):
                 # --------------------------------------------------------------
                 if (Decimal(str(mfi[0]['MFI'])) > Decimal(str(mfi[1]['MFI'])) > Decimal(str(mfi[2]['MFI']))
                         and Decimal(str(mfi[3]['MFI'])) > Decimal(str(mfi[2]['MFI']))
-                        and Decimal(str(mfi[2]['MFI'])) < Decimal(str(20))):
+                        and Decimal(str(mfi[2]['MFI'])) < Decimal(str(21))):
                     mfi_val = True
 
                 # --------------------------------------------------------------
@@ -201,7 +201,7 @@ if __name__ == '__main__':
 
         # 1. 로그레벨
         log_level = 'I' #input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
-        buy_amt = 30000 #input("매수금액(M:최대, 10000:1만원) : ").upper()
+        buy_amt = 6000 #input("매수금액(M:최대, 10000:1만원) : ").upper()
 
         upbit.set_loglevel(log_level)
 
