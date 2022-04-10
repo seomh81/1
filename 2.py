@@ -97,22 +97,22 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         logging.info('- 현재가:' + str(ticker['trade_price']))
                         logging.info('- 수익률:' + str(rev_pcnt))
 
-                        #손절 기준
-                        loss_cut = dcnt_pcnt
-
-                        if Decimal(str(rev_pcnt)) < Decimal(str(loss_cut)):
-
-                            # ------------------------------------------------------------------
-                            # 시장가 매도
-                            # 실제 매도 로직은 안전을 위해 주석처리 하였습니다.
-                            # 실제 매매를 원하시면 테스트를 충분히 거친 후 주석을 해제하시면 됩니다.
-                            # ------------------------------------------------------------------
-                            logging.info('손절 시작! [' + str(target_item['market']) + ']')
-                            rtn_sellcoin_mp = upbit.sellcoin_mp(target_item['market'], 'Y')
-                            logging.info('손절 종료! [' + str(target_item['market']) + ']')
-                            logging.info(rtn_sellcoin_mp)
-                            logging.info('------------------------------------------------------')
-                            continue
+                        # #손절 기준
+                        # loss_cut = dcnt_pcnt
+                        #
+                        # if Decimal(str(rev_pcnt)) < Decimal(str(loss_cut)):
+                        #
+                        #     # ------------------------------------------------------------------
+                        #     # 시장가 매도
+                        #     # 실제 매도 로직은 안전을 위해 주석처리 하였습니다.
+                        #     # 실제 매매를 원하시면 테스트를 충분히 거친 후 주석을 해제하시면 됩니다.
+                        #     # ------------------------------------------------------------------
+                        #     logging.info('손절 시작! [' + str(target_item['market']) + ']')
+                        #     rtn_sellcoin_mp = upbit.sellcoin_mp(target_item['market'], 'Y')
+                        #     logging.info('손절 종료! [' + str(target_item['market']) + ']')
+                        #     logging.info(rtn_sellcoin_mp)
+                        #     logging.info('------------------------------------------------------')
+                        #     continue
                         # -----------------------------------------------------
                         # 현재 수익률이 매도 수익률 이상인 경우에만 진행
                         # -----------------------------------------------------
@@ -195,7 +195,7 @@ if __name__ == '__main__':
         # 1. 로그레벨
         log_level = 'I' #input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
         sell_pcnt = -0.5 #input("매도 수익률(ex:2%=2) : ")
-        dcnt_pcnt = -0.6 #input("고점대비 하락률(ex:-1%=-1) : ")
+        dcnt_pcnt = -0.5 #input("고점대비 하락률(ex:-1%=-1) : ")
 
         upbit.set_loglevel(log_level)
 
