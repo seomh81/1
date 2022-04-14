@@ -46,12 +46,12 @@ def start_buytrade(buy_amt):
 
                 logging.info('체크중....[' + str(target_item['market']) + ']')
 
-                # -------------------------------------------------------------
+                # -------------------------------------------------------------15.py
                 # 종목별 보조지표를 조회
                 # 1. 조회 기준 : 일캔들, 최근 5개 지표 조회
                 # 2. 속도를 위해 원하는 지표만 조회(RSI, MFI, MACD, CANDLE)
                 # -------------------------------------------------------------
-                indicators = upbit.get_indicator_sel(target_item['market'], '15', 200, 5,
+                indicators = upbit.get_indicator_sel(target_item['market'], 'D', 200, 5,
                                                      ['RSI', 'MFI', 'MACD', 'CANDLE'])
 
                 # --------------------------------------------------------------
