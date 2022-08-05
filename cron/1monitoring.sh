@@ -6,4 +6,4 @@ export PATH=$PATH:/usr/local/bin
 cd
 
 # Run Program
-python ~/1/1.py I >> ~/1/logs/1monitoring.log 2>&1
+python3 ~/1/1.py I >> ~/1/logs/1monitoring.log 2>&1
