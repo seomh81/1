@@ -11,7 +11,7 @@ import psycopg2
 
 # 실행 환경에 따른 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from module import upbit_websocket as upbit
+from module import upbit_ws as upbit
 
 # 프로그램 정보
 pgm_name = 'save_ticker_pg'
@@ -80,8 +80,8 @@ async def upbit_ws_client():
         # PostgreSQL 데이터 베이스 연결
         conn = psycopg2.connect(host=upbit.get_env_keyvalue('132.226.171.188')
                                 , dbname=upbit.get_env_keyvalue('upbit_db')
-                                , user=upbit.get_env_keyvalue('upbit')
-                                , password=upbit.get_env_keyvalue('seo22082208')
+                                , user=upbit.get_env_keyvalue('seo')
+                                , password=upbit.get_env_keyvalue('seo2208')
                                 , port=upbit.get_env_keyvalue('5432'))
 
         # 자동 커밋
