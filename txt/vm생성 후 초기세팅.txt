@@ -1,0 +1,40 @@
+#VM생성 후 초기세팅
+#git설치
+sudo yum -y install git
+
+#파이썬설치(업데이트)
+sudo yum install python3.9
+sudo update-alternatives --config python3
+wget https://bootstrap.pypa.io/get-pip.py
+python3 get-pip.py
+pip install pandas
+pip install requests
+pip install PyJWT
+pip install telegram
+
+#python을 python3으로 인식하게
+alias python=python3
+
+#한국시간으로 변경
+sudo timedatectl set-timezone Asia/Seoul
+timedatectl
+
+#로그관리 초기 1번만 설정
+sudo vi /etc/logrotate.d/1
+~/1/logs/*.log {
+    daily
+    rotate 2
+    dateext
+    dateyesterday
+    missingok
+    copytruncate
+    notifempty
+}
+sudo /usr/sbin/logrotate -f /etc/logrotate.conf
+
+
+#Ubuntu(GCP)의 경우
+sudo apt update && sudo apt upgrade -y
+sudo apt install software-properties-common -y
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt install python3.10 python3.10-dev

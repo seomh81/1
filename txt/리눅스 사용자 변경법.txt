@@ -1,0 +1,21 @@
+
+sudo firewall-cmd --permanent --zone=public --add-port=5432/tcp
+
+#사용자 변경해서 확인용
+sudo -i
+su - postgres
+psql
+
+
+
+------------
+su
+root 사용자로 변경한다
+sudo -i 
+su명령어처럼 root 계정으로 전환한다
+sudo -s
+위와같이 root 계정으로 전환하나, 현재 디렉토리를 유지한다
+su {username}
+다른 유저로 변환한다.
+su - {username}
+사용자를 변경하면서 환경변수까지 같이 적용한다.      pam_succeed_if.so uid = 0 use_uid quiet

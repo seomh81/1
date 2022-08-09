@@ -1,0 +1,50 @@
+#postgresql 생성 및 외부설정 세팅
+sudo dnf module list postgresql
+sudo dnf module enable postgresql:13
+sudo dnf module install postgresql:13
+psql --version
+sudo /usr/bin/postgresql-setup initdb
+sudo cat /var/lib/pgsql/data/postgresql.conf |grep timezone
+sudo systemctl enable --now postgresql
+sudo systemctl status postgresql
+sudo cat /etc/passwd |grep python
+sudo useradd python -p 'seo22082208'
+cat /etc/passwd |grep python
+ls -rlt /home/
+>OCI에서 서브넷 5432포트 개방[검색]
+sudo firewall-cmd --permanent --zone=public --add-port=5432/tcp
+sudo firewall-cmd --reload
+sudo firewall-cmd --list-all
+sudo vi /etc/selinux/config
+{
+기존 enforcing을 permissive로 변경
+}
+sudo getenforce
+sudo setenforce 0
+sudo getenforce
+sudo vi /var/lib/pgsql/data/postgresql.conf
+{
+# CONNECTIONS AND AUTHENTICATION 아래에 추가
+  listen_addresses = '*'
+}
+sudo vi /var/lib/pgsql/data/pg_hba.conf
+{
+  host    all             all             218.234.27.30/32       md5
+}
+sudo systemctl restart postgresql
+sudo systemctl status postgresql
+sudo -i
+su - postgres
+psql
+#전환
+create database upbit_db;
+create user upbit with password 'seo22082208';
+alter role upbit set client_encoding to 'utf8';
+alter role upbit set default_transaction_isolation to 'read committed';
+grant all privileges on database upbit_db to upbit;
+>DBeaver에서 접속
+
+
+
+
+
