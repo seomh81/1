@@ -1,62 +1,27 @@
-import os
-import jwt
-import sys
 import time
-import uuid
-import math
-import numpy
-import hashlib
 import logging
 import requests
-import telegram
+import jwt
+import uuid
+import hashlib
+import math
+import os
 import pandas as pd
+import numpy
 
 from urllib.parse import urlencode
 from decimal import Decimal
 from datetime import datetime
-from ast import literal_eval
+
+# Keys
+access_key = 'n1inbLR7Rq8h8xsmMp8Z18ThaQqRL9IzV2ZIzK8A'
+secret_key = 'tqakzE54kMVviOZGwx4icd4jPqyAAOJQVpRfKNAm'
+server_url = 'https://api.upbit.com'
+line_target_url = 'https://notify-api.line.me/api/notify'
+line_token = '9mpayGJB0EnNpFlllEsUu6TCbrMLQWOnthhjg2nN9KB'
 
 # 상수 설정
 min_order_amt = 5000
-
-# UPBIT URL
-server_url = 'https://api.upbit.com'
-ws_url = 'wss://api.upbit.com/websocket/v1'
-
-# 오라클 DB 관련
-os.environ['TNS_ADMIN'] = "/usr/lib/oracle/21/client64/lib/network/admin"
-os.environ["NLS_LANG"] = ".UTF8"
-
-# LINE MESSENGER URL
-line_target_url = 'https://notify-api.line.me/api/notify'
-
-
-# -----------------------------------------------------------------------------
-# - Name : get_env_keyvalue
-# - Desc : 환경변수 읽어오기
-# - Input
-#   1) key : key
-# - Output
-#   1) Value : 키에 대한 값
-# -----------------------------------------------------------------------------
-def get_env_keyvalue(key):
-    try:
-        path = '../env/env.txt'
-
-        f = open(path, 'r', encoding='UTF8')
-        line = f.readline()
-        f.close()
-
-        env_dict = literal_eval(line)
-        logging.debug(env_dict)
-
-        return env_dict[key]
-
-    # ----------------------------------------
-    # 모든 함수의 공통 부분(Exception 처리)
-    # ----------------------------------------
-    except Exception:
-        raise
 
 
 # -----------------------------------------------------------------------------
@@ -251,13 +216,13 @@ def buycoin_mp(target_item, buy_amount):
         query_hash = m.hexdigest()
 
         payload = {
-            'access_key': get_env_keyvalue('access_key'),
+            'access_key': access_key,
             'nonce': str(uuid.uuid4()),
             'query_hash': query_hash,
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
+        jwt_token = jwt.encode(payload, secret_key)
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -310,13 +275,13 @@ def buycoin_tg(target_item, buy_amount, buy_price):
         query_hash = m.hexdigest()
 
         payload = {
-            'access_key': get_env_keyvalue('access_key'),
+            'access_key': access_key,
             'nonce': str(uuid.uuid4()),
             'query_hash': query_hash,
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
+        jwt_token = jwt.encode(payload, secret_key)
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -372,13 +337,13 @@ def sellcoin_mp(target_item, cancel_yn):
         query_hash = m.hexdigest()
 
         payload = {
-            'access_key': get_env_keyvalue('access_key'),
+            'access_key': access_key,
             'nonce': str(uuid.uuid4()),
             'query_hash': query_hash,
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
+        jwt_token = jwt.encode(payload, secret_key)
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -430,13 +395,13 @@ def sellcoin_tg(target_item, sell_price):
         query_hash = m.hexdigest()
 
         payload = {
-            'access_key': get_env_keyvalue('access_key'),
+            'access_key': access_key,
             'nonce': str(uuid.uuid4()),
             'query_hash': query_hash,
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
+        jwt_token = jwt.encode(payload, secret_key)
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -482,11 +447,11 @@ def get_balance(target_item):
             max_cnt = max_cnt + 1
 
             payload = {
-                'access_key': get_env_keyvalue('access_key'),
+                'access_key': access_key,
                 'nonce': str(uuid.uuid4()),
             }
 
-            jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
+            jwt_token = jwt.encode(payload, secret_key)
             authorize_token = 'Bearer {}'.format(jwt_token)
             headers = {"Authorization": authorize_token}
 
@@ -692,11 +657,11 @@ def get_krwbal():
         fee_rate = 0.05
 
         payload = {
-            'access_key': get_env_keyvalue('access_key'),
+            'access_key': access_key,
             'nonce': str(uuid.uuid4()),
         }
 
-        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
+        jwt_token = jwt.encode(payload, secret_key)
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -761,11 +726,11 @@ def get_accounts(except_yn, market_code):
         min_price = 5000
 
         payload = {
-            'access_key': get_env_keyvalue('access_key'),
+            'access_key': access_key,
             'nonce': str(uuid.uuid4()),
         }
 
-        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key'))
+        jwt_token = jwt.encode(payload, secret_key)
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -852,6 +817,7 @@ def get_ticker(target_itemlist):
         querystring = {"markets": target_itemlist}
         response = send_request("GET", url, querystring, "")
 
+        logging.info(response)
         rtn_data = response.json()
 
         return rtn_data
@@ -923,13 +889,13 @@ def cancel_order_uuid(order_uuid):
         query_hash = m.hexdigest()
 
         payload = {
-            'access_key': get_env_keyvalue('access_key'),
+            'access_key': access_key,
             'nonce': str(uuid.uuid4()),
             'query_hash': query_hash,
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
+        jwt_token = jwt.encode(payload, secret_key)
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -967,13 +933,13 @@ def get_order(target_item):
         query_hash = m.hexdigest()
 
         payload = {
-            'access_key': get_env_keyvalue('access_key'),
+            'access_key': access_key,
             'nonce': str(uuid.uuid4()),
             'query_hash': query_hash,
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
+        jwt_token = jwt.encode(payload, secret_key)
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -1010,13 +976,13 @@ def get_order_list(side):
         query_hash = m.hexdigest()
 
         payload = {
-            'access_key': get_env_keyvalue('access_key'),
+            'access_key': access_key,
             'nonce': str(uuid.uuid4()),
             'query_hash': query_hash,
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
+        jwt_token = jwt.encode(payload, secret_key)
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -1721,13 +1687,13 @@ def get_order_status(target_item, status):
         query_hash = m.hexdigest()
 
         payload = {
-            'access_key': get_env_keyvalue('access_key'),
+            'access_key': access_key,
             'nonce': str(uuid.uuid4()),
             'query_hash': query_hash,
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
+        jwt_token = jwt.encode(payload, secret_key)
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -1814,13 +1780,13 @@ def get_order_chance(target_item):
         query_hash = m.hexdigest()
 
         payload = {
-            'access_key': get_env_keyvalue('access_key'),
+            'access_key': access_key,
             'nonce': str(uuid.uuid4()),
             'query_hash': query_hash,
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
+        jwt_token = jwt.encode(payload, secret_key)
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -1881,7 +1847,7 @@ def get_max(candle_data, col_name_high, col_name_low):
 # -----------------------------------------------------------------------------
 def send_line_message(message):
     try:
-        headers = {'Authorization': 'Bearer ' + get_env_keyvalue('line_token')}
+        headers = {'Authorization': 'Bearer ' + line_token}
         data = {'message': message}
 
         response = requests.post(line_target_url, headers=headers, data=data)
@@ -2020,9 +1986,7 @@ def send_msg(sent_list, key, contents, msg_intval):
                     logging.info('발송 주기 도래 건으로 메시지 발송 처리!')
 
                     # 메세지 발송
-                    # 2022.02.04 Telegram Message로 보내도록 수정
-                    # send_line_message(contents)
-                    send_telegram_message(contents)
+                    send_line_message(contents)
 
                     # 기존 메시지 발송이력 삭제
                     for sent_list_for in sent_list[:]:
@@ -2046,120 +2010,6 @@ def send_msg(sent_list, key, contents, msg_intval):
                 sent_list.append({'KEY': key, 'SENT_DT': datetime.now().strftime('%Y-%m-%d %H:%M:%S')})
 
         return sent_list
-
-    # ----------------------------------------
-    # 모든 함수의 공통 부분(Exception 처리)
-    # ----------------------------------------
-    except Exception:
-        raise
-
-
-# -----------------------------------------------------------------------------
-# - Name : read_file
-# - Desc : 파일 조회
-# - Input
-# 1. name : File Name
-# - Output
-# 1. 변수값
-# -----------------------------------------------------------------------------
-def read_file(name):
-    try:
-
-        file_to_listofdict = []
-
-        path = './conf/' + str(name) + '.txt'
-
-        f = open(path, 'r', encoding='UTF8')
-        lines = f.read().splitlines()
-        f.close()
-
-        for line in lines:
-            txt_to_dict = literal_eval(line)
-            file_to_listofdict.append(txt_to_dict)
-
-        return file_to_listofdict
-
-    # ----------------------------------------
-    # 모든 함수의 공통 부분(Exception 처리)
-    # ----------------------------------------
-    except FileNotFoundError:
-        logging.info('파일이 존재하지 않습니다! 파일을 생성합니다. 파일명[' + str(name) + '.txt]')
-
-        with open(path, "w", encoding="utf-8") as f:
-            f.close()
-
-        logging.info('파일 생성 완료. 파일명[' + str(name) + '.txt]')
-        return None
-
-    except Exception:
-        raise
-
-
-# -----------------------------------------------------------------------------
-# - Name : send_telegram_msg
-# - Desc : 텔레그램 메세지 전송
-# - Input
-#   1) message : 메세지
-# -----------------------------------------------------------------------------
-def send_telegram_message(message):
-    try:
-        # 텔레그램 메세지 발송
-        bot = telegram.Bot(get_env_keyvalue('telegram_token'))
-        res = bot.sendMessage(chat_id=get_env_keyvalue('telegram_id'), text=message)
-
-        return res
-
-    # ----------------------------------------
-    # 모든 함수의 공통 부분(Exception 처리)
-    # ----------------------------------------
-    except Exception:
-        raise
-
-
-# -----------------------------------------------------------------------------
-# - Name : write_config
-# - Desc : 파일 쓰기(새로쓰기)
-# - Input
-# 1. name : Config File Name
-# 2. req_val : 변수값
-# - Output
-# -----------------------------------------------------------------------------
-def write_config(name, req_val):
-    try:
-
-        # 파일명
-        file_name = './conf/' + str(name) + '.txt'
-
-        # 파일에 저장
-        with open(file_name, "w", encoding="utf-8") as f:
-            f.write(str(req_val))
-            f.close()
-
-    # ----------------------------------------
-    # 모든 함수의 공통 부분(Exception 처리)
-    # ----------------------------------------
-    except Exception:
-        raise
-
-
-# -----------------------------------------------------------------------------
-# - Name : write_config_append
-# - Desc : 파일 쓰기(추가)
-# - Input
-# 1. name : Config File Name
-# 2. req_val : 변수값
-# - Output
-# -----------------------------------------------------------------------------
-def write_config_append(name, req_val):
-    try:
-
-        # 파일명
-        file_name = './conf/' + str(name) + '.txt'
-
-        # 파일에 저장(추가하기)
-        with open(file_name, "a", encoding="utf-8") as f:
-            f.write(str(req_val))
-            f.close()
 
     # ----------------------------------------
     # 모든 함수의 공통 부분(Exception 처리)

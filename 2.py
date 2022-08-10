@@ -205,7 +205,7 @@ if __name__ == '__main__':
         logging.info("3. 고점대비 하락률 : " + str(dcnt_pcnt))
         logging.info("*********************************************************")
 
-        # 매수 로직 시작
+        # 매도 로직 시작
         start_selltrade(sell_pcnt, dcnt_pcnt)
 
 

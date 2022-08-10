@@ -1,0 +1,291 @@
+도커 이미지 확인
+docker images -a
+
+도커 프로세스 확인
+docker ps
+프로세스 id만 확인
+docker ps -qa
+
+도커 이미지 삭제 - 실행중은 삭제불가
+docker rmi [이미지]
+
+강제 삭제 - 언태깅만 되고 이미지/컨테이너 삭제 안됨... 쓰지말자
+docker rmi -f: 이미지 강제 삭제(DON’T!)
+
+모두 강제 삭제 - 세트로 사용하자
+docker rm -f $(docker ps -aq --filter ancestor=[이미지])
+docker rmi [이미지]
+
+모든 도커이미지 삭제 - 복구 불가
+docker rm -f $(docker ps -aq)
+docker rmi $(docker images -q)
+
+사용하지 이미지만 삭제
+docker image prune
+
+컨테이너에 사용중이지 않은 모든 이미지 일괄 삭제
+docker image prune -a
+
+컨테이너 프로세스 일괄 종료
+docker rm -f $(docker ps -qa)
+낱개 종료
+docker rm -f [프로세스아이디]
+
+-------------------------------------------
+# 리눅스 배포판 확인 - ec2 사용
+cat /etc/redhat-release
+
+# root 계정 로그인
+sudo su
+
+# yum 업데이트
+yum -y update
+
+# 도커 repository 추가
+yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+# container-selinux 설치
+yum install -y http://mirror.centos.org/centos/7/extras/x86_64/Packages/container-selinux-2.33-1.git86f33cd.el7.noarch.rpm
+
+# docker-ce 설치
+yum install -y docker-ce
+
+
+
+> package docker-ce-3:19.03.5-3.el7.x86_64 requires containerd.io >= 1.2.2-3, but none of the providers can be installed
+내용을 살펴보면 도커ce는 containerd.io>=1.2.2-3이 필요하다고 한다.
+
+하지만 구글링해보니 CentOs8/RHEL 8에서는 지원이 안된다고 한다.
+
+그래서 설치가 안되는 패키지는 제외하고 설치를 한다.
+
+
+dnf -y install docker-ce --nobest
+[dnf?]
+
+dnf는 yum을 대체하는 패키지 관리자로 CentOs8부터 기본 패키지 관리자이다.
+
+(여기서 dnf를 사용한 이유는 모르겠음... yum을 사용해도 될 것 같음)
+
+
+이제 도커를 설치했으니 시작하고 상태를 확인해보자
+
+# 도커 시작
+systemctl enable --now docker
+# 도커 상태 확인
+systemctl status docker
+
+
+2# 도커관련 명령어
+
+
+# 도커 버전 확인
+docker -v
+# 도커 이미지 확인
+docker images
+
+------------------------
+
+Deepo 설치하기
+Deepo 설치에 앞서서
+아래가 대략의 설치 환경입니다.
+
+OS: Ubuntu 18.04
+CUDA: 10.1 이상
+CUDNN: 7.X 이상
+Docker: 19.x
+nVidia-docker: https://github.com/NVIDIA/nvidia-docker
+Deepo 설치하기
+Docker Hub에서 Deepo 이미지 설치하기
+
+아래 명령어를 실행하면 최신 deepo 도커 이미지를 설치할 수 있습니다.
+
+$ docker pull ufoym/deepo
+설치가 잘 되었는지 확인해봅니다.
+
+$ docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+...
+ufoym/deepo         all-py36-cu101      5d5a5c342dbf        2 weeks ago         13.3GB
+ufoym/deepo         latest              5d5a5c342dbf        2 weeks ago         13.3GB
+...
+저는 2개의 별도 버전을 설치했는데, 동일한 것으로 보이네요.
+
+이것으로 설치완료입니다. 이제부터 사용하기만 하면 됩니다. 다만, 도커에 익숙하지 않은 분들을 위해서 몇 가지 더 설명해봅니다.
+
+Docker 실행하기
+아래는 deepo 도커를 실행하고 bash로 진입하는 명령어입니다.
+
+$ docker run -p 8888:8888 --gpus all -it -v {host-dir}:{container-dir} ufoym/deepo bash
+도커 옵션 설명:
+
+run: 도커 실행 명령어
+"-p 8888:8888": 컨테이너의 8888번 포트를 호스트 OS 8888번 포트로 포워드하는 옵션입니다. 나중에 jupyter notebook이나 lab에서 사용하는 8888번 포트를 외부에서도 접속이 가능해집니다.
+"--gpus all": 컨테이너의 gpu 사용을 가능하도록 하는 옵션입니다.
+"-it": 인터랙티브 터미널을 사용하기 위한 옵션입니다.
+"-v {host-dir}:{container-dir}": 호스트의 디렉토리를 컨테이너 내부에 공유하기 위한 옵션입니다.
+"bash": 터미널에서 실행할 명령어입니다. bash 쉘을 통해 도커에 진입하게 됩니다.
+Jupyter Lab 설치하기
+저는 Jupyter Notebook 보다는 Jupyter Lab을 선호하는데 Deepo에는 안타깝게도 Jupyter Notebook만 설치되어 있습니다. Jupyter Lab을 설치하겠습니다. 컨테이너 내부에서 설치한다고 가정합니다.
+
+----부연설명----
+docker container run --gpus all -it -p 8888:8888 -v /deepo/data:/data bash
+(OCI VM인스턴스에 GPU가 없어서 아래 항목을 빼야함)
+docker container run -it -p 8888:8888 -v /deepo/data:/data bash
+-v (--volume) : 볼륨 옵션을 이용하여 data 및 config 파일들을 공유하도록하였다. 그래서 도커가 다시 실행하여도 데이터가 보존된다.
+--gpus all : 컨테이너의 GPU 사용을 가능하도록 하는 옵션이다.
+-it : 인터랙티브 터미널을 사용하기 위한 옵션이다.
+/bin/bash : 터미널에서 실행할 명령어이다. bash 쉘을 통해 도커에 진입하게 된다.
+--------------
+
+
+# pip install jupyterlab
+또는 컨테이너 외부에서도 설치할 수 있습니다.
+
+# docker exec -it {container-name} pip install jupyterlab
+Jupyer Lab 실행하기
+컨테이너 내부에서 실행할 때는 아래와 같이 실행하면 됩니다.
+
+# nohup jupyter lab --ip 0.0.0.0 --port 8888 --allow-root --no-browser &
+포트는 아까 실행할때 지정한 8888번 포트로 띄웁니다. 그러면, 이제 호스트 OS의 8888번 포트를 열어두기만 하면 외부에서도 접근이 가능해집니다. 그리고 컨테이너 내부에서 root로 실행시키고 있기 때문에, --allow-root 옵션이 필요하고 브라우저가 없기 때문에 --no-browser 옵션도 같이 붙여 실행합니다.
+
+Deepo에 변경사항 저장하기
+필요에 따라서 Jupyter Lab 등 별도의 라이브러리나 프레임워크를 설치하는 경우에는 도커를 실행할 때마다 리셋되기 때문에 재설치의 번거로움이 있습니다. 이런 경우 변경사항을 저장해서 내가 원하는 최적의 환경을 구축할 수 있습니다.
+
+$ docker commit {container-id} {new-image-name}
+위 명령어를 실행하면 현재 실행중인 컨테이너의 상태를 저장하여 새로운 도커 이미지로 생성합니다.
+
+$ docker commit f7e19aaeef3f deepo_jupyterlab
+을 실행하고 이미지를 확인해보겠습니다.
+
+$ sudo docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+deepo_jupyterlab    latest              19ea1eeb6d17        2 hours ago         13.3GB
+ufoym/deepo         all-py36-cu101      5d5a5c342dbf        2 weeks ago         13.3GB
+ufoym/deepo         latest              5d5a5c342dbf        2 weeks ago         13.3GB
+위와 같이 새롭게 생성한 도커 이미지를 실행하면 jupyter lab이 설치된 나만의 이미지를 실행할 수 있게 됩니다.
+
+
+
+-------------------------------------
+
+도커 주피터노트북 설치
+
+docker pull jupyter/datascience-notebook
+
+도커에 파이썬환경 3.10
+
+docker pull python:3.10
+
+
+
+
+도커로 주피터랩 실행
+Jun 9, 2021
+
+Tags: Docker, linux, Jupyter
+
+본인 설치환경 :
+
+OS : Ubuntu 18.04.5 LTS
+
+CUDA : 11.1
+
+Docker 20.10.6
+
+nVidia-docker: https://github.com/NVIDIA/nvidia-docker
+
+
+
+1. Deepo 이미지 설치
+
+
+딥러닝 / 머신러닝 라이브러리 다수 포함한 이미지 (Jupyter Lab은 미설치)
+
+
+
+$ docker pull ufoym/deepo
+Copy
+
+
+설치 확인
+
+
+
+$ docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+...
+ufoym/deepo         all-py36-cu101      5d5a5c342dbf        2 weeks ago         13.3GB
+ufoym/deepo         latest              5d5a5c342dbf        2 weeks ago         13.3GB
+...
+Copy
+
+
+2. Docker Container 실행
+
+
+$ docker run -p {접속할 포트 번호}:8888 --gpus all -it -v {host-dir}:{container-dir} ufoym/deepo bash
+Copy
+
+
+run: 도커 실행 명령어
+“-p 8888:8888”: 컨테이너의 8888번 포트를 호스트 OS 8888번 포트로 포워딩
+-gpus all”: 컨테이너의 gpu를 사용
+“-it”: 인터랙티브 터미널을 사용 (컨테이너 내에서 명령어 사용 가능해짐. 반대로 터미널로 접속 없이 외부에서 명령어 내릴땐 exec)
+“-v {host-dir}:{container-dir}”: 호스트와 컨테이너가 각각 공유용으로 사용할 폴더
+“bash”: 터미널에서 실행할 명령어
+
+
+3. Jupyter Lab 설치
+
+
+$ pip install jupyterlab   ## 터미널 내부에서 설치할 때
+$ docker exec -it {container-name} pip install jupyterlab  ## 터미널 외부에서 설치할때
+Copy
+
+
+4. Jupyter Lab 실행
+
+
+$ jupyter lab --ip 0.0.0.0 --port 8888 --allow-root --no-browser &
+Copy
+
+
+5. 변경사항이 반영된 이미지를 새로 저장
+
+
+$ docker ps  ## 실행중인 도커 컨테이너 아이디 확인
+$ docker commit {container-id} {new-image-name}
+$ sudo docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+{new-image-name}    latest              19ea1eeb6d17        2 hours ago         13.3GB
+ufoym/deepo         all-py36-cu101      5d5a5c342dbf        2 weeks ago         13.3GB
+ufoym/deepo         latest              5d5a5c342dbf        2 weeks ago         13.3GB
+Copy
+
+
+6. 도커 컨테이너 및 주피터 백그라운드 / 포그라운드 조작
+
+
+컨테이너 실행 유지하면서 인터랙티브 터미널 빠져나오기(deattach) : ctrl+p 후 ctrl+q
+컨테이너로 다시 접속(attach) :
+$ docker attach {container-id}
+Copy
+컨테이너 종료 :
+$ exit
+Copy
+주피터랩 백그라운드 전환 : ctrl+z (이 경우 프로세스는 일시정지 상태)
+백그라운드 프로세스 목록 확인 :
+$ jobs
+Copy
+정지된 프로세스 백그라운드에서 실행 :
+$ bg  ## 모든 정지된 프로세스 전부 백그라운드 전환
+$ bg {num}  ## 특정 번호의 프로세스만 백그라운드 전환
+Copy
+백그라운드 프로세스 포그라운드로 전환 :
+$ fg % {num}
+Copy
+백그라운드 프로세스 PID 조회 및 강제 종료:
+$ ps -ef|grep {process}  ## PID 조회
+$ kill -9 {PID}  ## 강제종료
+$ kill -9 `ps -ef|grep {process}`  ## 한번에

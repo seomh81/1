@@ -15,23 +15,6 @@ from urllib.parse import urlencode
 from decimal import Decimal
 from datetime import datetime
 from ast import literal_eval
-import os
-import jwt
-import sys
-import time
-import uuid
-import math
-import numpy
-import hashlib
-import logging
-import requests
-import telegram
-import pandas as pd
-
-from urllib.parse import urlencode
-from decimal import Decimal
-from datetime import datetime
-from ast import literal_eval
 
 # 상수 설정
 min_order_amt = 5000

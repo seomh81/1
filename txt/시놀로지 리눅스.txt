@@ -1,0 +1,39 @@
+시놀로지가 필요한 것만 모아서 만든 리눅스이기에 gcc 컴파일러도 설치할 수 있다.
+
+1. ssh 접속
+제어판 - 터미널 허용
+root 계정으로 로그인
+
+2. ipkg 설치 (Itsy Package Management System)
+yum 같은 패키지 관리자 프로그램인듯.
+기본으로 설치되어 있는 dpkg 로도 되는지는 안해봐서 모르겠음.
+참고 : http://www.vspecialist.co.uk/2014/09/how-to-install-ipkg-on-a-synology-nas/
+# cd /tmp
+# wget http://ipkg.nslu2-linux.org/feeds/optware/syno-i686/cross/unstable/syno-i686-bootstrap_1.2-7_i686.xsh
+......
+# chmod +x syno-i686-bootstrap_1.2-7_i686.xsh
+# sh syno-i686-bootstrap_1.2-7_i686.xsh
+.....
+# rm syno-i686-bootstrap_1.2-7_i686.xsh
+# ipkg update
+....
+
+
+3. gcc 설치
+# ipkg install gcc
+# ipkg install make
+# ipkg install automake
+
+
+4. 에러대처
+* gcc 컴파일시 에러
+/opt/lib/gcc/i686-linux-gnu/4.2.1/../../../../i686-linux-gnu/bin/as: error while loading shared libraries: libz.so.1: cannot open shared object file: no such file or directory
+zlib 이 없기 때문이다. zlib을 설치해준다.
+# ipkg install zlib
+
+
+* gcc 컴파일시 에러
+/lib/libc.so.6: file not recognized: file format not recognized
+정확하지는 않지만, 32비트, 64비트 관련된 오류인듯.
+/opt/lib/libc.so 파일안에 아래의 내용을 바꿔준다.
+GROUP ( /lib/libc.so.6 /opt/lib/libc_nonshared.a ) → GROUP ( /lib32/libc.so.6 /opt/lib/libc_nonshared.a )
