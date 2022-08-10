@@ -8,7 +8,7 @@ from decimal import Decimal
 
 # 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from module import upbit
+from module import upbit4linux
 
 
 # -----------------------------------------------------------------------------
@@ -30,7 +30,7 @@ def sell_coin_mp(target_item, min_buy_amt, min_sell_amt):
         # -----------------------------------------------------------------
         # 시장가 매도 진행
         # -----------------------------------------------------------------
-        upbit.sellcoin_mp(target_item, 'N')
+        upbit4linux.sellcoin_mp(target_item, 'N')
 
         # -----------------------------------------------------------------
         # 시장가 매수 진행
@@ -63,7 +63,7 @@ def buy_coin_mp(target_item, min_buy_amt, min_sell_amt):
         # -----------------------------------------------------------------
         # 시장가 매수 진행
         # -----------------------------------------------------------------
-        upbit.buycoin_mp(target_item, min_buy_amt)
+        upbit4linux.buycoin_mp(target_item, min_buy_amt)
 
         # -----------------------------------------------------------------
         # 시장가 매도 진행
@@ -93,7 +93,7 @@ def start_trade(target_item):
         # -----------------------------------------------------------------
         # 최소 매수/매도 금액 추출
         # -----------------------------------------------------------------
-        order_chance = upbit.get_order_chance(target_item)
+        order_chance = upbit4linux.get_order_chance(target_item)
 
         # 최소 매수금액
         min_buy_amt = order_chance['market']['bid']['min_total']
@@ -144,7 +144,7 @@ if __name__ == '__main__':
         log_level = input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
         target_item = input("종목코드(ex:KRW-DOGE) : ").upper()
 
-        upbit.set_loglevel(log_level)
+        upbit4linux.set_loglevel(log_level)
 
         logging.info("*********************************************************")
         logging.info("1. 로그레벨 : " + str(log_level))

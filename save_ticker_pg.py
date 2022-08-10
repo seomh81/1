@@ -11,7 +11,7 @@ import psycopg2
 
 # 실행 환경에 따른 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from module import upbit
+from module import upbit4linux
 
 # 프로그램 정보
 pgm_name = 'save_ticker_pg'
@@ -27,7 +27,7 @@ def get_subscribe_items():
         subscribe_items = []
 
         # KRW 마켓 전 종목 추출
-        items = upbit.get_items('KRW', '')
+        items = upbit4linux.get_items('KRW', '')
 
         # 종목코드 배열로 변환
         for item in items:
@@ -78,11 +78,11 @@ async def upbit_ws_client():
         subscribe_data = json.dumps(subscribe_fmt)
 
         # PostgreSQL 데이터 베이스 연결
-        conn = psycopg2.connect(host=upbit.get_env_keyvalue('pg_host')
-                                , dbname=upbit.get_env_keyvalue('pg_dbname')
-                                , user=upbit.get_env_keyvalue('pg_userid')
-                                , password=upbit.get_env_keyvalue('pg_passwd')
-                                , port=upbit.get_env_keyvalue('pg_port'))
+        conn = psycopg2.connect(host=upbit4linux.get_env_keyvalue('pg_host')
+                                , dbname=upbit4linux.get_env_keyvalue('pg_dbname')
+                                , user=upbit4linux.get_env_keyvalue('pg_userid')
+                                , password=upbit4linux.get_env_keyvalue('pg_passwd')
+                                , port=upbit4linux.get_env_keyvalue('pg_port'))
 
         # 자동 커밋
         conn.autocommit = True
@@ -97,7 +97,7 @@ async def upbit_ws_client():
                                        ,MARKET_WARNING,TIMESTAMP,STREAM_TYPE,SYS_DATETIME) \
                                 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,CURRENT_TIMESTAMP);"
 
-        async with websockets.connect(upbit.ws_url) as websocket:
+        async with websockets.connect(upbit4linux.ws_url) as websocket:
 
             await websocket.send(subscribe_data)
 
@@ -187,11 +187,11 @@ if __name__ == "__main__":
         if sys.platform.startswith('win32'):
             # 로그레벨(D:DEBUG, E:ERROR, 그외:INFO)
             log_level = 'I'
-            upbit.set_loglevel(log_level)
+            upbit4linux.set_loglevel(log_level)
         else:
             # 로그레벨(D:DEBUG, E:ERROR, 그외:INFO)
             log_level = sys.argv[1].upper()
-            upbit.set_loglevel(log_level)
+            upbit4linux.set_loglevel(log_level)
 
         if log_level == '':
             logging.error("입력값 오류!")

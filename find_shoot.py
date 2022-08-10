@@ -7,7 +7,7 @@ import cx_Oracle
 
 # 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from module import upbit
+from module import upbit4linux
 
 
 # -----------------------------------------------------------------------------
@@ -20,8 +20,8 @@ def start_find_shoot():
         data_cnt = 0
 
         # DB 연결
-        conn = cx_Oracle.connect(upbit.get_env_keyvalue('p_username'), upbit.get_env_keyvalue('p_password'),
-                                 upbit.get_env_keyvalue('p_service'))
+        conn = cx_Oracle.connect(upbit4linux.get_env_keyvalue('p_username'), upbit4linux.get_env_keyvalue('p_password'),
+                                 upbit4linux.get_env_keyvalue('p_service'))
 
         # 커서 획득
         c = conn.cursor()
@@ -86,7 +86,7 @@ def start_find_shoot():
                     message = message + '\n상승률:' + str(row[8])
                     message = message + '\n거래건수:' + str(row[7])
 
-                    upbit.send_telegram_message(message)
+                    upbit4linux.send_telegram_message(message)
 
                     logging.info('메세지 발송 완료!')
                     logging.info(message)
@@ -121,7 +121,7 @@ if __name__ == '__main__':
 
         # 로그레벨(D:DEBUG, E:ERROR, 그외:INFO)
         log_level = sys.argv[1].upper()
-        upbit.set_loglevel(log_level)
+        upbit4linux.set_loglevel(log_level)
 
         if log_level == '':
             logging.error("입력값 오류!")

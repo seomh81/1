@@ -10,7 +10,7 @@ import websockets
 
 # 실행 환경에 따른 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from module import upbit
+from module import upbit4linux
 
 # 프로그램 정보
 pgm_name = 'websocket'
@@ -26,7 +26,7 @@ def get_subscribe_items():
         subscribe_items = []
 
         # KRW 마켓 전 종목 추출
-        items = upbit.get_items('KRW', '')
+        items = upbit4linux.get_items('KRW', '')
 
         # 종목코드 배열로 변환
         for item in items:
@@ -69,7 +69,7 @@ async def upbit_ws_client():
 
         subscribe_data = json.dumps(subscribe_fmt)
 
-        async with websockets.connect(upbit.ws_url) as websocket:
+        async with websockets.connect(upbit4linux.ws_url) as websocket:
 
             await websocket.send(subscribe_data)
 
@@ -141,11 +141,11 @@ if __name__ == "__main__":
         if sys.platform.startswith('win32'):
             # 로그레벨(D:DEBUG, E:ERROR, 그외:INFO)
             log_level = 'I'
-            upbit.set_loglevel(log_level)
+            upbit4linux.set_loglevel(log_level)
         else:
             # 로그레벨(D:DEBUG, E:ERROR, 그외:INFO)
             log_level = sys.argv[1].upper()
-            upbit.set_loglevel(log_level)
+            upbit4linux.set_loglevel(log_level)
 
         if log_level == '':
             logging.error("입력값 오류!")

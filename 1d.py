@@ -8,7 +8,7 @@ from decimal import Decimal
 
 # 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from module import upbit
+from module import upbit4linux
 
 
 # -----------------------------------------------------------------------------
@@ -33,7 +33,7 @@ def start_buytrade(buy_amt):
             # -----------------------------------------------------------------
             # 전체 종목 리스트 추출
             # -----------------------------------------------------------------
-            target_items = upbit.get_items('KRW', '')
+            target_items = upbit4linux.get_items('KRW', '')
 
             # -----------------------------------------------------------------
             # 종목별 체크
@@ -51,8 +51,8 @@ def start_buytrade(buy_amt):
                 # 1. 조회 기준 : 일캔들, 최근 5개 지표 조회
                 # 2. 속도를 위해 원하는 지표만 조회(RSI, MFI, MACD, CANDLE)
                 # -------------------------------------------------------------
-                indicators = upbit.get_indicator_sel(target_item['market'], 'D', 200, 5,
-                                                     ['RSI', 'MFI', 'MACD', 'CANDLE'])
+                indicators = upbit4linux.get_indicator_sel(target_item['market'], 'D', 200, 5,
+                                                           ['RSI', 'MFI', 'MACD', 'CANDLE'])
 
                 # --------------------------------------------------------------
                 # 최근 상장하여 캔들 갯수 부족으로 보조 지표를 구하기 어려운 건은 제외
@@ -126,7 +126,7 @@ def start_buytrade(buy_amt):
                     # ------------------------------------------------------------------
                     # 기매수 여부 판단
                     # ------------------------------------------------------------------
-                    accounts = upbit.get_accounts('Y', 'KRW')
+                    accounts = upbit4linux.get_accounts('Y', 'KRW')
                     account = list(filter(lambda x: x.get('market') == target_item['market'], accounts))
 
                     # 이미 매수한 종목이면 다시 매수하지 않음
@@ -140,7 +140,7 @@ def start_buytrade(buy_amt):
                     # 1. M : 수수료를 제외한 최대 가능 KRW 금액만큼 매수
                     # 2. 금액 : 입력한 금액만큼 매수
                     # ------------------------------------------------------------------
-                    available_amt = upbit.get_krwbal()['available_krw']
+                    available_amt = upbit4linux.get_krwbal()['available_krw']
 
                     if buy_amt == 'M':
                         buy_amt = available_amt
@@ -155,8 +155,8 @@ def start_buytrade(buy_amt):
                     # ------------------------------------------------------------------
                     # 최소 주문 금액(업비트 기준 5000원) 이상일 때만 매수로직 수행
                     # ------------------------------------------------------------------
-                    if Decimal(str(buy_amt)) < Decimal(str(upbit.min_order_amt)):
-                        logging.info('주문금액[' + str(buy_amt) + ']이 최소 주문금액[' + str(upbit.min_order_amt) + '] 보다 작습니다.')
+                    if Decimal(str(buy_amt)) < Decimal(str(upbit4linux.min_order_amt)):
+                        logging.info('주문금액[' + str(buy_amt) + ']이 최소 주문금액[' + str(upbit4linux.min_order_amt) + '] 보다 작습니다.')
                         continue
 
                     # ------------------------------------------------------------------
@@ -165,7 +165,7 @@ def start_buytrade(buy_amt):
                     # 실제 매매를 원하시면 테스트를 충분히 거친 후 주석을 해제하시면 됩니다.
                     # ------------------------------------------------------------------
                     logging.info('시장가 매수 시작! [' + str(target_item['market']) + ']')
-                    rtn_buycoin_mp = upbit.buycoin_mp(target_item['market'], buy_amt)
+                    rtn_buycoin_mp = upbit4linux.buycoin_mp(target_item['market'], buy_amt)
                     logging.info('시장가 매수 종료! [' + str(target_item['market']) + ']')
                     logging.info(rtn_buycoin_mp)
 
@@ -203,7 +203,7 @@ if __name__ == '__main__':
         log_level = 'I' #input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
         buy_amt = 5997 #input("매수금액(M:최대, 10000:1만원) : ").upper()
 
-        upbit.set_loglevel(log_level)
+        upbit4linux.set_loglevel(log_level)
 
         logging.info("*********************************************************")
         logging.info("1. 로그레벨 : " + str(log_level))
