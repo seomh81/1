@@ -40,7 +40,7 @@ line_target_url = 'https://notify-api.line.me/api/notify'
 # -----------------------------------------------------------------------------
 def get_env_keyvalue(key):
     try:
-        path = './env/env.txt'
+        path = 'env4linux.txt'
 
         f = open(path, 'r', encoding='UTF8')
         line = f.readline()
