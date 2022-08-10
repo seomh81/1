@@ -317,7 +317,7 @@ def buycoin_tg(target_item, buy_amount, buy_price):
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
+        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key'))#.decode('utf8')
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -379,7 +379,7 @@ def sellcoin_mp(target_item, cancel_yn):
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
+        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key'))#.decode('utf8')
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -437,7 +437,7 @@ def sellcoin_tg(target_item, sell_price):
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
+        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key'))#.decode('utf8')
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -487,7 +487,7 @@ def get_balance(target_item):
                 'nonce': str(uuid.uuid4()),
             }
 
-            jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
+            jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key'))#.decode('utf8')
             authorize_token = 'Bearer {}'.format(jwt_token)
             headers = {"Authorization": authorize_token}
 
@@ -697,7 +697,7 @@ def get_krwbal():
             'nonce': str(uuid.uuid4()),
         }
 
-        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
+        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key'))#.decode('utf8')
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -930,7 +930,7 @@ def cancel_order_uuid(order_uuid):
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
+        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key'))#.decode('utf8')
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -974,7 +974,7 @@ def get_order(target_item):
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
+        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key'))#.decode('utf8')
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -1017,7 +1017,7 @@ def get_order_list(side):
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
+        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key'))#.decode('utf8')
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
@@ -1821,7 +1821,7 @@ def get_order_chance(target_item):
             'query_hash_alg': 'SHA512',
         }
 
-        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key')).decode('utf8')
+        jwt_token = jwt.encode(payload, get_env_keyvalue('secret_key'))#.decode('utf8')
         authorize_token = 'Bearer {}'.format(jwt_token)
         headers = {"Authorization": authorize_token}
 
