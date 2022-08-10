@@ -6,6 +6,8 @@ import traceback
 import cx_Oracle
 
 # 공통 모듈 Import
+import psycopg2
+
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from module import upbit
 
@@ -20,9 +22,11 @@ def start_find_shoot():
         data_cnt = 0
 
         # DB 연결
-        conn = cx_Oracle.connect(upbit.get_env_keyvalue('p_username'), upbit.get_env_keyvalue('p_password'),
-                                 upbit.get_env_keyvalue('p_service'))
-
+        conn = psycopg2.connect(host='132.226.171.188'
+                                , dbname='upbit_db'
+                                , user='upbit'
+                                , password='seo22082208'
+                                , port='5432')
         # 커서 획득
         c = conn.cursor()
 
@@ -120,7 +124,7 @@ if __name__ == '__main__':
         print("[1] 로그레벨(D:DEBUG, E:ERROR, 그외:INFO)")
 
         # 로그레벨(D:DEBUG, E:ERROR, 그외:INFO)
-        log_level = sys.argv[1].upper()
+        log_level = 'I'
         upbit.set_loglevel(log_level)
 
         if log_level == '':
