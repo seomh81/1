@@ -30,8 +30,6 @@ os.environ["NLS_LANG"] = ".UTF8"
 # LINE MESSENGER URL
 line_target_url = 'https://notify-api.line.me/api/notify'
 
-
-
 # -----------------------------------------------------------------------------
 # - Name : get_env_keyvalue
 # - Desc : 환경변수 읽어오기
