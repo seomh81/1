@@ -11,7 +11,6 @@ from decimal import Decimal
 
 # 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from module import oldupbit
 
 
 # -----------------------------------------------------------------------------

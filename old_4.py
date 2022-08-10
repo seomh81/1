@@ -4,16 +4,14 @@ import sys
 import os
 import time
 from datetime import datetime, timedelta
-import traceback
 import pandas as pd
 import numpy
-from multiprocessing import Pool
 
 from decimal import Decimal
 
 # 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from module import oldupbit as upbit  # noqa
+from module.old import oldupbit as upbit
 
 
 # -----------------------------------------------------------------------------

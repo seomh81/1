@@ -19,15 +19,12 @@ import os
 import sys
 import time
 import traceback
-import upbitpy
 import pyupbit
-import requests
-from decimal import Decimal
 import datetime
 
 # 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from module import upbit_3 as upbit  # noqa
+from module.old import upbit_3 as upbit
 
 
 # -----------------------------------------------------------------------------

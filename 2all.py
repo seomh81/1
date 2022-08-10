@@ -1,13 +1,13 @@
 import os
 import sys
 import logging
-import math
 import traceback
 import time
 
 # 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from module import oldupbit as upbit
+from module.old import oldupbit as upbit
+
 #from module import upbit as upbit  # noqa
 
 # -----------------------------------------------------------------------------
