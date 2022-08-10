@@ -12,7 +12,7 @@ from datetime import datetime
 
 # 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from module import upbit4linux
+from module import upbit
 
 
 # -----------------------------------------------------------------------------
@@ -33,13 +33,13 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
             # ------------------------------------------------------------------
             # 보유 종목조회
             # ------------------------------------------------------------------
-            target_items = upbit4linux.get_accounts('Y', 'KRW')
+            target_items = upbit.get_accounts('Y', 'KRW')
 
             # ------------------------------------------------------------------
             # 보유 종목 현재가 조회
             # ------------------------------------------------------------------
-            target_items_comma = upbit4linux.chg_account_to_comma(target_items)
-            tickers = upbit4linux.get_ticker(target_items_comma)
+            target_items_comma = upbit.chg_account_to_comma(target_items)
+            tickers = upbit.get_ticker(target_items_comma)
 
             # -----------------------------------------------------------------
             # 보유 종목별 진행
@@ -55,10 +55,10 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         # 3. 매수 거래만 필터링
                         # 4. 가장 최근 거래일자부터 현재까지 고점을 조회
                         # -------------------------------------------------
-                        order_done = upbit4linux.get_order_status(target_item['market'], 'done') + upbit4linux.get_order_status(
+                        order_done = upbit.get_order_status(target_item['market'], 'done') + upbit.get_order_status(
                             target_item['market'], 'cancel')
-                        order_done_sorted = upbit4linux.orderby_dict(order_done, 'created_at', True)
-                        order_done_filtered = upbit4linux.filter_dict(order_done_sorted, 'side', 'bid')
+                        order_done_sorted = upbit.orderby_dict(order_done, 'created_at', True)
+                        order_done_filtered = upbit.filter_dict(order_done_sorted, 'side', 'bid')
 
                         # -------------------------------------------------
                         # 매수 직후 나타나는 오류 체크용 마지막 매수 시간 차이 계산
@@ -101,7 +101,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         if Decimal(str(rev_pcnt)) < -3.1:
                             logging.info('- 손절, -3.1% 이하!!!!!!!!!!!!!!!!!!!!!!!!!')
                             logging.info('시장가 매도 시작! [' + str(target_item['market']) + ']')
-                            rtn_sellcoin_mp = upbit4linux.sellcoin_mp(target_item['market'], 'Y')
+                            rtn_sellcoin_mp = upbit.sellcoin_mp(target_item['market'], 'Y')
                             logging.info('시장가 매도 종료! [' + str(target_item['market']) + ']')
                             logging.info(rtn_sellcoin_mp)
                             logging.info('------------------------------------------------------')
@@ -118,7 +118,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         # ------------------------------------------------------------------
                         # 캔들 조회
                         # ------------------------------------------------------------------
-                        candles = upbit4linux.get_candle(target_item['market'], '30', 200)
+                        candles = upbit.get_candle(target_item['market'], '30', 200)
 
                         # ------------------------------------------------------------------
                         # 최근 매수일자 다음날부터 현재까지의 최고가를 계산
@@ -147,7 +147,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                             # 실제 매매를 원하시면 테스트를 충분히 거친 후 주석을 해제하시면 됩니다.
                             # ------------------------------------------------------------------
                             logging.info('시장가 매도 시작! [' + str(target_item['market']) + ']')
-                            rtn_sellcoin_mp = upbit4linux.sellcoin_mp(target_item['market'], 'Y')
+                            rtn_sellcoin_mp = upbit.sellcoin_mp(target_item['market'], 'Y')
                             logging.info('시장가 매도 종료! [' + str(target_item['market']) + ']')
                             logging.info(rtn_sellcoin_mp)
                             logging.info('------------------------------------------------------')
@@ -195,7 +195,7 @@ if __name__ == '__main__':
         sell_pcnt = 1.5 #input("매도 수익률(ex:2%=2) : ")
         dcnt_pcnt = -2.1 #input("고점대비 하락률(ex:-1%=-1) : ")
 
-        upbit4linux.set_loglevel(log_level)
+        upbit.set_loglevel(log_level)
 
         logging.info("*********************************************************")
         logging.info("1. 로그레벨 : " + str(log_level))

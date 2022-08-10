@@ -6,7 +6,7 @@ import time
 
 # 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from module import upbit4linux
+from module import upbit
 
 #from module import upbit as upbit  # noqa
 
@@ -23,13 +23,13 @@ if __name__ == '__main__':
         print("[1] 로그레벨(D:DEBUG, E:ERROR, 그외:INFO)")
 
         # 로그레벨(D:DEBUG, E:ERROR, 그외:INFO)
-        upbit4linux.set_loglevel('I')
+        upbit.set_loglevel('I')
 
         # ---------------------------------------------------------------------
         # Logic Start!
         # ---------------------------------------------------------------------
         # 보유 종목 리스트 조회
-        item_list = upbit4linux.get_accounts('Y', 'KRW') ####5000원 미반 소량 보유종목 제외하기 위해 Y, 마켓정보가 두번째
+        item_list = upbit.get_accounts('Y', 'KRW') ####5000원 미반 소량 보유종목 제외하기 위해 Y, 마켓정보가 두번째
 
         logging.info(len(item_list))
         logging.info(item_list)
@@ -41,7 +41,7 @@ if __name__ == '__main__':
             # 시장가 매도
             # ★ 실제 매도가 될 수 있어 아래 주석 처리함.
             # 실제 매도를 원하는 경우 아래 주석을 해제하면 됩니다.
-            upbit4linux.sellcoin_mp(item_list_for['market'], 'Y') ####해당 코드 주석처리로 설정
+            upbit.sellcoin_mp(item_list_for['market'], 'Y') ####해당 코드 주석처리로 설정
             
             time.sleep(0.1)
 

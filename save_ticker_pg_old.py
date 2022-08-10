@@ -78,11 +78,11 @@ async def upbit_ws_client():
         subscribe_data = json.dumps(subscribe_fmt)
 
         # PostgreSQL 데이터 베이스 연결
-        conn = psycopg2.connect(host='132.226.171.188'
-                                , dbname='upbit_db'
-                                , user='upbit'
-                                , password='seo22082208'
-                                , port='5432')
+        conn = psycopg2.connect(host=upbit.get_env_keyvalue('pg_host')
+                                , dbname=upbit.get_env_keyvalue('pg_dbname')
+                                , user=upbit.get_env_keyvalue('pg_userid')
+                                , password=upbit.get_env_keyvalue('pg_passwd')
+                                , port=upbit.get_env_keyvalue('pg_port'))
 
         # 자동 커밋
         conn.autocommit = True
