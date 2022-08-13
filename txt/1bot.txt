@@ -19,10 +19,16 @@ sudo chmod +x ~/1/cron/1pid_monitoring.sh
 sudo chmod +x ~/1/cron/2pid_monitoring.sh
 ls -all ~/1/cron/
 
-#2-1, 2-2 경우 디렉토리 1에 들어가서 실행
-nohup python3 ~/1/2-2.py &
+
+#PostgreDB에 저장 2bot으로... 디렉토리 cd 1 진입 후 실행
 cd 1
-nohup python3 2-1.py &
+nohup python 2db.py I &
+nohup python 2s.py &
+
+#2db, 2s 경우 디렉토리 1에 들어가서 실행
+nohup python3 ~/1/2s.py &
+cd 1
+nohup python3 2db.py I &
 tail -f nohup.out
 
 crontab -e

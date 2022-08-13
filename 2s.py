@@ -30,24 +30,20 @@ def start_find_shoot():
         # 커서 획득
         c = conn.cursor()
 
-        """         
-         WHERE A.PCNT_BY_ST > 10.0                      -- 시작가 현재 상승률 > 10.0%
-           AND A.TRADE_CNT > 500                        -- 거래건수 > 500
-         ORDER BY A.PCNT_BY_ST DESC                       -- 시작가 대비 현재 상승률 상위순으로 정렬
-
-        """
-
         sql = "select * from FIND_SHOOT_1MIN where chg_pcnt > 0.7 and trade_cnt >500 order by chg_pcnt desc"
 
         # ----------------------------------------------------------------------
         # 반복 수행
         # ----------------------------------------------------------------------
         while True:
+            #print('급등주 찾기!')
 
             # SQL 수행
             c.execute(sql)
 
             rows = c.fetchall()
+
+
 
             # 대상조건 발견 시
             if len(rows) > 0:
@@ -67,6 +63,7 @@ def start_find_shoot():
                     # print('메세지 발송 완료!')
                     print(message)
 
+
                     # ------------------------------------------------------------------
                     # 기매수 여부 판단
                     # ------------------------------------------------------------------
@@ -79,7 +76,8 @@ def start_find_shoot():
                         logging.info('기 매수 종목으로 매수하지 않음....[' + str(row[0]) + ']')
                         continue
 
-                    upbit.buycoin_mp(str(row[0]), 5497)
+
+                    #upbit.buycoin_mp(str(row[0]), 5497)
                     print('시장가 매수 완료! [' + str(row[0]) + ']')
 
                 # 중복 메세지 발송하지 않기 위해 60초간 Sleep
@@ -87,9 +85,10 @@ def start_find_shoot():
 
             # 조회 건수 체크
             data_cnt = data_cnt + 1
+            print('급등주 찾기!')
 
             if data_cnt % 1000 == 0:
-                logging.info("Checking...[" + str(data_cnt) + "][" + str(len(rows)) + "]")
+                print("Checking...[" + str(data_cnt) + "][" + str(len(rows)) + "]")
 
     # ---------------------------------------
     # 모든 함수의 공통 부분(Exception 처리)
@@ -109,9 +108,9 @@ if __name__ == '__main__':
 
         print("***** USAGE ******")
         print("[1] 로그레벨(D:DEBUG, E:ERROR, 그외:INFO)")
-        '''
+
         # 로그레벨(D:DEBUG, E:ERROR, 그외:INFO)
-        log_level = sys.argv[1].upper()
+        log_level = 'I'
         upbit.set_loglevel(log_level)
 
         if log_level == '':
@@ -120,7 +119,7 @@ if __name__ == '__main__':
 
         logging.info("***** INPUT ******")
         logging.info("[1] 로그레벨(D:DEBUG, E:ERROR, 그외:INFO):" + str(log_level))
-        '''
+
         # ---------------------------------------------------------------------
         # Logic Start!
         # ---------------------------------------------------------------------
