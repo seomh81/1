@@ -3,7 +3,6 @@ import sys
 import time
 import logging
 import traceback
-import cx_Oracle
 
 # 공통 모듈 Import
 import psycopg2
