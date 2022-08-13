@@ -18,15 +18,6 @@ sudo chmod +x ~/1/cron/1pid_monitoring.sh
 sudo chmod +x ~/1/cron/2pid_monitoring.sh
 ls -all ~/1/cron/
 
-#PostgreDB에 저장 2bot으로... 디렉토리 cd 1 진입 후 실행
-cd 1
-nohup python save_ticker_pg.py I &
-
-tail -f nohup.out
-
-#DB공간확보(DBeaver에서 실행) sql쿼리 날리자
-TRUNCATE TABLE ticker_data;
-
 crontab -e
 #프로세스 먹통되는 현상 - cron에 주기적(15분)으로 프로세스 종료
 */15 * * * * pkill python3
