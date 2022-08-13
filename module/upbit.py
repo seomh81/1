@@ -23,6 +23,16 @@ line_token = '9mpayGJB0EnNpFlllEsUu6TCbrMLQWOnthhjg2nN9KB'
 # 상수 설정
 min_order_amt = 5000
 
+# UPBIT URL
+server_url = 'https://api.upbit.com'
+ws_url = 'wss://api.upbit.com/websocket/v1'
+
+# 오라클 DB 관련
+os.environ['TNS_ADMIN'] = "/usr/lib/oracle/21/client64/lib/network/admin"
+os.environ["NLS_LANG"] = ".UTF8"
+
+# LINE MESSENGER URL
+line_target_url = 'https://notify-api.line.me/api/notify'
 
 # -----------------------------------------------------------------------------
 # - Name : set_loglevel
