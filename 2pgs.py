@@ -77,7 +77,7 @@ def start_find_shoot():
                         continue
 
 
-                    #upbit.buycoin_mp(str(row[0]), 5497)
+                    upbit.buycoin_mp(str(row[0]), 5497)
                     print('시장가 매수 완료! [' + str(row[0]) + ']')
 
                 # 중복 메세지 발송하지 않기 위해 60초간 Sleep
@@ -85,7 +85,7 @@ def start_find_shoot():
 
             # 조회 건수 체크
             data_cnt = data_cnt + 1
-            print('급등주 찾기!')
+            #print('급등주 찾기!')
 
             if data_cnt % 1000 == 0:
                 print("Checking...[" + str(data_cnt) + "][" + str(len(rows)) + "]")

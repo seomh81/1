@@ -11,6 +11,7 @@ pip install pandas
 pip install requests
 pip install PyJWT
 pip install telegram
+pip install psycopg2-binary
 
 #python을 python3으로 인식하게
 alias python=python3
