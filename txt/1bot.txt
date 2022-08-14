@@ -1,8 +1,12 @@
 #실행확인
 tail -f ~/1/logs/1monitoring.log
+tail -f ~/1/logs/pg_mon.log
+tail -f ~/1/logs/pgs_mon.log
 tail -f ~/1/logs/2monitoring.log
 #진단
 tail -f ~/1/logs/1pid_monitoring.log
+tail -f ~/1/logs/pgid_mon.log
+tail -f ~/1/logs/pgsid_mon.log
 tail -f ~/1/logs/2pid_monitoring.log
 
 #확인 용량/프로세스
@@ -15,8 +19,12 @@ pkill python3
 git clone https://github.com/seomh81/1.git
 sudo chmod +x ~/1/cron/1monitoring.sh
 sudo chmod +x ~/1/cron/2monitoring.sh
+sudo chmod +x ~/1/cron/pg_mon.sh
+sudo chmod +x ~/1/cron/pgs_mon.sh
 sudo chmod +x ~/1/cron/1pid_monitoring.sh
 sudo chmod +x ~/1/cron/2pid_monitoring.sh
+sudo chmod +x ~/1/cron/pgid_mon.sh
+sudo chmod +x ~/1/cron/pgsid_mon.sh
 ls -all ~/1/cron/
 
 
