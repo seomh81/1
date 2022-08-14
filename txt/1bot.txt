@@ -27,11 +27,8 @@ sudo chmod +x ~/1/cron/pgs_mon.sh
 sudo chmod +x ~/1/cron/pgid_mon.sh
 sudo chmod +x ~/1/cron/pgsid_mon.sh
 ls -all ~/1/cron/
+sudo cp -r 1/o/Wallet_seobot1/* /usr/lib/oracle/21/client64/lib/network/admin
 
-sudo chmod +x ~/1/cron/1monitoring.sh
-sudo chmod +x ~/1/cron/2monitoring.sh
-sudo chmod +x ~/1/cron/1pid_monitoring.sh
-sudo chmod +x ~/1/cron/2pid_monitoring.sh
 
 crontab -e
 #프로세스 먹통되는 현상 - cron에 주기적(15분)으로 프로세스 종료
