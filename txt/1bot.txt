@@ -12,7 +12,7 @@ tail -f ~/1/logs/pgsid_mon.log
 
 #확인 용량/프로세스
 df -h
-ps -ef|grep python3
+ps -ef|grep python
 
 #코드 수정 후 적용
 rm -rf ~/1
