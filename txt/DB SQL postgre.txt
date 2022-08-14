@@ -71,7 +71,8 @@ CREATE OR REPLACE VIEW FIND_SHOOT_1MIN AS
 
 
 
-#####################웹소켓 데이터를 저장할 테이블 생성
+#####################웹소켓 데이터를 저장할 테이블 생성 + 인덱스 생성
+
 CREATE TABLE TICKER_DATA
 (
   DATETIME               TIMESTAMP,
@@ -109,13 +110,11 @@ CREATE TABLE TICKER_DATA
   STREAM_TYPE            VARCHAR(10),
   SYS_DATETIME           TIMESTAMP
 );
-################################
-
-##############인덱스 생성
 CREATE INDEX IDX_TD_DT ON TICKER_DATA(DATETIME);
 CREATE INDEX IDX_TD_CD ON TICKER_DATA(CODE);
 CREATE INDEX IDX_TD_DT_CD ON TICKER_DATA(DATETIME, CODE);
 CREATE INDEX IDX_TD_CD_DT ON TICKER_DATA(CODE, DATETIME);
+
 #################################
 
 
