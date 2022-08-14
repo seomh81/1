@@ -199,7 +199,8 @@ if __name__ == "__main__":
             upbit.set_loglevel(log_level)
         else:
             # 로그레벨(D:DEBUG, E:ERROR, 그외:INFO)
-            log_level = sys.argv[1].upper()
+            #log_level = sys.argv[1].upper()
+            log_level = 'I'
             upbit.set_loglevel(log_level)
 
         if log_level == '':

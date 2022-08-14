@@ -3,12 +3,16 @@ tail -f ~/1/logs/buy_mon.log
 tail -f ~/1/logs/sell_mon.log
 tail -f ~/1/logs/pg_mon.log
 tail -f ~/1/logs/pgs_mon.log
+tail -f ~/1/logs/adw_mon.log
+tail -f ~/1/logs/adws_mon.log
 
 #진단
 tail -f ~/1/logs/buyid_mon.log
 tail -f ~/1/logs/sellid_mon.log
 tail -f ~/1/logs/pgid_mon.log
 tail -f ~/1/logs/pgsid_mon.log
+tail -f ~/1/logs/adwid_mon.log
+tail -f ~/1/logs/adwsid_mon.log
 
 #확인 용량/프로세스
 df -h
@@ -26,6 +30,8 @@ sudo chmod +x ~/1/cron/pg_mon.sh
 sudo chmod +x ~/1/cron/pgs_mon.sh
 sudo chmod +x ~/1/cron/pgid_mon.sh
 sudo chmod +x ~/1/cron/pgsid_mon.sh
+sudo chmod +x ~/1/cron/awd_mon.sh
+sudo chmod +x ~/1/cron/awds_mon.sh
 sudo chmod +x ~/1/cron/awdid_mon.sh
 sudo chmod +x ~/1/cron/awdsid_mon.sh
 ls -all ~/1/cron/
