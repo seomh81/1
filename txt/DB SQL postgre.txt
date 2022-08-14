@@ -8,17 +8,63 @@ tail -f nohup.out
 
 
 -----------DBeaver Postgre upbit------------
-
-#DB공간확보(DBeaver에서 실행) sql쿼리 날리자
-TRUNCATE TABLE ticker_data;
-
 #DB확인 내림차순 정렬해 최근 일자별 확인
 SELECT * FROM public.ticker_data ORDER BY datetime desc;
 
 #만들어진 VIEW로 테이블 검색
-select * from FIND_SHOOT_1MIN order by chg_pcnt desc;
+select * from PUBLIC.FIND_SHOOT_1MIN order by chg_pcnt desc;
+#선별확인
+SELECT code, chg_pcnt , trade_cnt , en_datetime, st_datetime  FROM public.find_shoot_1min ORDER BY chg_pcnt desc;
 
-###############VIEW 만들기
+
+##################### DB삭제 + 웹소켓 데이터를 저장할 테이블(TICKER_DATA) 생성 + 인덱스 생성 + VIEW(FIND_SHOOT_1MIN) 생성
+################### 파이썬 작업 멈추고 진행할 것
+>>> sudo service crond stop
+>>> pkill python
+>>> sudo service crond restart
+
+TRUNCATE TABLE ticker_data;
+CREATE TABLE TICKER_DATA
+(
+  DATETIME               TIMESTAMP,
+  CODE                   VARCHAR(20),
+  OPENING_PRICE          NUMERIC,
+  HIGH_PRICE             NUMERIC,
+  LOW_PRICE              NUMERIC,
+  TRADE_PRICE            NUMERIC,
+  PREV_CLOSING_PRICE     NUMERIC,
+  CHANGE                 VARCHAR(10),
+  CHANGE_PRICE           NUMERIC,
+  SIGNED_CHANGE_PRICE    NUMERIC,
+  CHANGE_RATE            NUMERIC,
+  SIGNED_CHANGE_RATE     NUMERIC,
+  TRADE_VOLUME           NUMERIC,
+  ACC_TRADE_VOLUME       NUMERIC,
+  ACC_TRADE_VOLUME_24H   NUMERIC,
+  ACC_TRADE_PRICE        NUMERIC,
+  ACC_TRADE_PRICE_24H    NUMERIC,
+  TRADE_DATE             VARCHAR(10),
+  TRADE_TIME             VARCHAR(10),
+  TRADE_TIMESTAMP        NUMERIC,
+  ASK_BID                VARCHAR(10),
+  ACC_ASK_VOLUME         NUMERIC,
+  ACC_BID_VOLUME         NUMERIC,
+  HIGHEST_52_WEEK_PRICE  NUMERIC,
+  HIGHEST_52_WEEK_DATE   VARCHAR(10),
+  LOWEST_52_WEEK_PRICE   NUMERIC,
+  LOWEST_52_WEEK_DATE    VARCHAR(10),
+  MARKET_STATE           VARCHAR(20),
+  IS_TRADING_SUSPENDED   VARCHAR(10),
+  DELISTING_DATE         TIMESTAMP,
+  MARKET_WARNING         VARCHAR(10),
+  TIMESTAMP              NUMERIC,
+  STREAM_TYPE            VARCHAR(10),
+  SYS_DATETIME           TIMESTAMP
+);
+CREATE INDEX IDX_TD_DT ON TICKER_DATA(DATETIME);
+CREATE INDEX IDX_TD_CD ON TICKER_DATA(CODE);
+CREATE INDEX IDX_TD_DT_CD ON TICKER_DATA(DATETIME, CODE);
+CREATE INDEX IDX_TD_CD_DT ON TICKER_DATA(CODE, DATETIME);
 CREATE OR REPLACE VIEW FIND_SHOOT_1MIN AS
  SELECT A.CODE,
     A.DATETIME AS ST_DATETIME,
@@ -66,54 +112,6 @@ CREATE OR REPLACE VIEW FIND_SHOOT_1MIN AS
           WHERE ((TD.DATETIME >= DATE_TRUNC('MINUTE'::TEXT, CURRENT_TIMESTAMP)) AND (TD.DATETIME < DATE_TRUNC('MINUTE'::TEXT, (CURRENT_TIMESTAMP + '00:01:00'::INTERVAL))))
           GROUP BY TD.CODE) C
   WHERE (((A.CODE)::TEXT = (B.CODE)::TEXT) AND ((A.CODE)::TEXT = (C.CODE)::TEXT));
-
-#####################
-
-
-
-#####################웹소켓 데이터를 저장할 테이블 생성 + 인덱스 생성
-
-CREATE TABLE TICKER_DATA
-(
-  DATETIME               TIMESTAMP,
-  CODE                   VARCHAR(20),
-  OPENING_PRICE          NUMERIC,
-  HIGH_PRICE             NUMERIC,
-  LOW_PRICE              NUMERIC,
-  TRADE_PRICE            NUMERIC,
-  PREV_CLOSING_PRICE     NUMERIC,
-  CHANGE                 VARCHAR(10),
-  CHANGE_PRICE           NUMERIC,
-  SIGNED_CHANGE_PRICE    NUMERIC,
-  CHANGE_RATE            NUMERIC,
-  SIGNED_CHANGE_RATE     NUMERIC,
-  TRADE_VOLUME           NUMERIC,
-  ACC_TRADE_VOLUME       NUMERIC,
-  ACC_TRADE_VOLUME_24H   NUMERIC,
-  ACC_TRADE_PRICE        NUMERIC,
-  ACC_TRADE_PRICE_24H    NUMERIC,
-  TRADE_DATE             VARCHAR(10),
-  TRADE_TIME             VARCHAR(10),
-  TRADE_TIMESTAMP        NUMERIC,
-  ASK_BID                VARCHAR(10),
-  ACC_ASK_VOLUME         NUMERIC,
-  ACC_BID_VOLUME         NUMERIC,
-  HIGHEST_52_WEEK_PRICE  NUMERIC,
-  HIGHEST_52_WEEK_DATE   VARCHAR(10),
-  LOWEST_52_WEEK_PRICE   NUMERIC,
-  LOWEST_52_WEEK_DATE    VARCHAR(10),
-  MARKET_STATE           VARCHAR(20),
-  IS_TRADING_SUSPENDED   VARCHAR(10),
-  DELISTING_DATE         TIMESTAMP,
-  MARKET_WARNING         VARCHAR(10),
-  TIMESTAMP              NUMERIC,
-  STREAM_TYPE            VARCHAR(10),
-  SYS_DATETIME           TIMESTAMP
-);
-CREATE INDEX IDX_TD_DT ON TICKER_DATA(DATETIME);
-CREATE INDEX IDX_TD_CD ON TICKER_DATA(CODE);
-CREATE INDEX IDX_TD_DT_CD ON TICKER_DATA(DATETIME, CODE);
-CREATE INDEX IDX_TD_CD_DT ON TICKER_DATA(CODE, DATETIME);
 
 #################################
 
