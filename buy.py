@@ -201,7 +201,7 @@ if __name__ == '__main__':
 
         # 1. 로그레벨
         log_level = 'I' #input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
-        buy_amt = 5997 #input("매수금액(M:최대, 10000:1만원) : ").upper()
+        buy_amt = 9995 #input("매수금액(M:최대, 10000:1만원) : ").upper()
 
         upbit.set_loglevel(log_level)
 

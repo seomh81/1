@@ -44,9 +44,9 @@ def start_find_shoot():
               ,A.PCNT_BY_MAX \
               ,A.PCNT_BY_ST_MAX \
           FROM FIND_SHOOT_1MIN A \
-         WHERE A.PCNT_BY_ST > 1.0 \
-           AND A.TRADE_CNT > 500 \
-         ORDER BY A.PCNT_BY_ST DESC"
+         WHERE A.PCNT_BY_ST < -5.0 \
+           AND A.TRADE_CNT > 1000 \
+         ORDER BY A.PCNT_BY_ST"# DESC"
 
         # ----------------------------------------------------------------------
         # 반복 수행
@@ -76,17 +76,30 @@ def start_find_shoot():
             if len(rows) > 0:
 
                 # 발견된 로우만큼 처리
-                # 급등주 발견 텔레그렘 메세지 발송
+                # 급락주 발견 텔레그렘 메세지 발송
                 for row in rows:
                     logging.info(row)
 
-                    message = '[급등주 발견]'
+                    message = '[급락주 발견]'
                     message = message + '\n\n종목코드:' + str(row[0])
                     message = message + '\n상승률:' + str(row[8])
                     message = message + '\n거래건수:' + str(row[7])
                     print(message)
+
+                    # ------------------------------------------------------------------
+                    # 기매수 여부 판단
+                    # ------------------------------------------------------------------
+                    accounts = upbit.get_accounts('Y', 'KRW')
+                    account = list(filter(lambda x: x.get('market') == str(row[0]), accounts))
+
+                    # 이미 매수한 종목이면 다시 매수하지 않음
+                    # sell_bot.py에서 매도 처리되면 보유 종목에서 사라지고 다시 매수 가능
+                    if len(account) > 0:
+                        logging.info('기 매수 종목으로 매수하지 않음....[' + str(row[0]) + ']')
+                        continue
+                    time.sleep(60)
                     #upbit.send_telegram_message(message)
-                    upbit.buycoin_mp(str(row[0]), 5497)
+                    upbit.buycoin_mp(str(row[0]), 9995)
                     print('매수완료')
                     #logging.info('메세지 발송 완료!')
                     #logging.info(message)

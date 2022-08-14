@@ -30,7 +30,7 @@ def start_find_shoot():
         # 커서 획득
         c = conn.cursor()
 
-        sql = "select * from FIND_SHOOT_1MIN where chg_pcnt > 0.7 and trade_cnt >500 order by chg_pcnt desc"
+        sql = "select * from FIND_SHOOT_1MIN where chg_pcnt > 1.0 and trade_cnt > 500 order by chg_pcnt desc"
 
         # ----------------------------------------------------------------------
         # 반복 수행
@@ -77,7 +77,7 @@ def start_find_shoot():
                         continue
 
 
-                    upbit.buycoin_mp(str(row[0]), 5497)
+                    upbit.buycoin_mp(str(row[0]), 9995)
                     print('시장가 매수 완료! [' + str(row[0]) + ']')
 
                 # 중복 메세지 발송하지 않기 위해 60초간 Sleep
