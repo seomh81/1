@@ -1,0 +1,237 @@
+#환경은 ARM(ampere)은 안되고 E2(VM.Standard.E2.1.Micro)에서만 되는 듯....
+>>>
+sudo dnf update
+sudo dnf install oracle-instantclient-release-el8
+sudo dnf install oracle-instantclient-basic
+
+#오라클 ADW 생성 후 DBeaver로 로그인
+
+##########테이블 생성 + 인덱스 여럿 생성
+CREATE TABLE ADMIN.TICKER_DATA
+(
+  DATETIME               DATE,
+  CODE                   VARCHAR2(20 BYTE),
+  OPENING_PRICE          NUMBER,
+  HIGH_PRICE             NUMBER,
+  LOW_PRICE              NUMBER,
+  TRADE_PRICE            NUMBER,
+  PREV_CLOSING_PRICE     NUMBER,
+  CHANGE                 VARCHAR2(10 BYTE),
+  CHANGE_PRICE           NUMBER,
+  SIGNED_CHANGE_PRICE    NUMBER,
+  CHANGE_RATE            NUMBER,
+  SIGNED_CHANGE_RATE     NUMBER,
+  TRADE_VOLUME           NUMBER,
+  ACC_TRADE_VOLUME       NUMBER,
+  ACC_TRADE_VOLUME_24H   NUMBER,
+  ACC_TRADE_PRICE        NUMBER,
+  ACC_TRADE_PRICE_24H    NUMBER,
+  TRADE_DATE             VARCHAR2(10 BYTE),
+  TRADE_TIME             VARCHAR2(10 BYTE),
+  TRADE_TIMESTAMP        NUMBER,
+  ASK_BID                VARCHAR2(10 BYTE),
+  ACC_ASK_VOLUME         NUMBER,
+  ACC_BID_VOLUME         NUMBER,
+  HIGHEST_52_WEEK_PRICE  NUMBER,
+  HIGHEST_52_WEEK_DATE   VARCHAR2(10 BYTE),
+  LOWEST_52_WEEK_PRICE   NUMBER,
+  LOWEST_52_WEEK_DATE    VARCHAR2(10 BYTE),
+  TRADE_STATUS           VARCHAR2(20 BYTE),
+  MARKET_STATE           VARCHAR2(20 BYTE),
+  MARKET_STATE_FOR_IOS   VARCHAR2(10 BYTE),
+  IS_TRADING_SUSPENDED   VARCHAR2(10 BYTE),
+  DELISTING_DATE         DATE,
+  MARKET_WARNING         VARCHAR2(10 BYTE),
+  TIMESTAMP              NUMBER,
+  STREAM_TYPE            VARCHAR2(10 BYTE),
+  SYS_DATETIME           DATE,
+  SEQ                    NUMBER,
+  P_SEQ                  NUMBER
+)
+TABLESPACE DATA
+RESULT_CACHE (MODE DEFAULT)
+PCTUSED    0
+PCTFREE    10
+INITRANS   10
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MAXSIZE          UNLIMITED
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+            FLASH_CACHE      DEFAULT
+            CELL_FLASH_CACHE DEFAULT
+           )
+LOGGING
+NOCOMPRESS
+NOCACHE
+NOPARALLEL
+MONITORING;
+
+CREATE INDEX ADMIN.IDX_T_CD_DT_SEQ ON ADMIN.TICKER_DATA
+(CODE, DATETIME, SEQ)
+LOGGING
+TABLESPACE DATA
+PCTFREE    10
+INITRANS   20
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MAXSIZE          UNLIMITED
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+            FLASH_CACHE      DEFAULT
+            CELL_FLASH_CACHE DEFAULT
+           )
+NOPARALLEL;
+
+CREATE INDEX ADMIN.IDX_T_CODE ON ADMIN.TICKER_DATA
+(CODE)
+LOGGING
+TABLESPACE DATA
+PCTFREE    10
+INITRANS   20
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MAXSIZE          UNLIMITED
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+            FLASH_CACHE      DEFAULT
+            CELL_FLASH_CACHE DEFAULT
+           )
+NOPARALLEL;
+
+CREATE INDEX ADMIN.IDX_T_CODE_SEQ ON ADMIN.TICKER_DATA
+(CODE, SEQ)
+LOGGING
+TABLESPACE DATA
+PCTFREE    10
+INITRANS   20
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MAXSIZE          UNLIMITED
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+            FLASH_CACHE      DEFAULT
+            CELL_FLASH_CACHE DEFAULT
+           )
+NOPARALLEL;
+
+CREATE INDEX ADMIN.IDX_T_DATETIME ON ADMIN.TICKER_DATA
+(DATETIME)
+LOGGING
+TABLESPACE DATA
+PCTFREE    10
+INITRANS   20
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MAXSIZE          UNLIMITED
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+            FLASH_CACHE      DEFAULT
+            CELL_FLASH_CACHE DEFAULT
+           )
+NOPARALLEL;
+
+CREATE INDEX ADMIN.IDX_T_DATETIME_CODE ON ADMIN.TICKER_DATA
+(DATETIME, CODE)
+LOGGING
+TABLESPACE DATA
+PCTFREE    10
+INITRANS   20
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MAXSIZE          UNLIMITED
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+            FLASH_CACHE      DEFAULT
+            CELL_FLASH_CACHE DEFAULT
+           )
+NOPARALLEL;
+
+CREATE INDEX ADMIN.IDX_T_DATETIME_SEQ ON ADMIN.TICKER_DATA
+(DATETIME, SEQ)
+LOGGING
+TABLESPACE DATA
+PCTFREE    10
+INITRANS   20
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MAXSIZE          UNLIMITED
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+            FLASH_CACHE      DEFAULT
+            CELL_FLASH_CACHE DEFAULT
+           )
+NOPARALLEL;
+
+CREATE INDEX ADMIN.IDX_T_SEQ ON ADMIN.TICKER_DATA
+(SEQ)
+LOGGING
+TABLESPACE DATA
+PCTFREE    10
+INITRANS   20
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MAXSIZE          UNLIMITED
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+            FLASH_CACHE      DEFAULT
+            CELL_FLASH_CACHE DEFAULT
+           )
+NOPARALLEL;
+
+CREATE INDEX ADMIN.IDX_T_SEQ_PSEQ ON ADMIN.TICKER_DATA
+(SEQ, P_SEQ)
+LOGGING
+TABLESPACE DATA
+PCTFREE    10
+INITRANS   20
+MAXTRANS   255
+STORAGE    (
+            INITIAL          64K
+            NEXT             1M
+            MAXSIZE          UNLIMITED
+            MINEXTENTS       1
+            MAXEXTENTS       UNLIMITED
+            PCTINCREASE      0
+            BUFFER_POOL      DEFAULT
+            FLASH_CACHE      DEFAULT
+            CELL_FLASH_CACHE DEFAULT
+           )
+NOPARALLEL;
+
+
+################################################################
+2bot으로 가서 아래 경로에 월렛 저장 sFTP로
+/usr/lib/oracle/21/client64/lib/network/admin
