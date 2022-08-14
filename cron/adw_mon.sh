@@ -6,4 +6,4 @@ export PATH=$PATH:/usr/local/bin
 cd
 
 # Run Program
-python3 ~/1/awd.py I >> ~/1/logs/awd_mon.log 2>&1
+python3 ~/1/adw.py I >> ~/1/logs/adw_mon.log 2>&1

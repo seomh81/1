@@ -30,10 +30,10 @@ sudo chmod +x ~/1/cron/pg_mon.sh
 sudo chmod +x ~/1/cron/pgs_mon.sh
 sudo chmod +x ~/1/cron/pgid_mon.sh
 sudo chmod +x ~/1/cron/pgsid_mon.sh
-sudo chmod +x ~/1/cron/awd_mon.sh
-sudo chmod +x ~/1/cron/awds_mon.sh
-sudo chmod +x ~/1/cron/awdid_mon.sh
-sudo chmod +x ~/1/cron/awdsid_mon.sh
+sudo chmod +x ~/1/cron/adw_mon.sh
+sudo chmod +x ~/1/cron/adws_mon.sh
+sudo chmod +x ~/1/cron/adwid_mon.sh
+sudo chmod +x ~/1/cron/adwsid_mon.sh
 ls -all ~/1/cron/
 sudo cp -r 1/o/Wallet_seobot1/* /usr/lib/oracle/21/client64/lib/network/admin
 
@@ -47,9 +47,8 @@ crontab -e
 * * * * * ~/1/cron/pgsid_mon.sh >> ~/1/logs/pgsid_mon.log 2>&1
 
 */15 * * * * pkill python3
-* * * * * ~/1/cron/sellid_mon.sh >> ~/1/logs/sellid_mon.log 2>&1
-* * * * * ~/1/cron/awdid_mon.sh >> ~/1/logs/awdid_mon.log 2>&1
-* * * * * ~/1/cron/awdsid_mon.sh >> ~/1/logs/awdsid_mon.log 2>&1
+* * * * * ~/1/cron/adwid_mon.sh >> ~/1/logs/adwid_mon.log 2>&1
+* * * * * ~/1/cron/adwsid_mon.sh >> ~/1/logs/adwsid_mon.log 2>&1
 
 #크론탭 시작/중지/재시작
 sudo service crond start
