@@ -1,5 +1,5 @@
 #실행확인
-tail -f ~/1/logs/1monitoring.log
+tail -f ~/1/logs/buy_mon.log
 tail -f ~/1/logs/pg_mon.log
 tail -f ~/1/logs/pgs_mon.log
 tail -f ~/1/logs/2monitoring.log
@@ -17,10 +17,14 @@ ps -ef|grep python3
 rm -rf ~/1
 pkill python3
 git clone https://github.com/seomh81/1.git
+sudo chmod +x ~/1/cron/buy_mon.sh
+sudo chmod +x ~/1/cron/sell_mon.sh
 sudo chmod +x ~/1/cron/1monitoring.sh
 sudo chmod +x ~/1/cron/2monitoring.sh
 sudo chmod +x ~/1/cron/pg_mon.sh
 sudo chmod +x ~/1/cron/pgs_mon.sh
+sudo chmod +x ~/1/cron/buyid_mon.sh
+sudo chmod +x ~/1/cron/sellid_mon.sh
 sudo chmod +x ~/1/cron/1pid_monitoring.sh
 sudo chmod +x ~/1/cron/2pid_monitoring.sh
 sudo chmod +x ~/1/cron/pgid_mon.sh
@@ -28,23 +32,21 @@ sudo chmod +x ~/1/cron/pgsid_mon.sh
 ls -all ~/1/cron/
 
 
-#PostgreDB에 저장 2bot으로... 디렉토리 cd 1 진입 후 실행
-cd 1
-nohup python 1/pg.py &
-nohup python 1/pgs.py &
-
-#2db, 2s 경우 디렉토리 1에 들어가서 실행
-nohup python3 ~/1/2s.py &
-cd 1
-nohup python3 2db.py I &
-tail -f nohup.out
-
 crontab -e
 #프로세스 먹통되는 현상 - cron에 주기적(15분)으로 프로세스 종료
+*/15 * * * * pkill python3
+* * * * * ~/1/cron/buyid_mon.sh >> ~/1/logs/buyid_mon.log 2>&1
+* * * * * ~/1/cron/sellid_mon.sh >> ~/1/logs/sellid_mon.log 2>&1
+* * * * * ~/1/cron/pgid_mon.sh >> ~/1/logs/pgid_mon.log 2>&1
+* * * * * ~/1/cron/pgsid_mon.sh >> ~/1/logs/pgsid_mon.log 2>&1
+
+
+
 */15 * * * * pkill python3
 * * * * * ~/1/cron/1pid_monitoring.sh >> ~/1/logs/1pid_monitoring.log 2>&1
 * * * * * ~/1/cron/pgid_mon.sh >> ~/1/logs/pgid_mon.log 2>&1
 * * * * * ~/1/cron/pgsid_mon.sh >> ~/1/logs/pgsid_mon.log 2>&1
+* * * * * ~/1/cron/2pid_monitoring.sh >> ~/1/logs/2pid_monitoring.log 2>&1
 
 */15 * * * * pkill python3
 * * * * * ~/1/cron/2pid_monitoring.sh >> ~/1/logs/2pid_monitoring.log 2>&1
