@@ -3,7 +3,7 @@
 timestamp=`date +%Y/%m/%d_%H:%M`
 
 # BUY PROCESS CHECK
-PID=`ps -ef |grep "python3" |grep -v 'grep'|awk '{print $2}'`
+PID=`ps -ef |grep "1.py" |grep -v 'grep'|awk '{print $2}'`
 
 if [ -z "$PID" ];
 then

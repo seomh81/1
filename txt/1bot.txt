@@ -35,6 +35,8 @@ crontab -e
 #프로세스 먹통되는 현상 - cron에 주기적(15분)으로 프로세스 종료
 */15 * * * * pkill python3
 * * * * * ~/1/cron/1pid_monitoring.sh >> ~/1/logs/1pid_monitoring.log 2>&1
+* * * * * ~/1/cron/pgid_mon.sh >> ~/1/logs/pgid_mon.log 2>&1
+* * * * * ~/1/cron/pgsid_mon.sh >> ~/1/logs/pgsid_mon.log 2>&1
 
 */15 * * * * pkill python3
 * * * * * ~/1/cron/2pid_monitoring.sh >> ~/1/logs/2pid_monitoring.log 2>&1
