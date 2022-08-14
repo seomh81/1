@@ -22,7 +22,7 @@ ls -all ~/1/cron/
 
 #PostgreDB에 저장 2bot으로... 디렉토리 cd 1 진입 후 실행
 cd 1
-nohup python 1/pg.py I &
+nohup python 1/pg.py &
 nohup python 1/pgs.py &
 
 #2db, 2s 경우 디렉토리 1에 들어가서 실행
