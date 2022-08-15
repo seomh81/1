@@ -44,8 +44,8 @@ def start_find_shoot():
               ,A.PCNT_BY_MAX \
               ,A.PCNT_BY_ST_MAX \
           FROM FIND_SHOOT_1MIN A \
-         WHERE A.PCNT_BY_ST < -5.0 \
-           AND A.TRADE_CNT > 1000 \
+         WHERE A.PCNT_BY_ST < -4.9 \
+           AND A.TRADE_CNT > 999 \
          ORDER BY A.PCNT_BY_ST"# DESC"
 
         # ----------------------------------------------------------------------
