@@ -1,12 +1,3 @@
------------파이썬-------------
-#PostgreDB에 저장 2bot으로... 디렉토리 cd 1 진입 후 실행
-cd 1
-nohup python save_ticker_pg.py I &
-
-tail -f nohup.out
------------파이썬-------------
-
-
 -----------DBeaver Postgre upbit------------
 #DB확인 내림차순 정렬해 최근 일자별 확인
 SELECT * FROM public.ticker_data ORDER BY datetime desc;

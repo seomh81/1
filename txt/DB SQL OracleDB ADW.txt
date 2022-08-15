@@ -6,7 +6,7 @@ sudo dnf install oracle-instantclient-basic
 
 #오라클 ADW 생성 후 DBeaver로 로그인
 
-##########테이블 생성 + 인덱스 여럿 생성
+##########테이블 생성 + 인덱스 여럿 생성 + 뷰 생성
 CREATE TABLE ADMIN.TICKER_DATA
 (
   DATETIME               DATE,
