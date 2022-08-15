@@ -97,7 +97,7 @@ def start_find_shoot():
                     if len(account) > 0:
                         logging.info('기 매수 종목으로 매수하지 않음....[' + str(row[0]) + ']')
                         continue
-                    time.sleep(60)
+
                     #upbit.send_telegram_message(message)
                     upbit.buycoin_mp(str(row[0]), 9995)
                     print('매수완료')
