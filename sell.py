@@ -22,7 +22,7 @@ from module import upbit
 # 1) sell_pcnt : 매도 수익률
 # 2) dcnt_pcnt : 고점대비 하락률
 # -----------------------------------------------------------------------------
-def start_selltrade(sell_pcnt, dcnt_pcnt):
+def start_selltrade(sell_pcnt, dcnt_pcnt, loss_cut):
     try:
 
         # ----------------------------------------------------------------------

@@ -47,9 +47,11 @@ crontab -e
 * * * * * ~/1/cron/adwid_mon.sh >> ~/1/logs/adwid_mon.log 2>&1
 * * * * * ~/1/cron/adwsid_mon.sh >> ~/1/logs/adwsid_mon.log 2>&1
 
-#bot2에 데이터만 쌓자
+#bot2
 */15 * * * * pkill python3
-* * * * * ~/1/cron/buyid_mon.sh >> ~/1/logs/sellid_mon.log 2>&1
+* * * * * ~/1/cron/sellid_mon.sh >> ~/1/logs/sellid_mon.log 2>&1
+* * * * * ~/1/cron/adwid_mon.sh >> ~/1/logs/adwid_mon.log 2>&1
+* * * * * ~/1/cron/adwsid_mon.sh >> ~/1/logs/adwsid_mon.log 2>&1
 
 #크론탭 시작/중지/재시작
 sudo service crond start
