@@ -98,7 +98,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt):
                         logging.info('- 수익률:' + str(rev_pcnt))
 
                         #손절 기준
-                        loss_cut = -5
+
 
                         if Decimal(str(rev_pcnt)) < Decimal(str(loss_cut)):
 
@@ -196,6 +196,7 @@ if __name__ == '__main__':
         log_level = 'I' #input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
         sell_pcnt = 1.5 #input("매도 수익률(ex:2%=2) : ")
         dcnt_pcnt = -2.0 #input("고점대비 하락률(ex:-1%=-1) : ")
+        loss_cut = -3.5
 
         upbit.set_loglevel(log_level)
 
@@ -203,10 +204,11 @@ if __name__ == '__main__':
         logging.info("1. 로그레벨 : " + str(log_level))
         logging.info("2. 매도 수익률 : " + str(sell_pcnt))
         logging.info("3. 고점대비 하락률 : " + str(dcnt_pcnt))
+        logging.info("4. 로스 컷 : " + str(loss_cut))
         logging.info("*********************************************************")
 
         # 매도 로직 시작
-        start_selltrade(sell_pcnt, dcnt_pcnt)
+        start_selltrade(sell_pcnt, dcnt_pcnt, loss_cut)
 
 
     except KeyboardInterrupt:
