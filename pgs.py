@@ -30,7 +30,7 @@ def start_find_shoot():
         # 커서 획득
         c = conn.cursor()
 
-        sql = "select * from FIND_SHOOT_1MIN where chg_pcnt > 0.99 and trade_cnt > 999 order by chg_pcnt desc"
+        sql = "select * from FIND_SHOOT_1MIN where chg_pcnt > 0.69 and trade_cnt > 999 order by chg_pcnt desc"
 
         # ----------------------------------------------------------------------
         # 반복 수행
