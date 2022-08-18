@@ -81,7 +81,7 @@ def start_find_shoot():
                     print('시장가 매수 완료! [' + str(row[0]) + ']')
 
                 # 중복 메세지 발송하지 않기 위해 60초간 Sleep
-                time.sleep(60)
+                #time.sleep(60)
 
             # 조회 건수 체크
             data_cnt = data_cnt + 1
