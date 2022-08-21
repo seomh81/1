@@ -30,7 +30,7 @@ def start_find_shoot():
         # 커서 획득
         c = conn.cursor()
 
-        sql = "select * from FIND_SHOOT_1MIN where chg_pcnt > 0.69 and trade_cnt > 999 order by chg_pcnt desc"
+        sql = "select * from FIND_SHOOT_1MIN where chg_pcnt > 0.79 and trade_cnt > 799 order by chg_pcnt desc"
 
         # ----------------------------------------------------------------------
         # 반복 수행
@@ -54,15 +54,17 @@ def start_find_shoot():
                     # print(row)
 
                     message = '[급등주 발견]'
-                    message = message + '\n\n종목코드:' + str(row[0])
-                    message = message + '\n상승률:' + str(row[9])
-                    message = message + '\n거래건수:' + str(row[8])
+                    message1 = '\n\n종목코드:' + str(row[0])
+                    message2 = '\n상승률:' + str(row[9])
+                    message3 = '\n거래건수:' + str(row[8])
 
                     # upbit.send_telegram_message(message)
 
                     # print('메세지 발송 완료!')
                     print(message)
-
+                    print(message1)
+                    print(message2)
+                    print(message3)
 
                     # ------------------------------------------------------------------
                     # 기매수 여부 판단
@@ -81,7 +83,7 @@ def start_find_shoot():
                     print('시장가 매수 완료! [' + str(row[0]) + ']')
 
                 # 중복 메세지 발송하지 않기 위해 60초간 Sleep
-                #time.sleep(60)
+                time.sleep(1)
 
             # 조회 건수 체크
             data_cnt = data_cnt + 1
