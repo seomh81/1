@@ -20,7 +20,7 @@ sudo service crond restart
 DROP view find_shoot_1min;
 drop TABLE ticker_data;
 
-# 테이블 뷰 생성
+--------------------------- 테이블 뷰 생성
 
 CREATE TABLE TICKER_DATA
 (
@@ -114,6 +114,6 @@ CREATE OR REPLACE VIEW FIND_SHOOT_1MIN AS
           GROUP BY TD.CODE) C
   WHERE (((A.CODE)::TEXT = (B.CODE)::TEXT) AND ((A.CODE)::TEXT = (C.CODE)::TEXT));
 
-#################################
+----------------------------------------
 
 
