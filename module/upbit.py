@@ -503,7 +503,7 @@ def get_balance(target_item):
 # - Output
 #   1) 캔들 정보 배열
 # -----------------------------------------------------------------------------
-def get_candle(target_item, tick_kind, inq_range):
+def get_candle(target_item, tick_kind, inq_range) -> object:
     try:
 
         # ----------------------------------------

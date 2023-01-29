@@ -30,7 +30,7 @@ def start_find_shoot():
         # 커서 획득
         c = conn.cursor()
 
-        sql = "select * from FIND_SHOOT_1MIN where chg_pcnt > 0.8 and trade_cnt > 700 order by chg_pcnt desc"
+        sql = "select * from FIND_SHOOT_1MIN where chg_pcnt > 1.1 and trade_cnt > 1100 order by chg_pcnt desc"
 
         # ----------------------------------------------------------------------
         # 반복 수행
@@ -78,32 +78,14 @@ def start_find_shoot():
                         logging.info('기 매수 종목으로 매수하지 않음....[' + str(row[0]) + ']')
                         continue
 
-                    # ------------------------------------------------------------------
-                    # 캔들 1분봉 저가인지 판단
-                    # ------------------------------------------------------------------
-                    df_candle = upbit.get_candle(str(row[0]), '1', 6)
 
-                    can_tradeNow = df_candle[0]['trade_price']
-                    can_highBefore1 = df_candle[1]['high_price']
-                    can_highBefore2 = df_candle[2]['high_price']
-                    can_highBefore3 = df_candle[3]['high_price']
-                    can_highBefore4 = df_candle[4]['high_price']
-                    can_highBefore5 = df_candle[5]['high_price']
-                    can_lowBefore1 = df_candle[1]['low_price']
-                    can_lowBefore2 = df_candle[2]['low_price']
-                    can_lowBefore3 = df_candle[3]['low_price']
-                    can_lowBefore4 = df_candle[4]['low_price']
-                    can_lowBefore5 = df_candle[5]['low_price']
 
-                    if can_tradeNow < can_highBefore1 or can_tradeNow < can_highBefore2 or can_tradeNow < can_highBefore3 or can_tradeNow < can_highBefore4 or can_tradeNow < can_highBefore5 or can_tradeNow < can_lowBefore1 or can_tradeNow < can_lowBefore2 or can_tradeNow < can_lowBefore3 or can_tradeNow < can_lowBefore4 or can_tradeNow < can_lowBefore5:
-                        logging.info('1분봉 5개에 비해 현재가가 낮으므로 매수하지 않음....[' + str(row[0]) + ']')
-                        continue
 
                     upbit.buycoin_mp(str(row[0]), 9995)
                     print('시장가 매수 완료! [' + str(row[0]) + ']')
 
-                # 중복 메세지 발송하지 않기 위해 60초간 Sleep X
-                time.sleep(1)
+                # 중복 메세지 발송하지 않기 위해 60초간 Sleep
+                time.sleep(61)
 
             # 조회 건수 체크
             data_cnt = data_cnt + 1
