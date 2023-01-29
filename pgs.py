@@ -30,7 +30,7 @@ def start_find_shoot():
         # 커서 획득
         c = conn.cursor()
 
-        sql = "select * from FIND_SHOOT_1MIN where chg_pcnt > 0.8 and trade_cnt > 700 order by chg_pcnt desc"
+        sql = "select * from FIND_SHOOT_1MIN where chg_pcnt > 0.5 and trade_cnt > 700 order by chg_pcnt desc"
 
         # ----------------------------------------------------------------------
         # 반복 수행
@@ -95,7 +95,7 @@ def start_find_shoot():
                     can_lowBefore4 = df_candle[4]['low_price']
                     can_lowBefore5 = df_candle[5]['low_price']
 
-                    if can_tradeNow < can_highBefore1 or can_tradeNow < can_highBefore2 or can_tradeNow < can_highBefore3 or can_tradeNow < can_highBefore4 or can_tradeNow < can_highBefore5 or can_tradeNow < can_lowBefore1 or can_tradeNow < can_lowBefore2 or can_tradeNow < can_lowBefore3 or can_tradeNow < can_lowBefore4 or can_tradeNow < can_lowBefore5:
+                    if (can_tradeNow <= can_highBefore1) or (can_tradeNow <= can_highBefore2) or (can_tradeNow <= can_highBefore3) or (can_tradeNow <= can_highBefore4) or (can_tradeNow <= can_highBefore5) or (can_tradeNow <= can_lowBefore1) or (can_tradeNow <= can_lowBefore2) or (can_tradeNow <= can_lowBefore3) or (can_tradeNow <= can_lowBefore4) or (can_tradeNow <= can_lowBefore5):
                         logging.info('1분봉 5개에 비해 현재가가 낮으므로 매수하지 않음....[' + str(row[0]) + ']')
                         continue
 
