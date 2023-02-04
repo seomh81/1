@@ -82,6 +82,7 @@ def start_find_shoot():
                     # 캔들 1분봉 저가인지 판단
                     # ------------------------------------------------------------------
                     df_candle = upbit.get_candle(str(row[0]), '1', 6)
+                    df_candle5 = upbit.get_candle(str(row[0], '5', 6))
 
                     can_tradeNow = df_candle[0]['trade_price']
                     can_highBefore1 = df_candle[1]['high_price']
@@ -95,7 +96,19 @@ def start_find_shoot():
                     can_lowBefore4 = df_candle[4]['low_price']
                     can_lowBefore5 = df_candle[5]['low_price']
 
-                    if (can_tradeNow <= can_highBefore1) or (can_tradeNow <= can_highBefore2) or (can_tradeNow <= can_highBefore3) or (can_tradeNow <= can_highBefore4) or (can_tradeNow <= can_highBefore5) or (can_tradeNow <= can_lowBefore1) or (can_tradeNow <= can_lowBefore2) or (can_tradeNow <= can_lowBefore3) or (can_tradeNow <= can_lowBefore4) or (can_tradeNow <= can_lowBefore5):
+
+                    can5_highBefore1 = df_candle5[1]['high_price']
+                    can5_highBefore2 = df_candle5[2]['high_price']
+                    can5_highBefore3 = df_candle5[3]['high_price']
+                    can5_highBefore4 = df_candle5[4]['high_price']
+                    can5_highBefore5 = df_candle5[5]['high_price']
+                    can5_lowBefore1 = df_candle5[1]['low_price']
+                    can5_lowBefore2 = df_candle5[2]['low_price']
+                    can5_lowBefore3 = df_candle5[3]['low_price']
+                    can5_lowBefore4 = df_candle5[4]['low_price']
+                    can5_lowBefore5 = df_candle5[5]['low_price']
+
+                    if (can_tradeNow <= can_highBefore1) or (can_tradeNow <= can_highBefore2) or (can_tradeNow <= can_highBefore3) or (can_tradeNow <= can_highBefore4) or (can_tradeNow <= can_highBefore5) or (can_tradeNow <= can_lowBefore1) or (can_tradeNow <= can_lowBefore2) or (can_tradeNow <= can_lowBefore3) or (can_tradeNow <= can_lowBefore4) or (can_tradeNow <= can_lowBefore5) or (can_tradeNow <= can5_highBefore1) or (can_tradeNow <= can5_highBefore2) or (can_tradeNow <= can5_highBefore3) or (can_tradeNow <= can5_highBefore4) or (can_tradeNow <= can5_highBefore5) or (can_tradeNow <= can5_lowBefore1) or (can_tradeNow <= can5_lowBefore2) or (can_tradeNow <= can5_lowBefore3) or (can_tradeNow <= can5_lowBefore4) or (can_tradeNow <= can5_lowBefore5):
                         logging.info('1분봉 5개에 비해 현재가가 낮으므로 매수하지 않음....[' + str(row[0]) + ']')
                         continue
 
