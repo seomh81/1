@@ -2,6 +2,7 @@ import os
 import sys
 import logging
 import math
+import schedule
 import traceback
 import time
 
@@ -25,13 +26,12 @@ if __name__ == '__main__':
         # 로그레벨(D:DEBUG, E:ERROR, 그외:INFO)
         upbit.set_loglevel('I')
 
-        # 매일 오전 8시59분에 매집
 
         # ---------------------------------------------------------------------
         # Logic Start!
         # ---------------------------------------------------------------------
         # 전 종목 리스트 조회
-        item_list = upbit.get_items('KRW', '') ####제외하고 싶은 종목을 두번째 항에 넣을 것 '' -> 'BTC,ETH'
+        item_list = upbit.get_items('KRW', 'BTC,ETH') ####제외하고 싶은 종목을 두번째 항에 넣을 것 '' -> 'BTC,ETH'
         #item_list = upbit.get_items('KRW', 'BTC,ETH,NEO,MTL,LTC,XRP,ETC,OMG,SNT,WAVES,XEM,QTUM,LSK,STEEM,XLM,ARDR,ARK,STORJ,GRS,REP,ADA,SBD,POWR,BTG,ICX,EOS,TRX,SC,ONT,ZIL,POLY,ZRX,LOOM,BCH,BAT,IOST,RFR,CVC,IQ,IOTA,MFT,ONG,GAS,UPP,ELF,KNC,BSV,THETA,QKC,BTT,MOC,ENJ,TFUEL,MANA,ANKR,AERGO,ATOM,TT,CRE,MBL,WAXP,HBAR,MED,MLK,STPT,ORBS,VET,CHZ,STMX,DKA,HIVE,KAVA,AHT,LINK,XTZ,BORA,JST,CRO,TON,SXP,HUNT,PLA,DOT,SRM,MVL,STRAX,AQT,GLM,SSX,META,FCT2,CBK,SAND,HUM,DOGE,STRK,PUNDIX,FLOW,DAWN,AXS,STX,XEC')
         # BTC,ETH,NEO,MTL,LTC,XRP,ETC,OMG,SNT,WAVES,XEM,QTUM,LSK,STEEM,XLM,ARDR,ARK,STORJ,GRS,REP,ADA,SBD,POWR,BTG,ICX,EOS,TRX,SC,ONT,ZIL,POLY,ZRX,LOOM,BCH,BAT,IOST,RFR,CVC,IQ,IOTA,MFT,ONG,GAS,UPP,ELF,KNC,BSV,THETA,QKC,BTT,MOC,ENJ,TFUEL,MANA,ANKR,AERGO,ATOM,TT,CRE,MBL,WAXP,HBAR,MED,MLK,STPT,ORBS,VET,CHZ,STMX,DKA,HIVE,KAVA,AHT,LINK,XTZ,BORA,JST,CRO,TON,SXP,HUNT,PLA,DOT,SRM,MVL,STRAX,AQT,GLM,SSX,META,FCT2,CBK,SAND,HUM,DOGE,STRK,PUNDIX,FLOW,DAWN,AXS,STX,XEC
         #item_list = upbit.get_items('KRW', 'NEO,MTL,LTC,XRP,ETC,OMG,SNT,WAVES,XEM,QTUM,LSK,STEEM,XLM,ARDR,ARK,STORJ,GRS,REP,ADA,SBD,POWR,BTG,ICX,EOS,TRX,SC,ONT,ZIL,POLY,ZRX,LOOM,BCH,BAT,IOST,RFR,CVC,IQ,IOTA,MFT,ONG,GAS,UPP,ELF,KNC,BSV,THETA,QKC,BTT,MOC,ENJ,TFUEL,MANA,ANKR,AERGO,ATOM,TT,CRE,MBL,WAXP,HBAR,MED,MLK,STPT,ORBS,VET,CHZ,STMX,DKA,HIVE,KAVA,AHT,LINK,XTZ,BORA,JST,CRO,TON,SXP,HUNT,PLA,DOT,SRM,MVL,STRAX,AQT,GLM,SSX,META,FCT2,CBK,SAND,HUM,DOGE,STRK,PUNDIX,FLOW,DAWN,AXS,STX,XEC')
@@ -59,6 +59,18 @@ if __name__ == '__main__':
         # 종목별 처리
         for item_list_for in item_list:
             logging.info('종목코드:' + item_list_for['market'])
+
+            # ------------------------------------------------------------------
+            # 기매수 여부 판단
+            # ------------------------------------------------------------------
+            accounts = upbit.get_accounts('Y', 'KRW')
+            account = list(filter(lambda x: x.get('market') == str(item_list_for['market']), accounts))
+
+            # 이미 매수한 종목이면 다시 매수하지 않음
+            # sell_bot.py에서 매도 처리되면 보유 종목에서 사라지고 다시 매수 가능
+            if len(account) > 0:
+                logging.info('기 매수 종목으로 매수하지 않음....[' + str(item_list_for['market']) + ']')
+                continue
 
             # 시장가 매수
             # ★ 실제 매수가 될 수 있어 아래 주석 처리함.

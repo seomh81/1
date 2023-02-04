@@ -194,9 +194,9 @@ if __name__ == '__main__':
 
         # 1. 로그레벨
         log_level = 'I' #input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
-        sell_pcnt = 0.2 #input("매도 수익률(ex:2%=2) : ")
-        dcnt_pcnt = -2.5 #input("고점대비 하락률(ex:-1%=-1) : ")
-        loss_cut = -2.7
+        sell_pcnt = 1.0 #input("매도 수익률(ex:2%=2) : ")
+        dcnt_pcnt = -1.0 #input("고점대비 하락률(ex:-1%=-1) : ")
+        loss_cut = -1.0
 
         upbit.set_loglevel(log_level)
 
