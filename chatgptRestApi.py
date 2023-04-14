@@ -1,7 +1,7 @@
 import os
 import openai
 
-openai.api_key ="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" #아까 복사했던 api 주소를 " " 안에 넣습니다.
+openai.api_key ="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"
 
 question = input("챗GPT 질문?: ")
 
