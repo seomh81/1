@@ -3,7 +3,7 @@ import openai
 
 openai.api_key ="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" #아까 복사했던 api 주소를 " " 안에 넣습니다.
 
-question = input("무엇을 물어볼까요?: ")
+question = input("챗GPT 질문?: ")
 
 completion = openai.ChatCompletion.create(
   model="gpt-3.5-turbo",
