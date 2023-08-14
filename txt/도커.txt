@@ -15,10 +15,17 @@ docker rmi -f: 이미지 강제 삭제(DON’T!)
 모두 강제 삭제 - 세트로 사용하자
 docker rm -f $(docker ps -aq --filter ancestor=[이미지])
 docker rmi [이미지]
+이미지 전체 강제 삭제 명령어
+docker rmi $(docker images -a -q) -f
 
 모든 도커이미지 삭제 - 복구 불가
 docker rm -f $(docker ps -aq)
 docker rmi $(docker images -q)
+
+실행 중인 이미지는 삭제되지 않음 그래서 ps에서 나온 아이디 확인 후 킬 한담에 삭제할 것
+docker container kill [컨테이너id]
+컨테이너도 삭제를 해야 함
+docker rm -f [컨테이너ID or 컨테이너명]
 
 사용하지 이미지만 삭제
 docker image prune
@@ -289,3 +296,135 @@ Copy
 $ ps -ef|grep {process}  ## PID 조회
 $ kill -9 {PID}  ## 강제종료
 $ kill -9 `ps -ef|grep {process}`  ## 한번에
+
+
+
+----------------------------------
+워드프레스 설치 전 MYSQL 설치 하자
+----------------------------------
+
+#1. Docker 설치
+Docker 홈페이지에 접속하여 자신의 OS에 맞는 Docker를 내려 받아 설치한다.
+
+설치가 완료되면 다음 명령어를 실행하여 버전을 출력해 보자.
+
+$ docker -v
+Docker version 19.03.13, build 4484c46d9d
+
+
+
+#2. MySQL Docker 이미지 다운로드
+다음 명령어로 MySQL Docker 이미지를 다운로드한다. 태그에 버전을 지정하지 않으면 최신 버전을 다운로드한다.
+
+$ docker pull mysql
+Using default tag: latest
+latest: Pulling from library/mysql
+bb79b6b2107f: Pull complete
+49e22f6fb9f7: Pull complete
+842b1255668c: Pull complete
+9f48d1f43000: Pull complete
+c693f0615bce: Pull complete
+8a621b9dbed2: Pull complete
+0807d32aef13: Pull complete
+a56aca0feb17: Pull complete
+de9d45fd0f07: Pull complete
+1d68a49161cc: Pull complete
+d16d318b774e: Pull complete
+49e112c55976: Pull complete
+Digest: sha256:8c17271df53ee3b843d6e16d46cff13f22c9c04d6982eb15a9a47bd5c9ac7e2d
+Status: Downloaded newer image for mysql:latest
+docker.io/library/mysql:latest
+
+MySQL 버전을 지정하려면 태그에 버전을 지정한다. 다운로드할 수 있는 MySQL 버전은 docker hub에서 확인할 수 있다. 예를 들어, MySQL 8.0.22 버전을 다운로드하려면 다음과 같이 태그에 버전을 지정한다.
+
+$ docker pull mysql:8.0.22
+8.0.22: Pulling from library/mysql
+Digest: sha256:8c17271df53ee3b843d6e16d46cff13f22c9c04d6982eb15a9a47bd5c9ac7e2d
+Status: Downloaded newer image for mysql:8.0.22
+docker.io/library/mysql:8.0.22
+
+다음 명령어로 다운로드한 Docker 이미지를 확인한다.
+
+$ docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+mysql               8.0.22              db2b37ec6181        2 weeks ago         545MB
+mysql               latest              db2b37ec6181        2 weeks ago         545MB
+
+#2. MySQL Docker 컨테이너 생성 및 실행
+$ docker run --name mysql_db -e MYSQL_ROOT_PASSWORD=<password> -d -p 3306:3306 mysql:latest
+
+#3. Docker 컨테이너 리스트 출력
+$ docker ps -a
+
+#4. MySQL Docker 컨테이너 시작/중지/재시작
+
+ MySQL Docker 컨테이너 중지
+$ docker stop mysql_db
+
+ MySQL Docker 컨테이너 시작
+$ docker start mysql_db
+
+ MySQL Docker 컨테이너 재시작
+$ docker restart mysql_db
+
+#5. MySQL Docker 컨테이너 접속
+$ docker exec -it mysql_db bash
+root@dc557b92f573:/# mysql -u root -p
+Enter password:
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 9
+Server version: 8.0.22 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2020, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+4 rows in set (0.01 sec)
+
+
+------------------------------------------------------------------
+워드프레스 도커 설치
+-------------------------------------------------------------------
+
+
+MYSQL 컨테이너 생성
+
+MYSQL설치 최신 8.0 기준 (-d 백그라운드 실행을 위한 옵션, --name 컨테이너 이름 명시, -e 환경변수 지정 옵션, -v 볼륨을 마운트)
+$ docker run -d --name mysql_db -e MYSQL_ROOT_PASSWORD=seo2208 -e MYSQL_DATABASE=wpdb -e MYSQL_USER=seo -e MYSQL_PASSWORD=seo2208 -v vol:/var/lib/mysql mysql:8.0
+
+컨테이너 생성 확인
+$ docker ps
+
+컨테이너 진입 (exec는 외부에서 내부로 진입 시 사용, -it -i와 -t를 같이 쓰는 경우가 많음: 컨테이넌가 실행되며 터미널의 입력을 계속해서 컨테이너로 전달하기 위해 사용)
+$ docker exec -it mysql_db bash
+
+진입 후
+# mysql -u seo -p seo2208
+PW를 입력
+
+DB확인
+mysql> show databases;
+
+종료
+mysql> exit
+
+
+워드프레스 컨테이너 생성
+
+워드프레스 설치 최신 6.3 기준 (-p 호스트와 컨테이너 간 포트포워딩 해줌 호스트 8080포트를 컨테이너 내부 80포트로 포워딩, --link<컨테이너이름>:<별칭> 컨테이너끼리 서로 통신하려면 같은 브릿지 드라이버 네트워크를 사용해야 하는데 같은 네트워크라면 해당 명령을 통해 링크를 사용하고 컨테이너 이름으로 통신하는 이유는 /etc/hosts 파일에 정의되어 있기 때문임)
+$ docker run -d --name wp -p 8080:80 --link mysql_db:wpdb -e WORDPRESS_DB_HOST=wpdb -e WORDPRESS_DB_USER=seo -e WORDPRESS_DB_PASSWORD=seo2208 -e WORDPRESS_DB_NAME=wpdb -v vol1:/var/www/html wordpress:6.3
+
+해당 IP:8080 들어가면 WP확인 가능
+
