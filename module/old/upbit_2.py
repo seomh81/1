@@ -14,8 +14,8 @@ from decimal import Decimal
 from datetime import datetime
 
 # Keys
-access_key = 'xwKqn7Q6JtbUxgVuEYu31Q8hNA62HZjX1eKbxUpr'
-secret_key = 'sXP8opxgHcWgD0EKd3ovnULVs8S1QnsaSLc5OTbi'
+access_key = 'TlHxxvXkDqcP6vnMM9cWrfV4FOYQSdG1Fh6Eoas4'
+secret_key = 'ksxpdPGrYJaVFIzKDSnn05WZL2H2QrXGqEXIxr7H'
 server_url = 'https://api.upbit.com'
 line_target_url = 'https://notify-api.line.me/api/notify'
 line_token = '9mpayGJB0EnNpFlllEsUu6TCbrMLQWOnthhjg2nN9KB'

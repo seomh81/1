@@ -14,8 +14,8 @@ from decimal import Decimal
 from datetime import datetime
 
 # Keys
-access_key = 'wbABTGxObTBGcLe8QSBdxrg3DOxCP8xd5xMJExo4'
-secret_key = 'BRuiurKg7hMWPlwm8SpxDQwU2nDyJFmNo9kPSTaw'
+access_key = 'TlHxxvXkDqcP6vnMM9cWrfV4FOYQSdG1Fh6Eoas4'
+secret_key = 'ksxpdPGrYJaVFIzKDSnn05WZL2H2QrXGqEXIxr7H'
 server_url = 'https://api.upbit.com'
 line_target_url = 'https://notify-api.line.me/api/notify'
 line_token = '9mpayGJB0EnNpFlllEsUu6TCbrMLQWOnthhjg2nN9KB'
@@ -1203,11 +1203,11 @@ def get_bb(target_item, tick_kind, inq_range, loop_cnt):
             dfDt = df['candle_date_time_kst'].iloc[::-1]
             df = df['trade_price'].iloc[::-1]
 
-            # 표준편차(곱)
+            # 표준편차(곱) 20에서 60으로 변경
             unit = 2
 
-            band1 = unit * numpy.std(df[len(df) - 20:len(df)])
-            bb_center = numpy.mean(df[len(df) - 20:len(df)])
+            band1 = unit * numpy.std(df[len(df) - 60:len(df)])
+            bb_center = numpy.mean(df[len(df) - 60:len(df)])
             band_high = bb_center + band1
             band_low = bb_center - band1
 

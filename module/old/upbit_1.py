@@ -14,8 +14,8 @@ from decimal import Decimal
 from datetime import datetime
 
 # Keys
-access_key = 'n1inbLR7Rq8h8xsmMp8Z18ThaQqRL9IzV2ZIzK8A'
-secret_key = 'tqakzE54kMVviOZGwx4icd4jPqyAAOJQVpRfKNAm'
+access_key = 'TlHxxvXkDqcP6vnMM9cWrfV4FOYQSdG1Fh6Eoas4'
+secret_key = 'ksxpdPGrYJaVFIzKDSnn05WZL2H2QrXGqEXIxr7H'
 server_url = 'https://api.upbit.com'
 line_target_url = 'https://notify-api.line.me/api/notify'
 line_token = '9mpayGJB0EnNpFlllEsUu6TCbrMLQWOnthhjg2nN9KB'
@@ -1473,8 +1473,8 @@ def get_bb(candle_datas):
             # 표준편차(곱)
             unit = 2
 
-            band1 = unit * numpy.std(df[len(df) - 20:len(df)])
-            bb_center = numpy.mean(df[len(df) - 20:len(df)])
+            band1 = unit * numpy.std(df[len(df) - 60:len(df)])
+            bb_center = numpy.mean(df[len(df) - 60:len(df)])
             band_high = bb_center + band1
             band_low = bb_center - band1
 
