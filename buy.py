@@ -44,6 +44,7 @@ def start_buytrade(buy_amt):
                 #ocl_val = False
 
                 logging.info('체크중....[' + str(target_item['market']) + ']')
+                # time.sleep(0.1)
 
                 # -------------------------------------------------------------
                 # 종목별 보조지표를 조회

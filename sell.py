@@ -55,6 +55,8 @@ def start_selltrade(sell_pcnt, dcnt_pcnt, loss_cut):
                         # 3. 매수 거래만 필터링
                         # 4. 가장 최근 거래일자부터 현재까지 고점을 조회
                         # -------------------------------------------------
+                        time.sleep(0.5)
+
                         order_done = upbit.get_order_status(target_item['market'], 'done') + upbit.get_order_status(
                             target_item['market'], 'cancel')
                         order_done_sorted = upbit.orderby_dict(order_done, 'created_at', True)
