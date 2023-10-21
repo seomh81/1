@@ -75,7 +75,7 @@ def start_buytrade(buy_amt):
                 # --------------------------------------------------------------
                 # 볼린저 밴드 추가
                 # --------------------------------------------------------------
-                if (bb[0]['BBL'] > candle[0]['low_price'] and (bb[0]['BBL'] * 0.98) < candle[0]['trade_price']) or (bb[0]['BBH'] < candle[0]['trade_price'] and bb[0]['BBM'] > candle[0]['low_price']): #and (candle[0]['low_price'] - candle[1]['low_price']) / candle[1]['low_price'] < -1:
+                if (bb[0]['BBL'] >= candle[0]['low_price'] and (bb[0]['BBL'] * 0.98) <= candle[0]['trade_price']) or (bb[0]['BBH'] <= candle[0]['trade_price'] and bb[0]['BBM'] >= candle[0]['low_price']): #and (candle[0]['low_price'] - candle[1]['low_price']) / candle[1]['low_price'] < -1:
                     # logging.info('시장가 매수 시작! [' + str(target_item['market']) + ']')
                     # rtn_buycoin_mp = upbit.buycoin_mp(target_item['market'], buy_amt)
                     # logging.info('시장가 매수 종료! [' + str(target_item['market']) + ']')
@@ -150,6 +150,14 @@ def start_buytrade(buy_amt):
                         continue
 
                     # ------------------------------------------------------------------
+                    # 거래 금액 낮은것 판단
+                    # ------------------------------------------------------------------
+
+                    if candle[0]['trade_price'] < 1:
+                        logging.info('거래 금액이 낮아 매수하지 않음....[' + str(target_item['market']) + ']')
+                        continue
+
+                    # ------------------------------------------------------------------
                     # 매수금액 설정
                     # 1. M : 수수료를 제외한 최대 가능 KRW 금액만큼 매수
                     # 2. 금액 : 입력한 금액만큼 매수
@@ -215,7 +223,7 @@ if __name__ == '__main__':
 
         # 1. 로그레벨
         log_level = 'I'#input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
-        buy_amt = 10000#input("매수금액(M:최대, 10000:1만원) : ").upper()
+        buy_amt = 30000#input("매수금액(M:최대, 10000:1만원) : ").upper()
 
         upbit.set_loglevel(log_level)
 
