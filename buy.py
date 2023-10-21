@@ -59,7 +59,7 @@ def start_buytrade(buy_amt):
                 # --------------------------------------------------------------
                 # 최근 상장하여 캔들 갯수 부족으로 보조 지표를 구하기 어려운 건은 제외
                 # --------------------------------------------------------------
-                if 'CANDLE' not in indicators or len(indicators['CANDLE']) < 200:
+                if 'CANDLE' not in indicators or len(indicators['CANDLE']) < 50: #원래 200
                     logging.info('캔들 데이터 부족으로 데이터 산출 불가...[' + str(target_item['market']) + ']')
                     continue
 
