@@ -1206,8 +1206,8 @@ def get_bb(target_item, tick_kind, inq_range, loop_cnt):
             # 표준편차(곱) 20에서 60으로 변경
             unit = 2
 
-            band1 = unit * numpy.std(df[len(df) - 60:len(df)])
-            bb_center = numpy.mean(df[len(df) - 60:len(df)])
+            band1 = unit * numpy.std(df[len(df) - 40:len(df)])
+            bb_center = numpy.mean(df[len(df) - 40:len(df)])
             band_high = bb_center + band1
             band_low = bb_center - band1
 
