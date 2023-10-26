@@ -146,7 +146,7 @@ def start_buytrade(buy_amt):
                     # 이미 매수한 종목이면 다시 매수하지 않음
                     # sell_bot.py에서 매도 처리되면 보유 종목에서 사라지고 다시 매수 가능
                     if len(account) > 0:
-                        logging.info('기 매수 종목으로 매수하지 않음....[' + str(target_item['market']) + ']')
+                        logging.info('기 매수 종목....[' + str(target_item['market']) + ']')
                         continue
 
                     # ------------------------------------------------------------------
@@ -154,7 +154,7 @@ def start_buytrade(buy_amt):
                     # ------------------------------------------------------------------
 
                     if candle[0]['trade_price'] < 1:
-                        logging.info('거래 금액이 낮아 매수하지 않음....[' + str(target_item['market']) + ']')
+                        logging.info('1원 미만 종목....[' + str(target_item['market']) + ']')
                         continue
 
                     # ------------------------------------------------------------------

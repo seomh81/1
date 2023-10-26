@@ -79,7 +79,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt, loss_cut):
 
                         # 매수 후 1분간은 진행하지 않음(업비트 오류 방지 용)
                         if diff.seconds < 60:
-                            logging.info('- 매수 직후 발생하는 오류를 방지하기 위해 진행하지 않음!!!')
+                            logging.info('매수 직후 발생하는 오류를 방지하기 위해 진행하지 않음!!! 1분 대기조 +_+ ')
                             logging.info('------------------------------------------------------')
                             continue
 
@@ -105,7 +105,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt, loss_cut):
                         if Decimal(str(rev_pcnt)) < Decimal(str(loss_cut)):
 
                             # ------------------------------------------------------------------
-                            # 시장가 매도
+                            # 손절 진행
                             # 실제 매도 로직은 안전을 위해 주석처리 하였습니다.
                             # 실제 매매를 원하시면 테스트를 충분히 거친 후 주석을 해제하시면 됩니다.
                             # ------------------------------------------------------------------
@@ -119,7 +119,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt, loss_cut):
                         # 현재 수익률이 매도 수익률 이상인 경우에만 진행
                         # -----------------------------------------------------
                         if Decimal(str(rev_pcnt)) < Decimal(str(sell_pcnt)):
-                            logging.info('- 현재 수익률이 매도 수익률 보다 낮아 진행하지 않음!!!')
+                            logging.info('아직 고점을 찍지 못함!!! ㅠ_ㅠ;;;')
                             logging.info('------------------------------------------------------')
                             continue
 
@@ -164,7 +164,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt, loss_cut):
                             logging.info('------------------------------------------------------')
 
                         else:
-                            logging.info('- 고점 대비 하락률 조건에 맞지 않아 매도하지 않음!!!')
+                            logging.info('고점 찍어서 매도 대기 중!!! ^ㅡ^ ')
                             logging.info('------------------------------------------------------')
 
 
