@@ -1206,8 +1206,8 @@ def get_bb(target_item, tick_kind, inq_range, loop_cnt):
             # 표준편차(곱) 20에서 60으로 변경
             unit = 2
 
-            band1 = unit * numpy.std(df[len(df) - 40:len(df)]) #수익률 좋을때 조건 240분봉 / 40 볼밴 / 3,-6,-9 매도조건 -> 테스트 60분봉 / 60볼밴 / 4,-2,-6 매도조건
-            bb_center = numpy.mean(df[len(df) - 40:len(df)])
+            band1 = unit * numpy.std(df[len(df) - 60:len(df)]) #수익률 좋을때 조건 240분봉 / 40 볼밴 / 3,-6,-9 매도조건 -> 테스트 60분봉 / 60볼밴 / 4,-2,-6 매도조건
+            bb_center = numpy.mean(df[len(df) - 60:len(df)]) #다시 본봉을 조정... 60을 240분봉으로... 매수가 너무 많아짐
             band_high = bb_center + band1
             band_low = bb_center - band1
 
