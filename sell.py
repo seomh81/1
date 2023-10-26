@@ -79,7 +79,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt, loss_cut):
 
                         # 매수 후 1분간은 진행하지 않음(업비트 오류 방지 용)
                         if diff.seconds < 60:
-                            logging.info('매수 직후 발생하는 오류를 방지하기 위해 진행하지 않음!!! 1분 대기조 +_+ ')
+                            logging.info('+_+ 매수 직후 발생하는 오류를 방지하기 위해 진행하지 않음!!! 1분 대기조 +_+ ')
                             logging.info('------------------------------------------------------')
                             continue
 
@@ -94,10 +94,10 @@ def start_selltrade(sell_pcnt, dcnt_pcnt, loss_cut):
 
                         logging.info('')
                         logging.info('------------------------------------------------------')
-                        logging.info('- 종목:' + str(target_item['market']))
-                        logging.info('- 평균매수가:' + str(target_item['avg_buy_price']))
-                        logging.info('- 현재가:' + str(ticker['trade_price']))
-                        logging.info('- 수익률:' + str(rev_pcnt))
+                        logging.info('               종목:' + str(target_item['market']))
+                        #logging.info('- 평균매수가:' + str(target_item['avg_buy_price']))
+                        #logging.info('- 현재가:' + str(ticker['trade_price']))
+                        #logging.info('- 수익률:' + str(rev_pcnt))
 
                         #손절 기준
 
@@ -119,7 +119,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt, loss_cut):
                         # 현재 수익률이 매도 수익률 이상인 경우에만 진행
                         # -----------------------------------------------------
                         if Decimal(str(rev_pcnt)) < Decimal(str(sell_pcnt)):
-                            logging.info('아직 고점을 찍지 못함!!! ㅠ_ㅠ;;;')
+                            logging.info('고점까지 기다려!!! ' + str(sell_pcnt) + '% > ' + str(rev_pcnt) + '%  ㅠ_ㅠ;;;')
                             logging.info('------------------------------------------------------')
                             continue
 
@@ -143,9 +143,9 @@ def start_selltrade(sell_pcnt, dcnt_pcnt, loss_cut):
                         cur_dcnt_pcnt = round(((Decimal(str(ticker['trade_price'])) - Decimal(
                             str(highest_high_price))) / Decimal(str(highest_high_price))) * 100, 2)
 
-                        logging.info('- 매수 후 최고가:' + str(highest_high_price))
-                        logging.info('- 고점대비 하락률:' + str(cur_dcnt_pcnt))
-                        logging.info('- 최종 매수시간:' + str(last_buy_dt))
+                        #logging.info('- 매수 후 최고가:' + str(highest_high_price))
+                        #logging.info('- 고점대비 하락률:' + str(cur_dcnt_pcnt))
+                        #logging.info('- 최종 매수시간:' + str(last_buy_dt))
 
                         # print(cur_dcnt_pcnt)
                         # print(dcnt_pcnt)
@@ -164,7 +164,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt, loss_cut):
                             logging.info('------------------------------------------------------')
 
                         else:
-                            logging.info('고점 찍어서 매도 대기 중!!! ^ㅡ^ ')
+                            logging.info('매도 준비~~~ ' + str(cur_dcnt_pcnt) + '% > '  + str(dcnt_pcnt)+ '% ^ㅡ^')
                             logging.info('------------------------------------------------------')
 
 
@@ -207,9 +207,9 @@ if __name__ == '__main__':
 
         logging.info("*********************************************************")
         logging.info("1. 로그레벨 : " + str(log_level))
-        logging.info("2. 매도 수익률 : " + str(sell_pcnt))
-        logging.info("3. 고점대비 하락률 : " + str(dcnt_pcnt))
-        logging.info("4. 로스 컷 : " + str(loss_cut))
+        logging.info("2. 매도 수익률 : " + str(sell_pcnt) + "%")
+        logging.info("3. 고점대비 하락률 : " + str(dcnt_pcnt) + "%")
+        logging.info("4. 로스 컷 : " + str(loss_cut) + "%")
         logging.info("*********************************************************")
 
         # 매도 로직 시작
