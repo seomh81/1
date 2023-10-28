@@ -1170,32 +1170,20 @@ def get_macd(target_item, tick_kind, inq_range, loop_cnt):
         raise
 
 
+
 # -----------------------------------------------------------------------------
 # - Name : get_bb
 # - Desc : 볼린저밴드 조회
 # - Input
-#   1) target_item : 대상 종목
-#   2) tick_kind : 캔들 종류 (1, 3, 5, 10, 15, 30, 60, 240 - 분, D-일, W-주, M-월)
-#   3) inq_range : 캔들 조회 범위
-#   4) loop_cnt : 지표 반복계산 횟수
+#   1) candle_datas : 캔들 정보
 # - Output
 #   1) 볼린저 밴드 값
 # -----------------------------------------------------------------------------
-def get_bb(target_item, tick_kind, inq_range, loop_cnt):
+def get_bb(candle_datas):
     try:
-
-        # 캔들 데이터 조회용
-        candle_datas = []
 
         # 볼린저밴드 데이터 리턴용
         bb_list = []
-
-        # 캔들 추출
-        candle_data = get_candle(target_item, tick_kind, inq_range)
-
-        # 조회 횟수별 candle 데이터 조합
-        for i in range(0, int(loop_cnt)):
-            candle_datas.append(candle_data[i:int(len(candle_data))])
 
         # 캔들 데이터만큼 수행
         for candle_data_for in candle_datas:
@@ -1203,11 +1191,11 @@ def get_bb(target_item, tick_kind, inq_range, loop_cnt):
             dfDt = df['candle_date_time_kst'].iloc[::-1]
             df = df['trade_price'].iloc[::-1]
 
-            # 표준편차(곱) 20에서 60으로 변경
+            # 표준편차(곱)
             unit = 2
 
-            band1 = unit * numpy.std(df[len(df) - 160:len(df)]) #수익률 좋을때 조건 240분봉 / 40 볼밴 / 3,-6,-9 매도조건 -> 테스트 60분봉 / 60볼밴 / 4,-2,-6 매도조건
-            bb_center = numpy.mean(df[len(df) - 160:len(df)]) #다시 본봉을 조정... 60분 160일로 변경 5,-3,-6 변경
+            band1 = unit * numpy.std(df[len(df) - 60:len(df)]) #와.,.. 볼밴이 두개였다니... 그래서 안고쳐지고 오작동한거임???
+            bb_center = numpy.mean(df[len(df) - 60:len(df)])
             band_high = bb_center + band1
             band_low = bb_center - band1
 
@@ -1222,6 +1210,47 @@ def get_bb(target_item, tick_kind, inq_range, loop_cnt):
     # ----------------------------------------
     except Exception:
         raise
+
+# -----------------------------------------------------------------------------
+# - Name : get_bb2
+# - Desc : 볼린저밴드 조회
+# - Input
+#   1) candle_datas : 캔들 정보
+# - Output
+#   1) 볼린저 밴드 값
+# -----------------------------------------------------------------------------
+def get_bb2(candle_datas):
+    try:
+
+        # 볼린저밴드 데이터 리턴용
+        bb_list = []
+
+        # 캔들 데이터만큼 수행
+        for candle_data_for in candle_datas:
+            df = pd.DataFrame(candle_data_for)
+            dfDt = df['candle_date_time_kst'].iloc[::-1]
+            df = df['trade_price'].iloc[::-1]
+
+            # 표준편차(곱)
+            unit = 2
+
+            band1 = unit * numpy.std(df[len(df) - 120:len(df)]) #와.,.. 볼밴이 두개였다니... 그래서 안고쳐지고 오작동한거임???
+            bb_center = numpy.mean(df[len(df) - 120:len(df)])
+            band_high = bb_center + band1
+            band_low = bb_center - band1
+
+            bb_list.append({"type": "BB", "DT": dfDt[0], "BBH": round(band_high, 4), "BBM": round(bb_center, 4),
+                            "BBL": round(band_low, 4)})
+
+        return bb_list
+
+
+    # ----------------------------------------
+    # 모든 함수의 공통 부분(Exception 처리)
+    # ----------------------------------------
+    except Exception:
+        raise
+
 
 
 # -----------------------------------------------------------------------------
@@ -1462,47 +1491,6 @@ def get_ma(candle_datas, loop_cnt):
 
 
 # -----------------------------------------------------------------------------
-# - Name : get_bb
-# - Desc : 볼린저밴드 조회
-# - Input
-#   1) candle_datas : 캔들 정보
-# - Output
-#   1) 볼린저 밴드 값
-# -----------------------------------------------------------------------------
-def get_bb(candle_datas):
-    try:
-
-        # 볼린저밴드 데이터 리턴용
-        bb_list = []
-
-        # 캔들 데이터만큼 수행
-        for candle_data_for in candle_datas:
-            df = pd.DataFrame(candle_data_for)
-            dfDt = df['candle_date_time_kst'].iloc[::-1]
-            df = df['trade_price'].iloc[::-1]
-
-            # 표준편차(곱)
-            unit = 2
-
-            band1 = unit * numpy.std(df[len(df) - 160:len(df)]) #와.,.. 볼밴이 두개였다니... 그래서 안고쳐지고 오작동한거임???
-            bb_center = numpy.mean(df[len(df) - 160:len(df)])
-            band_high = bb_center + band1
-            band_low = bb_center - band1
-
-            bb_list.append({"type": "BB", "DT": dfDt[0], "BBH": round(band_high, 4), "BBM": round(bb_center, 4),
-                            "BBL": round(band_low, 4)})
-
-        return bb_list
-
-
-    # ----------------------------------------
-    # 모든 함수의 공통 부분(Exception 처리)
-    # ----------------------------------------
-    except Exception:
-        raise
-
-
-# -----------------------------------------------------------------------------
 # - Name : get_williams
 # - Desc : 윌리암스 %R 조회
 # - Input
@@ -1634,6 +1622,9 @@ def get_indicators(target_item, tick_kind, inq_range, loop_cnt):
             # BB 정보 조회
             bb_data = get_bb(candle_datas)
 
+            # BB2 정보 조회
+            bb2_data = get_bb2(candle_datas)
+
             # WILLIAMS %R 조회
             williams_data = get_williams(candle_datas)
 
@@ -1654,6 +1645,9 @@ def get_indicators(target_item, tick_kind, inq_range, loop_cnt):
 
             if len(bb_data) > 0:
                 indicator_data.append(bb_data)
+
+            if len(bb2_data) > 0:
+                indicator_data.append(bb2_data)
 
             if len(williams_data) > 0:
                 indicator_data.append(williams_data)
@@ -1922,6 +1916,12 @@ def get_indicator_sel(target_item, tick_kind, inq_range, loop_cnt, indi_type):
                 # BB 정보 조회
                 bb_data = get_bb(candle_datas)
                 indicator_data['BB'] = bb_data
+
+
+            if 'BB2' in indi_type:
+                # BB2 정보 조회
+                bb2_data = get_bb2(candle_datas)
+                indicator_data['BB2'] = bb2_data
 
             if 'WILLIAMS' in indi_type:
                 # WILLIAMS %R 조회

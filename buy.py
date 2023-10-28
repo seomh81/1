@@ -56,7 +56,7 @@ def start_buytrade(buy_amt):
                 # 2. 속도를 위해 원하는 지표만 조회(RSI, MFI, MACD, CANDLE) - 수정
                 # -------------------------------------------------------------
                 indicators = upbit.get_indicator_sel(target_item['market'], '60', 200, 5,
-                                                     ['BB', 'CANDLE'])
+                                                     ['BB', 'BB2', 'CANDLE'])
                                                             #['RSI', 'MFI', 'MACD', 'BB', 'CANDLE'])
 
                 # --------------------------------------------------------------
@@ -73,17 +73,35 @@ def start_buytrade(buy_amt):
                 #mfi = indicators['MFI']
                 #macd = indicators['MACD']
                 bb = indicators['BB']
+                bb2 = indicators['BB2']
                 candle = indicators['CANDLE']
 
-                logging.info('BBH/BBM/BBL/TP ---> ' + str(bb[0]['BBH']) + ' / ' + str(bb[0]['BBM']) + ' / ' + str(bb[0]['BBL']) + ' / ' + str(candle[0]['trade_price']))
+                logging.info('BB2 ---> ' + str(bb2[0]['BBH']) + ' / ' + str(bb2[0]['BBM']) + ' / ' + str(
+                    bb2[0]['BBL']) + ' / ' + str(
+                    candle[0]['trade_price']))
 
                 # --------------------------------------------------------------
                 # 볼린저 밴드 추가
                 # --------------------------------------------------------------
-                if (bb[0]['BBL'] > candle[0]['low_price'] and (bb[0]['BBL'] * 0.94) < candle[0]['trade_price']) or (bb[0]['BBH'] <= candle[0]['trade_price'] and bb[0]['BBM'] >= candle[0]['low_price']): #and (candle[0]['low_price'] - candle[1]['low_price']) / candle[1]['low_price'] < -1:
+                if (bb2[0]['BBL'] > candle[0]['low_price'] and bb[0]['BBL'] > bb2[0]['BBL'] and candle[0][
+                    'high_price'] != candle[1][
+                        'high_price'] and candle[0]['low_price'] != candle[1]['low_price'] and (
+                            candle[1]['high_price'] - candle[2][
+                        'high_price']) * (candle[1]['low_price'] - candle[2]['low_price']) != 2) or (
+                        bb2[0]['BBH'] <= candle[0]['high_price'] and bb[0]['BBM'] >= candle[0]['low_price'] and bb[0][
+                    'BBH'] > bb2[0][
+                            'BBH'] and candle[0]['high_price'] != candle[1][
+                            'high_price'] and candle[0]['low_price'] != candle[1]['low_price'] and (
+                                candle[1]['high_price'] - candle[2][
+                            'high_price']) * (candle[1]['low_price'] - candle[2][
+                    'low_price']) != 2):  # and (candle[0]['low_price'] - candle[1]['low_price']) / candle[1]['low_price'] < -1:
 
-                    logging.info('?????????????? ' + str(candle[0]['trade_price']) + ' > ' + str(bb[0]['BBH']) + ' || ' + str(bb[0]['BBM']) + ' > ' + str(candle[0]['low_price']))
-                    logging.info('!!!!!!!!!!!!!! ' + str(bb[0]['BBL']) + ' > ' + str(candle[0]['low_price']))
+                    logging.info(
+                        '?????????????? ' + str(candle[0]['trade_price']) + ' > ' + str(bb2[0]['BBH']) + ' || ' + str(
+                            bb2[0]['BBM']) + ' > ' + str(candle[0]['low_price']))
+                    logging.info('!!!!!!!!!!!!!! ' + str(bb2[0]['BBL']) + ' > ' + str(candle[0]['low_price']))
+
+
                     # logging.info('시장가 매수 시작! [' + str(target_item['market']) + ']')
                     # rtn_buycoin_mp = upbit.buycoin_mp(target_item['market'], buy_amt)
                     # logging.info('시장가 매수 종료! [' + str(target_item['market']) + ']')
