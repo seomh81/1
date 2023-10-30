@@ -55,14 +55,14 @@ def start_buytrade(buy_amt):
                 # 1. 조회 기준 : 일캔들, 최근 5개 지표 조회
                 # 2. 속도를 위해 원하는 지표만 조회(RSI, MFI, MACD, CANDLE) - 수정
                 # -------------------------------------------------------------
-                indicators = upbit.get_indicator_sel(target_item['market'], '10', 200, 5,
+                indicators = upbit.get_indicator_sel(target_item['market'], '10', 360, 5,
                                                      ['BB', 'BB2', 'CANDLE'])
                                                             #['RSI', 'MFI', 'MACD', 'BB', 'CANDLE'])
 
                 # --------------------------------------------------------------
                 # 최근 상장하여 캔들 갯수 부족으로 보조 지표를 구하기 어려운 건은 제외
                 # --------------------------------------------------------------
-                if 'CANDLE' not in indicators or len(indicators['CANDLE']) < 200: #원래 200
+                if 'CANDLE' not in indicators or len(indicators['CANDLE']) < 360: #원래 200
                     logging.info('캔들 데이터 부족으로 데이터 산출 불가...[' + str(target_item['market']) + ']')
                     continue
 
