@@ -83,14 +83,12 @@ def start_buytrade(buy_amt):
                 # --------------------------------------------------------------
                 # 볼린저 밴드 추가
                 # --------------------------------------------------------------
-                if (bb2[0]['BBL'] > candle[0]['low_price'] and bb[0]['BBL'] > bb2[0]['BBL'] and candle[0][
+                if (bb2[0]['BBL'] > candle[0]['low_price'] and bb[1]['BBL'] > bb2[1]['BBL'] and candle[0][
                     'high_price'] != candle[1][
                         'high_price'] and candle[0]['low_price'] != candle[1]['low_price'] and (
                             candle[1]['high_price'] - candle[2][
                         'high_price']) * (candle[1]['low_price'] - candle[2]['low_price']) != 2) or (
-                        bb2[0]['BBH'] <= candle[0]['high_price'] and bb[0]['BBM'] >= candle[0]['low_price'] and bb[0][
-                    'BBH'] > bb2[0][
-                            'BBH'] and candle[0]['high_price'] != candle[1][
+                        bb2[0]['BBH'] <= candle[0]['high_price'] and bb[1]['BBM'] >= candle[1]['low_price'] and candle[0]['high_price'] != candle[1][
                             'high_price'] and candle[0]['low_price'] != candle[1]['low_price'] and (
                                 candle[1]['high_price'] - candle[2][
                             'high_price']) * (candle[1]['low_price'] - candle[2][
@@ -249,7 +247,7 @@ if __name__ == '__main__':
 
         # 1. 로그레벨
         log_level = 'I'#input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
-        buy_amt = 30000#input("매수금액(M:최대, 10000:1만원) : ").upper()
+        buy_amt = 50000#input("매수금액(M:최대, 10000:1만원) : ").upper()
 
         upbit.set_loglevel(log_level)
 
