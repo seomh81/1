@@ -55,7 +55,7 @@ def start_buytrade(buy_amt):
                 # 1. 조회 기준 : 일캔들, 최근 5개 지표 조회
                 # 2. 속도를 위해 원하는 지표만 조회(RSI, MFI, MACD, CANDLE) - 수정
                 # -------------------------------------------------------------
-                indicators = upbit.get_indicator_sel(target_item['market'], '60', 200, 5,
+                indicators = upbit.get_indicator_sel(target_item['market'], '10', 200, 5,
                                                      ['BB', 'BB2', 'CANDLE'])
                                                             #['RSI', 'MFI', 'MACD', 'BB', 'CANDLE'])
 

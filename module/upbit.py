@@ -1194,8 +1194,8 @@ def get_bb(candle_datas):
             # 표준편차(곱)
             unit = 2
 
-            band1 = unit * numpy.std(df[len(df) - 60:len(df)]) #와.,.. 볼밴이 두개였다니... 그래서 안고쳐지고 오작동한거임???
-            bb_center = numpy.mean(df[len(df) - 60:len(df)])
+            band1 = unit * numpy.std(df[len(df) - 360:len(df)]) #와.,.. 볼밴이 두개였다니... 그래서 안고쳐지고 오작동한거임???
+            bb_center = numpy.mean(df[len(df) - 360:len(df)])
             band_high = bb_center + band1
             band_low = bb_center - band1
 
@@ -1234,8 +1234,8 @@ def get_bb2(candle_datas):
             # 표준편차(곱)
             unit = 2
 
-            band1 = unit * numpy.std(df[len(df) - 120:len(df)]) #와.,.. 볼밴이 두개였다니... 그래서 안고쳐지고 오작동한거임???
-            bb_center = numpy.mean(df[len(df) - 120:len(df)])
+            band1 = unit * numpy.std(df[len(df) - 720:len(df)]) #와.,.. 볼밴이 두개였다니... 그래서 안고쳐지고 오작동한거임???
+            bb_center = numpy.mean(df[len(df) - 720:len(df)])
             band_high = bb_center + band1
             band_low = bb_center - band1
 
