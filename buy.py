@@ -55,14 +55,14 @@ def start_buytrade(buy_amt):
                 # 1. 조회 기준 : 일캔들, 최근 5개 지표 조회
                 # 2. 속도를 위해 원하는 지표만 조회(RSI, MFI, MACD, CANDLE) - 수정
                 # -------------------------------------------------------------
-                indicators = upbit.get_indicator_sel(target_item['market'], '10', 360, 5,
+                indicators = upbit.get_indicator_sel(target_item['market'], '30', 200, 5,
                                                      ['BB', 'BB2', 'CANDLE'])
                                                             #['RSI', 'MFI', 'MACD', 'BB', 'CANDLE'])
 
                 # --------------------------------------------------------------
                 # 최근 상장하여 캔들 갯수 부족으로 보조 지표를 구하기 어려운 건은 제외
                 # --------------------------------------------------------------
-                if 'CANDLE' not in indicators or len(indicators['CANDLE']) < 360: #원래 200
+                if 'CANDLE' not in indicators or len(indicators['CANDLE']) < 200: #원래 200
                     logging.info('캔들 데이터 부족으로 데이터 산출 불가...[' + str(target_item['market']) + ']')
                     continue
 
@@ -83,16 +83,16 @@ def start_buytrade(buy_amt):
                 # --------------------------------------------------------------
                 # 볼린저 밴드 추가
                 # --------------------------------------------------------------
-                if (bb2[0]['BBL'] > candle[0]['low_price'] and bb[1]['BBL'] > bb2[1]['BBL'] and candle[0][
+                if (bb2[0]['BBL'] > candle[0]['low_price'] and bb[1]['BBL'] > bb2[1]['BBL'] and candle[2][
                     'high_price'] != candle[1][
-                        'high_price'] and candle[0]['low_price'] != candle[1]['low_price'] and (
-                            candle[1]['high_price'] - candle[2][
-                        'high_price']) * (candle[1]['low_price'] - candle[2]['low_price']) != 2) or (
-                        bb2[0]['BBH'] <= candle[0]['high_price'] and bb[1]['BBM'] >= candle[1]['low_price'] and candle[0]['high_price'] != candle[1][
-                            'high_price'] and candle[0]['low_price'] != candle[1]['low_price'] and (
-                                candle[1]['high_price'] - candle[2][
-                            'high_price']) * (candle[1]['low_price'] - candle[2][
-                    'low_price']) != 2):  # and (candle[0]['low_price'] - candle[1]['low_price']) / candle[1]['low_price'] < -1:
+                        'high_price'] and candle[2]['low_price'] != candle[1]['low_price'] and (
+                            candle[1]['high_price'] - candle[1][
+                        'low_price']) != (candle[2]['high_price'] - candle[2]['low_price'])) or (
+                        bb2[0]['BBH'] <= candle[0]['high_price'] and bb[1]['BBM'] >= candle[1]['low_price'] and candle[2][
+                    'high_price'] != candle[1][
+                        'high_price'] and candle[2]['low_price'] != candle[1]['low_price'] and (
+                            candle[1]['high_price'] - candle[1][
+                        'low_price']) != (candle[2]['high_price'] - candle[2]['low_price'])):  # and (candle[0]['low_price'] - candle[1]['low_price']) / candle[1]['low_price'] < -1:
 
                     logging.info(
                         '?????????????? ' + str(candle[0]['trade_price']) + ' > ' + str(bb2[0]['BBH']) + ' || ' + str(
@@ -247,7 +247,7 @@ if __name__ == '__main__':
 
         # 1. 로그레벨
         log_level = 'I'#input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
-        buy_amt = 50000#input("매수금액(M:최대, 10000:1만원) : ").upper()
+        buy_amt = 6000#input("매수금액(M:최대, 10000:1만원) : ").upper()
 
         upbit.set_loglevel(log_level)
 
