@@ -83,21 +83,21 @@ def start_buytrade(buy_amt):
                 # --------------------------------------------------------------
                 # 볼린저 밴드 추가
                 # --------------------------------------------------------------
-                if (bb2[0]['BBL'] > candle[0]['low_price'] and bb[1]['BBL'] > bb2[1]['BBL'] and candle[2][
+                if (bb2[0]['BBL'] > candle[0]['low_price'] and bb[0]['BBL'] > bb2[0]['BBL'] and candle[2][
                     'high_price'] != candle[1][
                         'high_price'] and candle[2]['low_price'] != candle[1]['low_price'] and (
                             candle[1]['high_price'] - candle[1][
                         'low_price']) != (candle[2]['high_price'] - candle[2]['low_price'])) or (
-                        bb2[0]['BBH'] <= candle[0]['high_price'] and bb[1]['BBM'] >= candle[1]['low_price'] and candle[2][
+                        bb2[0]['BBH'] <= candle[0]['high_price'] and bb[0]['BBM'] >= candle[0]['low_price'] and candle[2][
                     'high_price'] != candle[1][
                         'high_price'] and candle[2]['low_price'] != candle[1]['low_price'] and (
                             candle[1]['high_price'] - candle[1][
                         'low_price']) != (candle[2]['high_price'] - candle[2]['low_price'])):  # and (candle[0]['low_price'] - candle[1]['low_price']) / candle[1]['low_price'] < -1:
 
-                    logging.info(
-                        '?????????????? ' + str(candle[0]['trade_price']) + ' > ' + str(bb2[0]['BBH']) + ' || ' + str(
-                            bb2[0]['BBM']) + ' > ' + str(candle[0]['low_price']))
-                    logging.info('!!!!!!!!!!!!!! ' + str(bb2[0]['BBL']) + ' > ' + str(candle[0]['low_price']))
+                    # logging.info(
+                    #     '?????????????? ' + str(candle[0]['trade_price']) + ' > ' + str(bb2[0]['BBH']) + ' || ' + str(
+                    #         bb2[0]['BBM']) + ' > ' + str(candle[0]['low_price']))
+                    # logging.info('!!!!!!!!!!!!!! ' + str(bb2[0]['BBL']) + ' > ' + str(candle[0]['low_price']))
 
 
                     # logging.info('시장가 매수 시작! [' + str(target_item['market']) + ']')
