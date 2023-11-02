@@ -92,8 +92,8 @@ def start_selltrade(sell_pcnt, dcnt_pcnt, loss_cut):
                         rev_pcnt = round(((Decimal(str(ticker['trade_price'])) - Decimal(
                             str(target_item['avg_buy_price']))) / Decimal(str(target_item['avg_buy_price']))) * 100, 2)
 
-                        logging.info('')
-                        logging.info('------------------------------------------------------')
+                        # logging.info('')
+                        # logging.info('------------------------------------------------------')
                         logging.info('               종목:' + str(target_item['market']))
                         #logging.info('- 평균매수가:' + str(target_item['avg_buy_price']))
                         #logging.info('- 현재가:' + str(ticker['trade_price']))
@@ -164,7 +164,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt, loss_cut):
                             logging.info('------------------------------------------------------')
 
                         else:
-                            logging.info('매도 준비~~~ ' + str(cur_dcnt_pcnt) + '% > '  + str(dcnt_pcnt)+ '% ^ㅡ^')
+                            logging.info('매도 준비~~~ ' + str(cur_dcnt_pcnt) + '% > '  + str(dcnt_pcnt)+ '% <<<<<<<<<<<<<<')
                             logging.info('------------------------------------------------------')
 
 

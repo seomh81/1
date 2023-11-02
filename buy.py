@@ -3,6 +3,7 @@ import sys
 import logging
 import traceback
 import time
+import math
 
 from decimal import Decimal
 
@@ -17,18 +18,18 @@ from module import upbit
 # - Input
 # 1) buy_amt : 매수금액
 # -----------------------------------------------------------------------------
-def start_buytrade(buy_amt):
+def start_buytrade(buy_amtp):
     try:
 
         # ----------------------------------------------------------------------
         # 반복 수행
         # ----------------------------------------------------------------------
         while True:
-
-            logging.info("*********************************************************")
-            logging.info("1. 로그레벨 : " + str(log_level))
-            logging.info("2. 매수금액 : " + str(buy_amt))
-            logging.info("*********************************************************")
+            #
+            # logging.info("*********************************************************")
+            # logging.info("1. 로그레벨 : " + str(log_level))
+            # logging.info("2. 매수금액 % : " + str(buy_amtp))
+            # logging.info("*********************************************************")
 
             # -----------------------------------------------------------------
             # 전체 종목 리스트 추출
@@ -44,8 +45,8 @@ def start_buytrade(buy_amt):
                 #mfi_val = False
                 #ocl_val = False
                 logging.info('------------------------------------------------------')
-                logging.info('')
-                logging.info('------------------------------------------------------')
+                # logging.info('')
+                # logging.info('------------------------------------------------------')
 
                 logging.info('체크중....[' + str(target_item['market']) + ']')
                 #time.sleep(0.001)
@@ -76,6 +77,11 @@ def start_buytrade(buy_amt):
                 bb2 = indicators['BB2']
                 candle = indicators['CANDLE']
 
+                krw_balance = upbit.get_krwbal()
+                buy_amt = math.floor((krw_balance['krw_balance']) * buy_amtp / 100 / 10000) * 10000
+
+                logging.info("{:,}".format(krw_balance['krw_balance']) + ' 원 매수 가능 -------> ' + str(buy_amt))
+
                 logging.info('BB2 ---> ' + str(bb2[0]['BBH']) + ' / ' + str(bb2[0]['BBM']) + ' / ' + str(
                     bb2[0]['BBL']) + ' / ' + str(
                     candle[0]['trade_price']))
@@ -83,16 +89,24 @@ def start_buytrade(buy_amt):
                 # --------------------------------------------------------------
                 # 볼린저 밴드 추가
                 # --------------------------------------------------------------
-                if (bb2[0]['BBL'] > candle[0]['low_price'] and bb[0]['BBL'] > bb2[0]['BBL'] and candle[2][
+                if (bb2[0]['BBL'] > candle[0]['low_price'] and bb[1]['BBL'] > bb2[1]['BBL'] and candle[2][
                     'high_price'] != candle[1][
                         'high_price'] and candle[2]['low_price'] != candle[1]['low_price'] and (
                             candle[1]['high_price'] - candle[1][
-                        'low_price']) != (candle[2]['high_price'] - candle[2]['low_price'])) or (
-                        bb2[0]['BBH'] <= candle[0]['high_price'] and bb[0]['BBM'] >= candle[0]['low_price'] and candle[2][
-                    'high_price'] != candle[1][
-                        'high_price'] and candle[2]['low_price'] != candle[1]['low_price'] and (
-                            candle[1]['high_price'] - candle[1][
-                        'low_price']) != (candle[2]['high_price'] - candle[2]['low_price'])):  # and (candle[0]['low_price'] - candle[1]['low_price']) / candle[1]['low_price'] < -1:
+                        'low_price']) != (candle[2]['high_price'] - candle[2]['low_price'])):
+
+                # if (bb2[0]['BBL'] > candle[0]['low_price'] and bb[0]['BBL'] > bb2[0]['BBL'] and candle[2][
+                #     'high_price'] != candle[1][
+                #         'high_price'] and candle[2]['low_price'] != candle[1]['low_price'] and (
+                #             candle[1]['high_price'] - candle[1][
+                #         'low_price']) != (candle[2]['high_price'] - candle[2]['low_price'])) or (
+                #         bb2[0]['BBH'] <= candle[0]['high_price'] and bb[0]['BBM'] >= candle[0]['low_price'] and
+                #         candle[2][
+                #             'high_price'] != candle[1][
+                #             'high_price'] and candle[2]['low_price'] != candle[1]['low_price'] and (
+                #                 candle[1]['high_price'] - candle[1][
+                #             'low_price']) != (candle[2]['high_price'] - candle[2][
+                #     'low_price'])):  # and (candle[0]['low_price'] - candle[1]['low_price']) / candle[1]['low_price'] < -1:
 
                     # logging.info(
                     #     '?????????????? ' + str(candle[0]['trade_price']) + ' > ' + str(bb2[0]['BBH']) + ' || ' + str(
@@ -199,7 +213,7 @@ def start_buytrade(buy_amt):
                         continue
 
                     # ------------------------------------------------------------------
-                    # 최소 주문 금액(업비트 기준 5000원) 이상일 때만 매수로직 수행
+                    # 최소 주문 금액(업비트 기준 5000원) 이상일 때만 매수로직 수행 ---- 10000원으로 올림
                     # ------------------------------------------------------------------
                     if Decimal(str(buy_amt)) < Decimal(str(upbit.min_order_amt)):
                         logging.info('주문금액[' + str(buy_amt) + ']이 최소 주문금액[' + str(upbit.min_order_amt) + '] 보다 작습니다.')
@@ -247,17 +261,17 @@ if __name__ == '__main__':
 
         # 1. 로그레벨
         log_level = 'I'#input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
-        buy_amt = 20000#input("매수금액(M:최대, 10000:1만원) : ").upper()
-
+        # buy_amt = 20000#input("매수금액(M:최대, 10000:1만원) : ").upper()
+        buy_amtp = 40 #몇 %씩 매수할지?
         upbit.set_loglevel(log_level)
 
         logging.info("*********************************************************")
         logging.info("1. 로그레벨 : " + str(log_level))
-        logging.info("2. 매수금액 : " + str(buy_amt))
+        logging.info("2. 매수금액 % : 총액의 " + str(buy_amtp) + "%")
         logging.info("*********************************************************")
 
         # 매수 로직 시작
-        start_buytrade(buy_amt)
+        start_buytrade(buy_amtp)
 
     except KeyboardInterrupt:
         logging.error("KeyboardInterrupt Exception 발생!")

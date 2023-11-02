@@ -21,7 +21,7 @@ line_target_url = 'https://notify-api.line.me/api/notify'
 line_token = '9mpayGJB0EnNpFlllEsUu6TCbrMLQWOnthhjg2nN9KB'
 
 # 상수 설정
-min_order_amt = 5000
+min_order_amt = 10000
 
 # UPBIT URL
 server_url = 'https://api.upbit.com'
