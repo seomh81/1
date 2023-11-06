@@ -126,7 +126,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt, loss_cut):
                         # ------------------------------------------------------------------
                         # 캔들 조회
                         # ------------------------------------------------------------------
-                        candles = upbit.get_candle(target_item['market'], '1', 200)
+                        candles = upbit.get_candle(target_item['market'], '60', 200)
 
                         # ------------------------------------------------------------------
                         # 최근 매수일자 다음날부터 현재까지의 최고가를 계산
@@ -143,9 +143,9 @@ def start_selltrade(sell_pcnt, dcnt_pcnt, loss_cut):
                         cur_dcnt_pcnt = round(((Decimal(str(ticker['trade_price'])) - Decimal(
                             str(highest_high_price))) / Decimal(str(highest_high_price))) * 100, 2)
 
-                        #logging.info('- 매수 후 최고가:' + str(highest_high_price))
-                        #logging.info('- 고점대비 하락률:' + str(cur_dcnt_pcnt))
-                        #logging.info('- 최종 매수시간:' + str(last_buy_dt))
+                        logging.info('- 매수 후 최고가:' + str(highest_high_price))
+                        logging.info('- 고점대비 하락률:' + str(cur_dcnt_pcnt))
+                        logging.info('- 최종 매수시간:' + str(last_buy_dt))
 
                         # print(cur_dcnt_pcnt)
                         # print(dcnt_pcnt)
