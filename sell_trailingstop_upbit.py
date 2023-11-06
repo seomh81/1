@@ -165,7 +165,7 @@ if __name__ == '__main__':
         sell_pcnt = 1 # input("매도 수익률(ex:2%=2) : ")
         dcnt_pcnt = -0.2 #input("고점대비 하락률(ex:-1%=-1) : ")
 
-        upbit.set_loglevel(log_level)
+        oldupbit.set_loglevel(log_level)
 
         logging.info("*********************************************************")
         logging.info("1. 로그레벨 : " + str(log_level))
