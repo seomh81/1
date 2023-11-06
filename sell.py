@@ -78,8 +78,8 @@ def start_selltrade(sell_pcnt, dcnt_pcnt, loss_cut):
                         diff = current_dt - last_buy_dt
 
                         # 매수 후 1분간은 진행하지 않음(업비트 오류 방지 용)
-                        if diff.seconds < 1:
-                            logging.info('+_+ 매수 직후 발생하는 오류를 방지하기 위해 진행하지 않음!!! 1초 대기조 +_+ ')
+                        if diff.seconds < 10:
+                            logging.info('+_+ 매수 직후 발생하는 오류를 방지하기 위해 진행하지 않음!!! 10초 대기조 +_+ ')
                             logging.info('------------------------------------------------------')
                             continue
 
@@ -102,7 +102,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt, loss_cut):
                         #손절 기준
 
 
-                        if Decimal(str(rev_pcnt)) < Decimal(str(loss_cut)):
+                        if Decimal(str(rev_pcnt)) <= Decimal(str(loss_cut)):
 
                             # ------------------------------------------------------------------
                             # 손절 진행
@@ -118,7 +118,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt, loss_cut):
                         # -----------------------------------------------------
                         # 현재 수익률이 매도 수익률 이상인 경우에만 진행
                         # -----------------------------------------------------
-                        if Decimal(str(rev_pcnt)) < Decimal(str(sell_pcnt)):
+                        if Decimal(str(rev_pcnt)) <= Decimal(str(sell_pcnt)):
                             logging.info('고점까지 기다려!!! ' + str(sell_pcnt) + '% > ' + str(rev_pcnt) + '%  ㅠ_ㅠ;;;')
                             logging.info('------------------------------------------------------')
                             continue
@@ -126,7 +126,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt, loss_cut):
                         # ------------------------------------------------------------------
                         # 캔들 조회
                         # ------------------------------------------------------------------
-                        candles = upbit.get_candle(target_item['market'], '60', 200)
+                        candles = upbit.get_candle(target_item['market'], '30', 200)
 
                         # ------------------------------------------------------------------
                         # 최근 매수일자 다음날부터 현재까지의 최고가를 계산
@@ -150,7 +150,7 @@ def start_selltrade(sell_pcnt, dcnt_pcnt, loss_cut):
                         # print(cur_dcnt_pcnt)
                         # print(dcnt_pcnt)
 
-                        if Decimal(str(cur_dcnt_pcnt)) < Decimal(str(dcnt_pcnt)):
+                        if Decimal(str(cur_dcnt_pcnt)) <= Decimal(str(dcnt_pcnt)):
 
                             # ------------------------------------------------------------------
                             # 시장가 매도
