@@ -34,7 +34,7 @@ def start_buytrade(buy_amtp):
             # -----------------------------------------------------------------
             # 전체 종목 리스트 추출
             # -----------------------------------------------------------------
-            target_items = upbit.get_items('KRW', 'GAS, ORBS')
+            target_items = upbit.get_items('KRW', '')
 
             # -----------------------------------------------------------------
             # 종목별 체크 #
@@ -262,7 +262,7 @@ if __name__ == '__main__':
         # 1. 로그레벨
         log_level = 'I'#input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
         # buy_amt = 20000#input("매수금액(M:최대, 10000:1만원) : ").upper()
-        buy_amtp = 25 #몇 %씩 매수할지?
+        buy_amtp = 50 #몇 %씩 매수할지?
         upbit.set_loglevel(log_level)
 
         logging.info("*********************************************************")
