@@ -94,7 +94,7 @@ def start_selltrade(sell_pcnt, sell_pcnt1, sell_pcnt2, dcnt_pcnt, dcnt_pcnt1, dc
 
                         # logging.info('')
                         # logging.info('------------------------------------------------------')
-                        logging.info('               종목:' + str(target_item['market']))
+                        logging.info('  종목:' + str(target_item['market']))
                         #logging.info('- 평균매수가:' + str(target_item['avg_buy_price']))
                         #logging.info('- 현재가:' + str(ticker['trade_price']))
                         #logging.info('- 수익률:' + str(rev_pcnt))
@@ -119,6 +119,10 @@ def start_selltrade(sell_pcnt, sell_pcnt1, sell_pcnt2, dcnt_pcnt, dcnt_pcnt1, dc
                         # 현재 수익률이 매도 수익률 이상인 경우에만 진행
                         # -----------------------------------------------------
                         if Decimal(str(rev_pcnt)) <= Decimal(str(sell_pcnt)):
+                            logging.info(
+                                '현재 수익률:' + str(rev_pcnt) +  ' 최종 매수시간:' + str(
+                                    last_buy_dt))
+
                             logging.info('고점까지 기다려!!! ' + str(sell_pcnt) + '% > ' + str(rev_pcnt) + '%  ㅠ_ㅠ;;;')
                             logging.info('------------------------------------------------------')
                             continue
@@ -144,9 +148,10 @@ def start_selltrade(sell_pcnt, sell_pcnt1, sell_pcnt2, dcnt_pcnt, dcnt_pcnt1, dc
                             str(highest_high_price))) / Decimal(str(highest_high_price))) * 100, 2)
 
                         #logging.info('- 매수 후 최고가:' + str(highest_high_price))
-                        logging.info('- 현재 수익률:' + str(rev_pcnt))
-                        logging.info('- 고점대비 하락률:' + str(cur_dcnt_pcnt))
-                        logging.info('- 최종 매수시간:' + str(last_buy_dt))
+                        # logging.info('- 현재 수익률:' + str(rev_pcnt))
+                        # logging.info('- 고점대비 하락률:' + str(cur_dcnt_pcnt))
+                        # logging.info('- 최종 매수시간:' + str(last_buy_dt))
+                        logging.info('현재 수익률:' + str(rev_pcnt) + ' 고점대비 하락률:' + str(cur_dcnt_pcnt) + ' 최종 매수시간:' + str(last_buy_dt))
 
                         # print(cur_dcnt_pcnt)
                         # print(dcnt_pcnt)

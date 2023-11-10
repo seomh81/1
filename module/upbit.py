@@ -827,7 +827,7 @@ def get_ticker(target_itemlist):
         querystring = {"markets": target_itemlist}
         response = send_request("GET", url, querystring, "")
 
-        logging.info(response)
+        #logging.info(response)
         rtn_data = response.json()
 
         return rtn_data
