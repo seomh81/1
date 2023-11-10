@@ -165,7 +165,7 @@ def start_selltrade(sell_pcnt, sell_pcnt1, sell_pcnt2, dcnt_pcnt, dcnt_pcnt1, dc
                             logging.info('------------------------------------------------------')
 
                         else:
-                            logging.info('매도 준비~~~ ' + str(cur_dcnt_pcnt) + '% > '  + str(dcnt_pcnt)+ '% <<<<<<<<<<<<<<')
+                            logging.info('매도 준비~~~ ' + str(cur_dcnt_pcnt) + '% > ' + str(dcnt_pcnt)+ '% <<<<<<<<<<<<<<')
                             logging.info('------------------------------------------------------')
 
                             if (Decimal(str(cur_dcnt_pcnt)) < Decimal(str(dcnt_pcnt1)) and Decimal(str(rev_pcnt)) > Decimal(str(sell_pcnt1))) or (Decimal(str(cur_dcnt_pcnt)) < Decimal(str(dcnt_pcnt2)) and Decimal(str(rev_pcnt)) > Decimal(str(sell_pcnt2))):

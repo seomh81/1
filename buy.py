@@ -100,7 +100,7 @@ def start_buytrade(buy_amtp):
                 # --------------------------------------------------------------
                 # 볼린저 밴드 추가
                 # --------------------------------------------------------------
-                if (bb2[0]['BBL'] > candle[0]['low_price'] and bb[1]['BBL'] > bb2[1]['BBL'] and candle[2][
+                if (bb2[0]['BBL'] > candle[0]['low_price'] and bb[0]['BBL'] > bb2[0]['BBL'] and bb[1]['BBL'] > bb2[1]['BBL'] and bb[2]['BBL'] > bb2[2]['BBL'] and candle[2][
                     'high_price'] != candle[1][
                         'high_price'] and candle[2]['low_price'] != candle[1]['low_price'] and (
                             candle[1]['high_price'] - candle[1][
