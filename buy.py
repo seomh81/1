@@ -78,9 +78,20 @@ def start_buytrade(buy_amtp):
                 candle = indicators['CANDLE']
 
                 krw_balance = upbit.get_krwbal()
-                buy_amt = math.floor((krw_balance['krw_balance']) * buy_amtp / 100 / 10000) * 10000
+                avg_buy_price = 0
 
-                logging.info("{:,}".format(krw_balance['krw_balance']) + ' 원 매수 가능 -------> ' + str(buy_amt))
+                account_data = upbit.get_accounts("N", "KRW")
+                for account_data_for in account_data:
+                    # logging.info(account_data_for)
+                    # logging.info(account_data_for['avg_buy_price'])
+                    avg_buy_price = avg_buy_price + Decimal(account_data_for['avg_buy_price']) * Decimal(account_data_for['balance'])
+
+                #logging.info(avg_buy_price)
+                avg_buy_price = round(avg_buy_price)
+
+                buy_amt = math.floor((krw_balance['krw_balance'] + avg_buy_price) * buy_amtp / 100 / 10000) * 10000
+
+                logging.info("{:,}".format(krw_balance['krw_balance']) + ' 원 매수 가능 --> ' + str(avg_buy_price) + ' 원 기매수 금액 --> ' + str(buy_amt) + ' 원 매수 시도 (' + str(buy_amtp) + ' %)')
 
                 logging.info('BB2 ---> ' + str(bb2[0]['BBH']) + ' / ' + str(bb2[0]['BBM']) + ' / ' + str(
                     bb2[0]['BBL']) + ' / ' + str(
@@ -262,7 +273,7 @@ if __name__ == '__main__':
         # 1. 로그레벨
         log_level = 'I'#input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
         # buy_amt = 20000#input("매수금액(M:최대, 10000:1만원) : ").upper()
-        buy_amtp = 50 #몇 %씩 매수할지?
+        buy_amtp = 8 #몇 %씩 매수할지?
         upbit.set_loglevel(log_level)
 
         logging.info("*********************************************************")
