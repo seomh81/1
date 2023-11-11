@@ -53,13 +53,16 @@ crontab -e
 * * * * * ~/1/cron/adwid_mon.sh >> ~/1/logs/adwid_mon.log 2>&1
 * * * * * ~/1/cron/adwsid_mon.sh >> ~/1/logs/adwsid_mon.log 2>&1
 
+#급등 1% 매수
+* * * * * ~/1/cron/b1_mon.sh >> ~/1/logs/b1id_mon.log 2>&1
+
 #크론탭 시작/중지/재시작
 sudo service crond start
 sudo service crond stop
 sudo service crond restart
 
 #1분짜리
-nohup python3 ~/1/11.py &
+nohup python3 ~/1/b1.py &
 tail -f ~/nohup.out
 
 #백그라운드 - old : 재실행 안됨 
