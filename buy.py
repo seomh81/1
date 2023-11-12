@@ -92,10 +92,8 @@ def start_buytrade(buy_amtp):
                 buy_amt = math.floor((krw_balance['krw_balance'] + avg_buy_price) * buy_amtp / 100 / 10000) * 10000
 
                 logging.info("{:,}".format(krw_balance['krw_balance']) + ' 원 매수 가능 --> ' + str(avg_buy_price) + ' 원 기매수 금액 --> ' + str(buy_amt) + ' 원 매수 시도 (' + str(buy_amtp) + ' %)')
-
-                logging.info('BB2 ---> ' + str(bb2[0]['BBH']) + ' / ' + str(bb2[0]['BBM']) + ' / ' + str(
-                    bb2[0]['BBL']) + ' / ' + str(
-                    candle[0]['trade_price']))
+                logging.info(str((candle[0]['trade_price'] - bb2[0]['BBL']) / bb2[0]['BBL'] * 100))
+                # logging.info('BB2 ---> ' + str(bb2[0]['BBH']) + ' / ' + str(bb2[0]['BBM']) + ' / ' + str(bb2[0]['BBL']) + ' / ' + str(candle[0]['trade_price']))
 
                 # --------------------------------------------------------------
                 # 볼린저 밴드 추가
