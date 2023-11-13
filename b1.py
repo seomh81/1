@@ -208,8 +208,8 @@ def start_buytrade(buy_amt):
                     # 거래 금액 낮은것 판단
                     # ------------------------------------------------------------------
 
-                    if candle[0]['trade_price'] < 1:
-                        logging.info('1원 미만 종목....[' + str(target_item['market']) + ']')
+                    if candle[0]['trade_price'] < 500:
+                        logging.info('500원 미만 종목....[' + str(target_item['market']) + ']')
                         continue
 
                     # ------------------------------------------------------------------
