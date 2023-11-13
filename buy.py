@@ -96,10 +96,10 @@ def start_buytrade(buy_amtp):
                 logging.info(str(round((candle[0]['trade_price'] - bb2[0]['BBL']) / bb2[0]['BBL'] * 100, 1)) + ' %')
                 # logging.info('BB2 ---> ' + str(bb2[0]['BBH']) + ' / ' + str(bb2[0]['BBM']) + ' / ' + str(bb2[0]['BBL']) + ' / ' + str(candle[0]['trade_price']))
 
-                max_candle = 0
-                for i in range(99):
-                    if max_candle < candle[i+1]['high_price']:
-                        max_candle = candle[i+1]['high_price']
+                # max_candle = 0
+                # for i in range(99):
+                #     if max_candle < candle[i+1]['high_price']:
+                #         max_candle = candle[i+1]['high_price']
 
 
 
