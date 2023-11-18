@@ -223,7 +223,7 @@ if __name__ == '__main__':
         dcnt_pcnt = -3 #input("고점대비 하락률(ex:-1%=-1) : ")
         dcnt_pcnt1 = -2
         dcnt_pcnt2 = -1
-        loss_cut = -5
+        loss_cut = -4.5
 
         upbit.set_loglevel(log_level)
 
