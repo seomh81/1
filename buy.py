@@ -164,8 +164,8 @@ def start_buytrade(buy_amtp):
                          and bb2[97]['BBH'] > candle[97]['high_price'] and bb2[98]['BBH'] > candle[98]['high_price'] \
                          and bb2[99]['BBH'] > candle[99]['high_price'] and bb2[100]['BBH'] > candle[100]['high_price'] \
                          and candle[2]['high_price'] != candle[1]['high_price'] \
-                        and candle[2]['low_price'] != candle[1]['low_price'] \
-                        and (candle[1]['high_price'] - candle[1]['low_price']) != (candle[2]['high_price'] - candle[2]['low_price'])):
+                        and candle[2]['low_price'] != candle[1]['low_price']):# \
+                        # and (candle[1]['high_price'] - candle[1]['low_price']) != (candle[2]['high_price'] - candle[2]['low_price'])):
 
                 # if (bb2[0]['BBL'] > candle[0]['low_price'] and bb[0]['BBL'] > bb2[0]['BBL'] and candle[2][
                 #     'high_price'] != candle[1][
