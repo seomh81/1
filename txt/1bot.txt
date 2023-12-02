@@ -53,6 +53,10 @@ crontab -e
 * * * * * ~/1/cron/adwid_mon.sh >> ~/1/logs/adwid_mon.log 2>&1
 * * * * * ~/1/cron/adwsid_mon.sh >> ~/1/logs/adwsid_mon.log 2>&1
 
+#한개 서버로 같이 돌리자
+* * * * * ~/1/cron/buyid_mon.sh >> ~/1/logs/buyid_mon.log 2>&1
+* * * * * ~/1/cron/sellid_mon.sh >> ~/1/logs/sellid_mon.log 2>&1
+
 #급등 1% 매수
 * * * * * ~/1/cron/b1_mon.sh >> ~/1/logs/b1id_mon.log 2>&1
 
