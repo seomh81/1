@@ -96,10 +96,10 @@ def start_buytrade(buy_amtp):
                 logging.info(str(round((candle[0]['trade_price'] - bb2[0]['BBL']) / bb2[0]['BBL'] * 100, 1)) + ' %')
                 # logging.info('BB2 ---> ' + str(bb2[0]['BBH']) + ' / ' + str(bb2[0]['BBM']) + ' / ' + str(bb2[0]['BBL']) + ' / ' + str(candle[0]['trade_price']))
 
-                # max_candle = 0
-                # for i in range(99):
-                #     if max_candle < candle[i+1]['high_price']:
-                #         max_candle = candle[i+1]['high_price']
+                max_candle = 0
+                for i in range(99):
+                    if max_candle < candle[i+1]['high_price']:
+                        max_candle = candle[i+1]['high_price']
 
 
 
@@ -110,62 +110,7 @@ def start_buytrade(buy_amtp):
                 if (bb2[0]['BBL'] > candle[0]['low_price'] and bb[0]['BBL'] > bb2[0]['BBL'] and bb[1]['BBL'] > bb2[1]['BBL'] \
                         and bb[2]['BBL'] > bb2[2]['BBL'] and candle[2]['high_price'] != candle[1]['high_price'] \
                         and candle[2]['low_price'] != candle[1]['low_price'] \
-                        and (candle[1]['high_price'] - candle[1]['low_price']) != (candle[2]['high_price'] - candle[2]['low_price'])) \
-                        or \
-                        (bb2[0]['BBH'] < candle[0]['high_price'] \
-                        and bb2[1]['BBH'] > candle[1]['high_price'] and bb2[2]['BBH'] > candle[2]['high_price'] \
-                        and bb2[3]['BBH'] > candle[3]['high_price'] and bb2[4]['BBH'] > candle[4]['high_price'] \
-                        and bb2[5]['BBH'] > candle[5]['high_price'] and bb2[6]['BBH'] > candle[6]['high_price'] \
-                        and bb2[7]['BBH'] > candle[7]['high_price'] and bb2[8]['BBH'] > candle[8]['high_price'] \
-                         and bb2[9]['BBH'] > candle[9]['high_price'] and bb2[10]['BBH'] > candle[10]['high_price'] \
-                         and bb2[11]['BBH'] > candle[11]['high_price'] and bb2[12]['BBH'] > candle[12]['high_price'] \
-                         and bb2[13]['BBH'] > candle[13]['high_price'] and bb2[14]['BBH'] > candle[14]['high_price'] \
-                         and bb2[15]['BBH'] > candle[15]['high_price'] and bb2[16]['BBH'] > candle[16]['high_price'] \
-                         and bb2[17]['BBH'] > candle[17]['high_price'] and bb2[18]['BBH'] > candle[18]['high_price'] \
-                         and bb2[19]['BBH'] > candle[19]['high_price'] and bb2[20]['BBH'] > candle[20]['high_price'] \
-                         and bb2[21]['BBH'] > candle[21]['high_price'] and bb2[22]['BBH'] > candle[22]['high_price'] \
-                         and bb2[23]['BBH'] > candle[23]['high_price'] and bb2[24]['BBH'] > candle[24]['high_price'] \
-                         and bb2[25]['BBH'] > candle[25]['high_price'] and bb2[26]['BBH'] > candle[26]['high_price'] \
-                         and bb2[27]['BBH'] > candle[27]['high_price'] and bb2[28]['BBH'] > candle[28]['high_price'] \
-                         and bb2[29]['BBH'] > candle[29]['high_price'] and bb2[30]['BBH'] > candle[30]['high_price'] \
-                         and bb2[31]['BBH'] > candle[31]['high_price'] and bb2[32]['BBH'] > candle[32]['high_price'] \
-                         and bb2[33]['BBH'] > candle[33]['high_price'] and bb2[34]['BBH'] > candle[34]['high_price'] \
-                         and bb2[35]['BBH'] > candle[35]['high_price'] and bb2[36]['BBH'] > candle[36]['high_price'] \
-                         and bb2[37]['BBH'] > candle[37]['high_price'] and bb2[38]['BBH'] > candle[38]['high_price'] \
-                         and bb2[39]['BBH'] > candle[39]['high_price'] and bb2[40]['BBH'] > candle[40]['high_price'] \
-                         and bb2[41]['BBH'] > candle[41]['high_price'] and bb2[42]['BBH'] > candle[42]['high_price'] \
-                         and bb2[43]['BBH'] > candle[43]['high_price'] and bb2[44]['BBH'] > candle[44]['high_price'] \
-                         and bb2[45]['BBH'] > candle[45]['high_price'] and bb2[46]['BBH'] > candle[46]['high_price'] \
-                         and bb2[47]['BBH'] > candle[47]['high_price'] and bb2[48]['BBH'] > candle[48]['high_price'] \
-                         and bb2[49]['BBH'] > candle[49]['high_price'] and bb2[50]['BBH'] > candle[50]['high_price'] \
-                         and bb2[51]['BBH'] > candle[51]['high_price'] and bb2[52]['BBH'] > candle[52]['high_price'] \
-                         and bb2[53]['BBH'] > candle[53]['high_price'] and bb2[54]['BBH'] > candle[54]['high_price'] \
-                         and bb2[55]['BBH'] > candle[55]['high_price'] and bb2[56]['BBH'] > candle[56]['high_price'] \
-                         and bb2[57]['BBH'] > candle[57]['high_price'] and bb2[58]['BBH'] > candle[58]['high_price'] \
-                         and bb2[59]['BBH'] > candle[59]['high_price'] and bb2[60]['BBH'] > candle[60]['high_price'] \
-                         and bb2[61]['BBH'] > candle[61]['high_price'] and bb2[62]['BBH'] > candle[62]['high_price'] \
-                         and bb2[63]['BBH'] > candle[63]['high_price'] and bb2[64]['BBH'] > candle[64]['high_price'] \
-                         and bb2[65]['BBH'] > candle[65]['high_price'] and bb2[66]['BBH'] > candle[66]['high_price'] \
-                         and bb2[67]['BBH'] > candle[67]['high_price'] and bb2[68]['BBH'] > candle[68]['high_price'] \
-                         and bb2[69]['BBH'] > candle[69]['high_price'] and bb2[70]['BBH'] > candle[70]['high_price'] \
-                         and bb2[71]['BBH'] > candle[71]['high_price'] and bb2[72]['BBH'] > candle[72]['high_price'] \
-                         and bb2[73]['BBH'] > candle[73]['high_price'] and bb2[74]['BBH'] > candle[74]['high_price'] \
-                         and bb2[75]['BBH'] > candle[75]['high_price'] and bb2[76]['BBH'] > candle[76]['high_price'] \
-                         and bb2[77]['BBH'] > candle[77]['high_price'] and bb2[78]['BBH'] > candle[78]['high_price'] \
-                         and bb2[79]['BBH'] > candle[79]['high_price'] and bb2[80]['BBH'] > candle[80]['high_price'] \
-                         and bb2[81]['BBH'] > candle[81]['high_price'] and bb2[82]['BBH'] > candle[82]['high_price'] \
-                         and bb2[83]['BBH'] > candle[83]['high_price'] and bb2[84]['BBH'] > candle[84]['high_price'] \
-                         and bb2[85]['BBH'] > candle[85]['high_price'] and bb2[86]['BBH'] > candle[86]['high_price'] \
-                         and bb2[87]['BBH'] > candle[87]['high_price'] and bb2[88]['BBH'] > candle[88]['high_price'] \
-                         and bb2[89]['BBH'] > candle[89]['high_price'] and bb2[90]['BBH'] > candle[90]['high_price'] \
-                         and bb2[91]['BBH'] > candle[91]['high_price'] and bb2[92]['BBH'] > candle[92]['high_price'] \
-                         and bb2[93]['BBH'] > candle[93]['high_price'] and bb2[94]['BBH'] > candle[94]['high_price'] \
-                         and bb2[95]['BBH'] > candle[95]['high_price'] and bb2[96]['BBH'] > candle[96]['high_price'] \
-                         and bb2[97]['BBH'] > candle[97]['high_price'] and bb2[98]['BBH'] > candle[98]['high_price'] \
-                         and bb2[99]['BBH'] > candle[99]['high_price'] and bb2[100]['BBH'] > candle[100]['high_price'] \
-                         and candle[2]['high_price'] != candle[1]['high_price'] \
-                        and candle[2]['low_price'] != candle[1]['low_price']):# \
-                        # and (candle[1]['high_price'] - candle[1]['low_price']) != (candle[2]['high_price'] - candle[2]['low_price'])):
+                        and (candle[1]['high_price'] - candle[1]['low_price']) != (candle[2]['high_price'] - candle[2]['low_price'])):
 
                 # if (bb2[0]['BBL'] > candle[0]['low_price'] and bb[0]['BBL'] > bb2[0]['BBL'] and candle[2][
                 #     'high_price'] != candle[1][
@@ -300,6 +245,118 @@ def start_buytrade(buy_amtp):
                     rtn_buycoin_mp = upbit.buycoin_mp(target_item['market'], buy_amt)
                     logging.info('시장가 매수 종료! [' + str(target_item['market']) + ']')
                     logging.info(rtn_buycoin_mp)
+                    continue
+
+                if (bb2[0]['BBH'] < candle[0]['high_price'] \
+                         and bb2[1]['BBH'] > candle[1]['high_price'] and bb2[2]['BBH'] > candle[2]['high_price'] \
+                         and bb2[3]['BBH'] > candle[3]['high_price'] and bb2[4]['BBH'] > candle[4]['high_price'] \
+                         and bb2[5]['BBH'] > candle[5]['high_price'] and bb2[6]['BBH'] > candle[6]['high_price'] \
+                         and bb2[7]['BBH'] > candle[7]['high_price'] and bb2[8]['BBH'] > candle[8]['high_price'] \
+                         and bb2[9]['BBH'] > candle[9]['high_price'] and bb2[10]['BBH'] > candle[10]['high_price'] \
+                         and bb2[11]['BBH'] > candle[11]['high_price'] and bb2[12]['BBH'] > candle[12]['high_price'] \
+                         and bb2[13]['BBH'] > candle[13]['high_price'] and bb2[14]['BBH'] > candle[14]['high_price'] \
+                         and bb2[15]['BBH'] > candle[15]['high_price'] and bb2[16]['BBH'] > candle[16]['high_price'] \
+                         and bb2[17]['BBH'] > candle[17]['high_price'] and bb2[18]['BBH'] > candle[18]['high_price'] \
+                         and bb2[19]['BBH'] > candle[19]['high_price'] and bb2[20]['BBH'] > candle[20]['high_price'] \
+                         and bb2[21]['BBH'] > candle[21]['high_price'] and bb2[22]['BBH'] > candle[22]['high_price'] \
+                         and bb2[23]['BBH'] > candle[23]['high_price'] and bb2[24]['BBH'] > candle[24]['high_price'] \
+                         and bb2[25]['BBH'] > candle[25]['high_price'] and bb2[26]['BBH'] > candle[26]['high_price'] \
+                         and bb2[27]['BBH'] > candle[27]['high_price'] and bb2[28]['BBH'] > candle[28]['high_price'] \
+                         and bb2[29]['BBH'] > candle[29]['high_price'] and bb2[30]['BBH'] > candle[30]['high_price'] \
+                         and bb2[31]['BBH'] > candle[31]['high_price'] and bb2[32]['BBH'] > candle[32]['high_price'] \
+                         and bb2[33]['BBH'] > candle[33]['high_price'] and bb2[34]['BBH'] > candle[34]['high_price'] \
+                         and bb2[35]['BBH'] > candle[35]['high_price'] and bb2[36]['BBH'] > candle[36]['high_price'] \
+                         and bb2[37]['BBH'] > candle[37]['high_price'] and bb2[38]['BBH'] > candle[38]['high_price'] \
+                         and bb2[39]['BBH'] > candle[39]['high_price'] and bb2[40]['BBH'] > candle[40]['high_price'] \
+                         and bb2[41]['BBH'] > candle[41]['high_price'] and bb2[42]['BBH'] > candle[42]['high_price'] \
+                         and bb2[43]['BBH'] > candle[43]['high_price'] and bb2[44]['BBH'] > candle[44]['high_price'] \
+                         and bb2[45]['BBH'] > candle[45]['high_price'] and bb2[46]['BBH'] > candle[46]['high_price'] \
+                         and bb2[47]['BBH'] > candle[47]['high_price'] and bb2[48]['BBH'] > candle[48]['high_price'] \
+                         and bb2[49]['BBH'] > candle[49]['high_price'] and bb2[50]['BBH'] > candle[50]['high_price'] \
+                         and bb2[51]['BBH'] > candle[51]['high_price'] and bb2[52]['BBH'] > candle[52]['high_price'] \
+                         and bb2[53]['BBH'] > candle[53]['high_price'] and bb2[54]['BBH'] > candle[54]['high_price'] \
+                         and bb2[55]['BBH'] > candle[55]['high_price'] and bb2[56]['BBH'] > candle[56]['high_price'] \
+                         and bb2[57]['BBH'] > candle[57]['high_price'] and bb2[58]['BBH'] > candle[58]['high_price'] \
+                         and bb2[59]['BBH'] > candle[59]['high_price'] and bb2[60]['BBH'] > candle[60]['high_price'] \
+                         and bb2[61]['BBH'] > candle[61]['high_price'] and bb2[62]['BBH'] > candle[62]['high_price'] \
+                         and bb2[63]['BBH'] > candle[63]['high_price'] and bb2[64]['BBH'] > candle[64]['high_price'] \
+                         and bb2[65]['BBH'] > candle[65]['high_price'] and bb2[66]['BBH'] > candle[66]['high_price'] \
+                         and bb2[67]['BBH'] > candle[67]['high_price'] and bb2[68]['BBH'] > candle[68]['high_price'] \
+                         and bb2[69]['BBH'] > candle[69]['high_price'] and bb2[70]['BBH'] > candle[70]['high_price'] \
+                         and bb2[71]['BBH'] > candle[71]['high_price'] and bb2[72]['BBH'] > candle[72]['high_price'] \
+                         and bb2[73]['BBH'] > candle[73]['high_price'] and bb2[74]['BBH'] > candle[74]['high_price'] \
+                         and bb2[75]['BBH'] > candle[75]['high_price'] and bb2[76]['BBH'] > candle[76]['high_price'] \
+                         and bb2[77]['BBH'] > candle[77]['high_price'] and bb2[78]['BBH'] > candle[78]['high_price'] \
+                         and bb2[79]['BBH'] > candle[79]['high_price'] and bb2[80]['BBH'] > candle[80]['high_price'] \
+                         and bb2[81]['BBH'] > candle[81]['high_price'] and bb2[82]['BBH'] > candle[82]['high_price'] \
+                         and bb2[83]['BBH'] > candle[83]['high_price'] and bb2[84]['BBH'] > candle[84]['high_price'] \
+                         and bb2[85]['BBH'] > candle[85]['high_price'] and bb2[86]['BBH'] > candle[86]['high_price'] \
+                         and bb2[87]['BBH'] > candle[87]['high_price'] and bb2[88]['BBH'] > candle[88]['high_price'] \
+                         and bb2[89]['BBH'] > candle[89]['high_price'] and bb2[90]['BBH'] > candle[90]['high_price'] \
+                         and bb2[91]['BBH'] > candle[91]['high_price'] and bb2[92]['BBH'] > candle[92]['high_price'] \
+                         and bb2[93]['BBH'] > candle[93]['high_price'] and bb2[94]['BBH'] > candle[94]['high_price'] \
+                         and bb2[95]['BBH'] > candle[95]['high_price'] and bb2[96]['BBH'] > candle[96]['high_price'] \
+                         and bb2[97]['BBH'] > candle[97]['high_price'] and bb2[98]['BBH'] > candle[98]['high_price'] \
+                         and bb2[99]['BBH'] > candle[99]['high_price'] and bb2[100]['BBH'] > candle[100]['high_price'] \
+                         and candle[2]['high_price'] != candle[1]['high_price'] \
+                         and candle[2]['low_price'] != candle[1]['low_price']):  # \
+
+
+                    # ------------------------------------------------------------------
+                    # 기매수 여부 판단
+                    # ------------------------------------------------------------------
+                    accounts = upbit.get_accounts('Y', 'KRW')
+                    account = list(filter(lambda x: x.get('market') == target_item['market'], accounts))
+
+                    # 이미 매수한 종목이면 다시 매수하지 않음
+                    # sell_bot.py에서 매도 처리되면 보유 종목에서 사라지고 다시 매수 가능
+                    if len(account) > 0:
+                        logging.info('기 매수 종목....[' + str(target_item['market']) + ']')
+                        continue
+
+                    # ------------------------------------------------------------------
+                    # 거래 금액 낮은것 판단
+                    # ------------------------------------------------------------------
+
+                    if candle[0]['trade_price'] < 1:
+                        logging.info('1원 미만 종목....[' + str(target_item['market']) + ']')
+                        continue
+
+                    # ------------------------------------------------------------------
+                    # 매수금액 설정
+                    # 1. M : 수수료를 제외한 최대 가능 KRW 금액만큼 매수
+                    # 2. 금액 : 입력한 금액만큼 매수
+                    # ------------------------------------------------------------------
+                    available_amt = upbit.get_krwbal()['available_krw']
+
+                    if buy_amt == 'M':
+                        buy_amt = available_amt
+
+                    # ------------------------------------------------------------------
+                    # 입력 금액이 주문 가능금액보다 작으면 종료
+                    # ------------------------------------------------------------------
+                    if Decimal(str(available_amt)) < Decimal(str(buy_amt)):
+                        logging.info('주문 가능금액[' + str(available_amt) + ']이 입력한 주문금액[' + str(buy_amt) + '] 보다 작습니다.')
+                        continue
+
+                    # ------------------------------------------------------------------
+                    # 최소 주문 금액(업비트 기준 5000원) 이상일 때만 매수로직 수행 ---- 10000원으로 올림
+                    # ------------------------------------------------------------------
+                    if Decimal(str(buy_amt)) < Decimal(str(upbit.min_order_amt)):
+                        logging.info('주문금액[' + str(buy_amt) + ']이 최소 주문금액[' + str(upbit.min_order_amt) + '] 보다 작습니다.')
+                        continue
+
+                    # ------------------------------------------------------------------
+                    # 시장가 매수
+                    # 실제 매수 로직은 안전을 위해 주석처리 하였습니다.
+                    # 실제 매매를 원하시면 테스트를 충분히 거친 후 주석을 해제하시면 됩니다.
+                    # ------------------------------------------------------------------
+                    logging.info('시장가 매수 시작! [' + str(target_item['market']) + ']')
+                    rtn_buycoin_mp = upbit.buycoin_mp(target_item['market'], buy_amt)
+                    logging.info('시장가 매수 종료! [' + str(target_item['market']) + ']')
+                    logging.info(rtn_buycoin_mp)
+                    continue
+
 
     # ---------------------------------------
     # 모든 함수의 공통 부분(Exception 처리)
