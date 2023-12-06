@@ -1239,8 +1239,8 @@ def get_bb2(candle_datas):
             band_high = bb_center + band1
             band_low = bb_center - band1
 
-            bb_list.append({"type": "BB", "DT": dfDt[0], "BBH": round(band_high, 4), "BBM": round(bb_center, 4),
-                            "BBL": round(band_low, 4)})
+            bb_list.append({"type": "BB", "DT": dfDt[0], "BBH": band_high, "BBM": bb_center,
+                            "BBL": band_low})
 
         return bb_list
 

@@ -56,7 +56,7 @@ def start_buytrade(buy_amtp):
                 # 1. 조회 기준 : 일캔들, 최근 5개 지표 조회
                 # 2. 속도를 위해 원하는 지표만 조회(RSI, MFI, MACD, CANDLE) - 수정
                 # -------------------------------------------------------------
-                indicators = upbit.get_indicator_sel(target_item['market'], '30', 200, 5,
+                indicators = upbit.get_indicator_sel(target_item['market'], '30', 200, 101,
                                                      ['BB', 'BB2', 'CANDLE'])
                                                             #['RSI', 'MFI', 'MACD', 'BB', 'CANDLE'])
 
@@ -100,6 +100,9 @@ def start_buytrade(buy_amtp):
                 # for i in range(99):
                 #     if max_candle < candle[i+1]['high_price']:
                 #         max_candle = candle[i+1]['high_price']
+
+                # logging.info(bb2[100])
+                # logging.info(candle[100])
 
 
 
@@ -272,7 +275,32 @@ def start_buytrade(buy_amtp):
                          and bb2[43]['BBH'] > candle[43]['high_price'] and bb2[44]['BBH'] > candle[44]['high_price'] \
                          and bb2[45]['BBH'] > candle[45]['high_price'] and bb2[46]['BBH'] > candle[46]['high_price'] \
                          and bb2[47]['BBH'] > candle[47]['high_price'] and bb2[48]['BBH'] > candle[48]['high_price'] \
-                         and bb2[49]['BBH'] > candle[49]['high_price'] and bb2[50]['BBH'] > candle[50]['high_price']):  # \
+                         and bb2[49]['BBH'] > candle[49]['high_price'] and bb2[50]['BBH'] > candle[50]['high_price'] \
+                         and bb2[51]['BBH'] > candle[51]['high_price'] and bb2[52]['BBH'] > candle[52]['high_price'] \
+                         and bb2[53]['BBH'] > candle[53]['high_price'] and bb2[54]['BBH'] > candle[54]['high_price'] \
+                         and bb2[55]['BBH'] > candle[55]['high_price'] and bb2[56]['BBH'] > candle[56]['high_price'] \
+                         and bb2[57]['BBH'] > candle[57]['high_price'] and bb2[58]['BBH'] > candle[58]['high_price'] \
+                         and bb2[59]['BBH'] > candle[59]['high_price'] and bb2[60]['BBH'] > candle[60]['high_price'] \
+                         and bb2[61]['BBH'] > candle[61]['high_price'] and bb2[62]['BBH'] > candle[62]['high_price'] \
+                         and bb2[63]['BBH'] > candle[63]['high_price'] and bb2[64]['BBH'] > candle[64]['high_price'] \
+                         and bb2[65]['BBH'] > candle[65]['high_price'] and bb2[66]['BBH'] > candle[66]['high_price'] \
+                         and bb2[67]['BBH'] > candle[67]['high_price'] and bb2[68]['BBH'] > candle[68]['high_price'] \
+                         and bb2[69]['BBH'] > candle[69]['high_price'] and bb2[70]['BBH'] > candle[70]['high_price'] \
+                         and bb2[71]['BBH'] > candle[71]['high_price'] and bb2[72]['BBH'] > candle[72]['high_price'] \
+                         and bb2[73]['BBH'] > candle[73]['high_price'] and bb2[74]['BBH'] > candle[74]['high_price'] \
+                         and bb2[75]['BBH'] > candle[75]['high_price'] and bb2[76]['BBH'] > candle[76]['high_price'] \
+                         and bb2[77]['BBH'] > candle[77]['high_price'] and bb2[78]['BBH'] > candle[78]['high_price'] \
+                         and bb2[79]['BBH'] > candle[79]['high_price'] and bb2[80]['BBH'] > candle[80]['high_price'] \
+                         and bb2[81]['BBH'] > candle[81]['high_price'] and bb2[82]['BBH'] > candle[82]['high_price'] \
+                         and bb2[83]['BBH'] > candle[83]['high_price'] and bb2[84]['BBH'] > candle[84]['high_price'] \
+                         and bb2[85]['BBH'] > candle[85]['high_price'] and bb2[86]['BBH'] > candle[86]['high_price'] \
+                         and bb2[87]['BBH'] > candle[87]['high_price'] and bb2[88]['BBH'] > candle[88]['high_price'] \
+                         and bb2[89]['BBH'] > candle[89]['high_price'] and bb2[90]['BBH'] > candle[90]['high_price'] \
+                         and bb2[91]['BBH'] > candle[91]['high_price'] and bb2[92]['BBH'] > candle[92]['high_price'] \
+                         and bb2[93]['BBH'] > candle[93]['high_price'] and bb2[94]['BBH'] > candle[94]['high_price'] \
+                         and bb2[95]['BBH'] > candle[95]['high_price'] and bb2[96]['BBH'] > candle[96]['high_price'] \
+                         and bb2[97]['BBH'] > candle[97]['high_price'] and bb2[98]['BBH'] > candle[98]['high_price'] \
+                         and bb2[99]['BBH'] > candle[99]['high_price'] and bb2[100]['BBH'] > candle[100]['high_price']):
 
 
                     # ------------------------------------------------------------------
@@ -364,7 +392,7 @@ if __name__ == '__main__':
         # 1. 로그레벨
         log_level = 'I'#input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
         # buy_amt = 20000#input("매수금액(M:최대, 10000:1만원) : ").upper()
-        buy_amtp = 5 #몇 %씩 매수할지?
+        buy_amtp = 10 #몇 %씩 매수할지?
         upbit.set_loglevel(log_level)
 
         logging.info("*********************************************************")
