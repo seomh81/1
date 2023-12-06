@@ -130,16 +130,19 @@ def start_selltrade(sell_pcnt, sell_pcnt1, sell_pcnt2, dcnt_pcnt, dcnt_pcnt1, dc
                         # ------------------------------------------------------------------
                         # 캔들 조회
                         # ------------------------------------------------------------------
-                        candles = upbit.get_candle(target_item['market'], '15', 200)
+                        candles = upbit.get_candle(target_item['market'], '30', 200)
+
+                        # logging.info(candles)
 
                         # ------------------------------------------------------------------
                         # 최근 매수일자 다음날부터 현재까지의 최고가를 계산
                         # ------------------------------------------------------------------
                         df = pd.DataFrame(candles)
-                        mask = df['candle_date_time_kst'] > order_done_filtered[0]['created_at']
+                        mask = df['candle_date_time_kst'] >= order_done_filtered[0]['created_at']
                         filtered_df = df.loc[mask]
                         highest_high_price = numpy.max(filtered_df['high_price'])
 
+                        logging.info(highest_high_price)
                         # -----------------------------------------------------
                         # 고점대비 하락률
                         # ((현재가 - 최고가) / 최고가) * 100
@@ -156,7 +159,7 @@ def start_selltrade(sell_pcnt, sell_pcnt1, sell_pcnt2, dcnt_pcnt, dcnt_pcnt1, dc
                         # print(cur_dcnt_pcnt)
                         # print(dcnt_pcnt)
 
-                        if Decimal(str(cur_dcnt_pcnt)) < Decimal(str(dcnt_pcnt)):
+                        if Decimal(str(cur_dcnt_pcnt)) <= Decimal(str(dcnt_pcnt)):
 
                             # ------------------------------------------------------------------
                             # 시장가 매도
@@ -173,7 +176,7 @@ def start_selltrade(sell_pcnt, sell_pcnt1, sell_pcnt2, dcnt_pcnt, dcnt_pcnt1, dc
                             logging.info('매도 준비~~~ ' + str(cur_dcnt_pcnt) + '% > ' + str(dcnt_pcnt)+ '% <<<<<<<<<<<<<<')
                             logging.info('------------------------------------------------------')
 
-                            if (Decimal(str(cur_dcnt_pcnt)) < Decimal(str(dcnt_pcnt1)) and Decimal(str(rev_pcnt)) > Decimal(str(sell_pcnt1))) or (Decimal(str(cur_dcnt_pcnt)) < Decimal(str(dcnt_pcnt2)) and Decimal(str(rev_pcnt)) > Decimal(str(sell_pcnt2))):
+                            if (Decimal(str(cur_dcnt_pcnt)) <= Decimal(str(dcnt_pcnt1)) and Decimal(str(rev_pcnt)) >= Decimal(str(sell_pcnt1))) or (Decimal(str(cur_dcnt_pcnt)) <= Decimal(str(dcnt_pcnt2)) and Decimal(str(rev_pcnt)) >= Decimal(str(sell_pcnt2))):
                                 # ------------------------------------------------------------------
                                 # 시장가 매도
                                 # 실제 매도 로직은 안전을 위해 주석처리 하였습니다.
