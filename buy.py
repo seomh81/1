@@ -94,50 +94,15 @@ def start_buytrade(buy_amtp):
                 logging.info("{:,}".format(krw_balance['krw_balance']) + ' 원 매수 가능 --> ' + str(avg_buy_price) + ' 원 기매수 금액 --> ' \
                              + str(buy_amt) + ' 원 매수 시도 (' + str(buy_amtp) + ' %)')
                 logging.info(str(round((candle[0]['trade_price'] - bb2[0]['BBL']) / bb2[0]['BBL'] * 100, 1)) + ' %')
-                # logging.info('BB2 ---> ' + str(bb2[0]['BBH']) + ' / ' + str(bb2[0]['BBM']) + ' / ' + str(bb2[0]['BBL']) + ' / ' + str(candle[0]['trade_price']))
-                #
-                # max_candle = 0
-                # for i in range(99):
-                #     if max_candle < candle[i+1]['high_price']:
-                #         max_candle = candle[i+1]['high_price']
 
-                # logging.info(bb2[100])
-                # logging.info(candle[100])
-
-
-
-                # logging.info(max_candle)
                 # --------------------------------------------------------------
                 # 볼린저 밴드 추가
                 # --------------------------------------------------------------
                 if (bb2[0]['BBL'] > candle[0]['low_price'] and bb[0]['BBL'] > bb2[0]['BBL'] and bb[1]['BBL'] > bb2[1]['BBL'] \
                         and bb[2]['BBL'] > bb2[2]['BBL'] and candle[2]['high_price'] != candle[1]['high_price'] \
                         and candle[2]['low_price'] != candle[1]['low_price'] \
-                        and (candle[1]['high_price'] - candle[1]['low_price']) != (candle[2]['high_price'] - candle[2]['low_price'])):
-
-                # if (bb2[0]['BBL'] > candle[0]['low_price'] and bb[0]['BBL'] > bb2[0]['BBL'] and candle[2][
-                #     'high_price'] != candle[1][
-                #         'high_price'] and candle[2]['low_price'] != candle[1]['low_price'] and (
-                #             candle[1]['high_price'] - candle[1][
-                #         'low_price']) != (candle[2]['high_price'] - candle[2]['low_price'])) or (
-                #         bb2[0]['BBH'] <= candle[0]['high_price'] and bb[0]['BBM'] >= candle[0]['low_price'] and
-                #         candle[2][
-                #             'high_price'] != candle[1][
-                #             'high_price'] and candle[2]['low_price'] != candle[1]['low_price'] and (
-                #                 candle[1]['high_price'] - candle[1][
-                #             'low_price']) != (candle[2]['high_price'] - candle[2][
-                #     'low_price'])):  # and (candle[0]['low_price'] - candle[1]['low_price']) / candle[1]['low_price'] < -1:
-
-                    # logging.info(
-                    #     '?????????????? ' + str(candle[0]['trade_price']) + ' > ' + str(bb2[0]['BBH']) + ' || ' + str(
-                    #         bb2[0]['BBM']) + ' > ' + str(candle[0]['low_price']))
-                    # logging.info('!!!!!!!!!!!!!! ' + str(bb2[0]['BBL']) + ' > ' + str(candle[0]['low_price']))
-
-
-                    # logging.info('시장가 매수 시작! [' + str(target_item['market']) + ']')
-                    # rtn_buycoin_mp = upbit.buycoin_mp(target_item['market'], buy_amt)
-                    # logging.info('시장가 매수 종료! [' + str(target_item['market']) + ']')
-                    # logging.info(rtn_buycoin_mp)
+                        and (candle[1]['high_price'] - candle[1]['low_price']) != (candle[2]['high_price'] - candle[2]['low_price']))\
+                        or (bb2[0]['BBH'] < candle[0]['high_price'] and all(bb2[i+1]['BBH'] > candle[i+1]['high_price'] for i in range(100))):
 
                 # --------------------------------------------------------------
                 # 매수 로직
@@ -250,58 +215,8 @@ def start_buytrade(buy_amtp):
                     logging.info(rtn_buycoin_mp)
                     continue
 
-                if (bb2[0]['BBH'] < candle[0]['high_price'] \
-                         and bb2[1]['BBH'] > candle[1]['high_price'] and bb2[2]['BBH'] > candle[2]['high_price'] \
-                         and bb2[3]['BBH'] > candle[3]['high_price'] and bb2[4]['BBH'] > candle[4]['high_price'] \
-                         and bb2[5]['BBH'] > candle[5]['high_price'] and bb2[6]['BBH'] > candle[6]['high_price'] \
-                         and bb2[7]['BBH'] > candle[7]['high_price'] and bb2[8]['BBH'] > candle[8]['high_price'] \
-                         and bb2[9]['BBH'] > candle[9]['high_price'] and bb2[10]['BBH'] > candle[10]['high_price'] \
-                         and bb2[11]['BBH'] > candle[11]['high_price'] and bb2[12]['BBH'] > candle[12]['high_price'] \
-                         and bb2[13]['BBH'] > candle[13]['high_price'] and bb2[14]['BBH'] > candle[14]['high_price'] \
-                         and bb2[15]['BBH'] > candle[15]['high_price'] and bb2[16]['BBH'] > candle[16]['high_price'] \
-                         and bb2[17]['BBH'] > candle[17]['high_price'] and bb2[18]['BBH'] > candle[18]['high_price'] \
-                         and bb2[19]['BBH'] > candle[19]['high_price'] and bb2[20]['BBH'] > candle[20]['high_price'] \
-                         and bb2[21]['BBH'] > candle[21]['high_price'] and bb2[22]['BBH'] > candle[22]['high_price'] \
-                         and bb2[23]['BBH'] > candle[23]['high_price'] and bb2[24]['BBH'] > candle[24]['high_price'] \
-                         and bb2[25]['BBH'] > candle[25]['high_price'] and bb2[26]['BBH'] > candle[26]['high_price'] \
-                         and bb2[27]['BBH'] > candle[27]['high_price'] and bb2[28]['BBH'] > candle[28]['high_price'] \
-                         and bb2[29]['BBH'] > candle[29]['high_price'] and bb2[30]['BBH'] > candle[30]['high_price'] \
-                         and bb2[31]['BBH'] > candle[31]['high_price'] and bb2[32]['BBH'] > candle[32]['high_price'] \
-                         and bb2[33]['BBH'] > candle[33]['high_price'] and bb2[34]['BBH'] > candle[34]['high_price'] \
-                         and bb2[35]['BBH'] > candle[35]['high_price'] and bb2[36]['BBH'] > candle[36]['high_price'] \
-                         and bb2[37]['BBH'] > candle[37]['high_price'] and bb2[38]['BBH'] > candle[38]['high_price'] \
-                         and bb2[39]['BBH'] > candle[39]['high_price'] and bb2[40]['BBH'] > candle[40]['high_price'] \
-                         and bb2[41]['BBH'] > candle[41]['high_price'] and bb2[42]['BBH'] > candle[42]['high_price'] \
-                         and bb2[43]['BBH'] > candle[43]['high_price'] and bb2[44]['BBH'] > candle[44]['high_price'] \
-                         and bb2[45]['BBH'] > candle[45]['high_price'] and bb2[46]['BBH'] > candle[46]['high_price'] \
-                         and bb2[47]['BBH'] > candle[47]['high_price'] and bb2[48]['BBH'] > candle[48]['high_price'] \
-                         and bb2[49]['BBH'] > candle[49]['high_price'] and bb2[50]['BBH'] > candle[50]['high_price'] \
-                         and bb2[51]['BBH'] > candle[51]['high_price'] and bb2[52]['BBH'] > candle[52]['high_price'] \
-                         and bb2[53]['BBH'] > candle[53]['high_price'] and bb2[54]['BBH'] > candle[54]['high_price'] \
-                         and bb2[55]['BBH'] > candle[55]['high_price'] and bb2[56]['BBH'] > candle[56]['high_price'] \
-                         and bb2[57]['BBH'] > candle[57]['high_price'] and bb2[58]['BBH'] > candle[58]['high_price'] \
-                         and bb2[59]['BBH'] > candle[59]['high_price'] and bb2[60]['BBH'] > candle[60]['high_price'] \
-                         and bb2[61]['BBH'] > candle[61]['high_price'] and bb2[62]['BBH'] > candle[62]['high_price'] \
-                         and bb2[63]['BBH'] > candle[63]['high_price'] and bb2[64]['BBH'] > candle[64]['high_price'] \
-                         and bb2[65]['BBH'] > candle[65]['high_price'] and bb2[66]['BBH'] > candle[66]['high_price'] \
-                         and bb2[67]['BBH'] > candle[67]['high_price'] and bb2[68]['BBH'] > candle[68]['high_price'] \
-                         and bb2[69]['BBH'] > candle[69]['high_price'] and bb2[70]['BBH'] > candle[70]['high_price'] \
-                         and bb2[71]['BBH'] > candle[71]['high_price'] and bb2[72]['BBH'] > candle[72]['high_price'] \
-                         and bb2[73]['BBH'] > candle[73]['high_price'] and bb2[74]['BBH'] > candle[74]['high_price'] \
-                         and bb2[75]['BBH'] > candle[75]['high_price'] and bb2[76]['BBH'] > candle[76]['high_price'] \
-                         and bb2[77]['BBH'] > candle[77]['high_price'] and bb2[78]['BBH'] > candle[78]['high_price'] \
-                         and bb2[79]['BBH'] > candle[79]['high_price'] and bb2[80]['BBH'] > candle[80]['high_price'] \
-                         and bb2[81]['BBH'] > candle[81]['high_price'] and bb2[82]['BBH'] > candle[82]['high_price'] \
-                         and bb2[83]['BBH'] > candle[83]['high_price'] and bb2[84]['BBH'] > candle[84]['high_price'] \
-                         and bb2[85]['BBH'] > candle[85]['high_price'] and bb2[86]['BBH'] > candle[86]['high_price'] \
-                         and bb2[87]['BBH'] > candle[87]['high_price'] and bb2[88]['BBH'] > candle[88]['high_price'] \
-                         and bb2[89]['BBH'] > candle[89]['high_price'] and bb2[90]['BBH'] > candle[90]['high_price'] \
-                         and bb2[91]['BBH'] > candle[91]['high_price'] and bb2[92]['BBH'] > candle[92]['high_price'] \
-                         and bb2[93]['BBH'] > candle[93]['high_price'] and bb2[94]['BBH'] > candle[94]['high_price'] \
-                         and bb2[95]['BBH'] > candle[95]['high_price'] and bb2[96]['BBH'] > candle[96]['high_price'] \
-                         and bb2[97]['BBH'] > candle[97]['high_price'] and bb2[98]['BBH'] > candle[98]['high_price'] \
-                         and bb2[99]['BBH'] > candle[99]['high_price'] and bb2[100]['BBH'] > candle[100]['high_price']):
 
+                if (bb2[0]['BBH'] < candle[0]['high_price']) and all(bb2[i+1]['BBH'] > candle[i+1]['high_price'] for i in range(100)):
 
                     # ------------------------------------------------------------------
                     # 기매수 여부 판단
@@ -392,7 +307,7 @@ if __name__ == '__main__':
         # 1. 로그레벨
         log_level = 'I'#input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
         # buy_amt = 20000#input("매수금액(M:최대, 10000:1만원) : ").upper()
-        buy_amtp = 10 #몇 %씩 매수할지?
+        buy_amtp = 7 #몇 %씩 매수할지?
         upbit.set_loglevel(log_level)
 
         logging.info("*********************************************************")
