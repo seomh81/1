@@ -95,6 +95,11 @@ def start_buytrade(buy_amtp):
                              + str(buy_amt) + ' 원 매수 시도 (' + str(buy_amtp) + ' %)')
                 logging.info(str(round((candle[0]['trade_price'] - bb2[0]['BBL']) / bb2[0]['BBL'] * 100, 1)) + ' %')
 
+                if krw_balance['krw_balance'] + avg_buy_price > 1400000:
+                    buy_amt = buy_amt + 30000
+                else:
+                    buy_amt = buy_amt - 30000
+
                 # --------------------------------------------------------------
                 # 볼린저 밴드 추가
                 # --------------------------------------------------------------
@@ -204,69 +209,15 @@ def start_buytrade(buy_amtp):
                         logging.info('주문금액[' + str(buy_amt) + ']이 최소 주문금액[' + str(upbit.min_order_amt) + '] 보다 작습니다.')
                         continue
 
-                    # ------------------------------------------------------------------
+
+
+
+                # ------------------------------------------------------------------
                     # 시장가 매수
                     # 실제 매수 로직은 안전을 위해 주석처리 하였습니다.
                     # 실제 매매를 원하시면 테스트를 충분히 거친 후 주석을 해제하시면 됩니다.
                     # ------------------------------------------------------------------
-                    logging.info('시장가 매수 시작! [' + str(target_item['market']) + ']')
-                    rtn_buycoin_mp = upbit.buycoin_mp(target_item['market'], buy_amt)
-                    logging.info('시장가 매수 종료! [' + str(target_item['market']) + ']')
-                    logging.info(rtn_buycoin_mp)
-                    continue
 
-
-                if (bb2[0]['BBH'] < candle[0]['high_price']) and all(bb2[i+1]['BBH'] > candle[i+1]['high_price'] for i in range(100)):
-
-                    # ------------------------------------------------------------------
-                    # 기매수 여부 판단
-                    # ------------------------------------------------------------------
-                    accounts = upbit.get_accounts('Y', 'KRW')
-                    account = list(filter(lambda x: x.get('market') == target_item['market'], accounts))
-
-                    # 이미 매수한 종목이면 다시 매수하지 않음
-                    # sell_bot.py에서 매도 처리되면 보유 종목에서 사라지고 다시 매수 가능
-                    if len(account) > 0:
-                        logging.info('기 매수 종목....[' + str(target_item['market']) + ']')
-                        continue
-
-                    # ------------------------------------------------------------------
-                    # 거래 금액 낮은것 판단
-                    # ------------------------------------------------------------------
-
-                    if candle[0]['trade_price'] < 1:
-                        logging.info('1원 미만 종목....[' + str(target_item['market']) + ']')
-                        continue
-
-                    # ------------------------------------------------------------------
-                    # 매수금액 설정
-                    # 1. M : 수수료를 제외한 최대 가능 KRW 금액만큼 매수
-                    # 2. 금액 : 입력한 금액만큼 매수
-                    # ------------------------------------------------------------------
-                    available_amt = upbit.get_krwbal()['available_krw']
-
-                    if buy_amt == 'M':
-                        buy_amt = available_amt
-
-                    # ------------------------------------------------------------------
-                    # 입력 금액이 주문 가능금액보다 작으면 종료
-                    # ------------------------------------------------------------------
-                    if Decimal(str(available_amt)) < Decimal(str(buy_amt)):
-                        logging.info('주문 가능금액[' + str(available_amt) + ']이 입력한 주문금액[' + str(buy_amt) + '] 보다 작습니다.')
-                        continue
-
-                    # ------------------------------------------------------------------
-                    # 최소 주문 금액(업비트 기준 5000원) 이상일 때만 매수로직 수행 ---- 10000원으로 올림
-                    # ------------------------------------------------------------------
-                    if Decimal(str(buy_amt)) < Decimal(str(upbit.min_order_amt)):
-                        logging.info('주문금액[' + str(buy_amt) + ']이 최소 주문금액[' + str(upbit.min_order_amt) + '] 보다 작습니다.')
-                        continue
-
-                    # ------------------------------------------------------------------
-                    # 시장가 매수
-                    # 실제 매수 로직은 안전을 위해 주석처리 하였습니다.
-                    # 실제 매매를 원하시면 테스트를 충분히 거친 후 주석을 해제하시면 됩니다.
-                    # ------------------------------------------------------------------
                     logging.info('시장가 매수 시작! [' + str(target_item['market']) + ']')
                     rtn_buycoin_mp = upbit.buycoin_mp(target_item['market'], buy_amt)
                     logging.info('시장가 매수 종료! [' + str(target_item['market']) + ']')
