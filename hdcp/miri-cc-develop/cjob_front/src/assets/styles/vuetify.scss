@@ -1,0 +1,56 @@
+// 텍스트필드 v-text-field
+.fieldRadius {
+  &.lg {
+    .v-field__outline__start {
+      border-radius: 12px 0 0 12px !important;
+    }
+    .v-field__outline__end {
+      border-radius: 0 12px 12px 0 !important;
+    }
+  }
+  &.xl {
+    .v-field__outline__start {
+      border-radius: 20px 0 0 20px !important;
+    }
+    .v-field__outline__end {
+      border-radius: 0 20px 20px 0 !important;
+    }
+  }
+}
+.customeHeightInput {
+  --v-input-control-height: 32px;
+  .v-field__select,
+  .v-field__field,
+  input {
+    height: 32px;
+    font: initial;
+    font-size: 14px;
+  }
+  .v-label {
+    font-size: 12px;
+    --v-input-padding-top: 9px;
+  }
+
+  &.field {
+    --v-input-padding-top: 16px;
+    .v-field__append-inner{
+      --v-input-padding-top: 5px;
+
+    }
+    .v-field__clearable {
+      --v-input-padding-top: 5px;
+    }
+  }
+  &.select {
+    --v-input-padding-top: 8px;
+    .v-field__append-inner {
+      --v-input-padding-top: 5px;
+    }
+  }
+  .v-field--variant-plain.v-field{
+    --v-input-padding-top: 1px;
+    
+  }
+  
+}
+// ////////////////////////////////

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.api.domain.ad.video.VideoADRepository">
+    <!-- RESULT MAP -->
+    <resultMap id="getVideAD" type="com.hdel.miri.api.domain.ad.video.VideoAD$VideoADVO">
+        <result column="VIDEO_AD_ID"            property="videoAdId" />
+        <result column="TITLE"            property="title" />
+        <result column="CONTENTS"            property="contents" />
+        <result column="ACTIVATION_YN"            property="activationYn" />
+        <result column="DEL_YN"            property="delYn" />
+        <result column="CREATION_DT"            property="creationDt" />
+    </resultMap>
+    <!-- RESULT MAP -->
+    <!-- SELECT -->
+    <select id="selectList" parameterType="com.hdel.miri.api.domain.ad.video.VideoAD$VideoADSearch" resultMap="getVideAD">
+        SELECT
+        VIDEO_AD_ID
+        ,TITLE
+        ,CONTENTS
+        ,ACTIVATION_YN
+        ,DEL_YN
+        ,TO_CHAR(CREATION_DT, 'YYYY-MM-DD HH24:MI:SS') AS CREATION_DT
+        FROM TB_VIDEO_AD
+        WHERE 1=1
+        <if test="searchKeyword != null and searchKeyword != '' ">AND (TITLE LIKE '%'||#{searchKeyword}||'%' OR CONTENTS LIKE '%'||#{searchKeyword}||'%') </if>
+        <if test="activationYn neq 'ALL' ">AND ACTIVATION_YN =  #{activationYn} </if>
+        AND DEL_YN =  'n'
+        ORDER BY LASTUPDATE_DT DESC
+    </select>
+    <!-- SELECT -->
+    <!-- UPDATE -->
+    <update id="update" parameterType="com.hdel.miri.api.domain.ad.video.VideoAD$VideoADUpdate">
+        UPDATE TB_VIDEO_AD
+        SET TITLE = #{title}
+        ,CONTENTS = #{contents}
+        ,LASTUPDATE_USER = #{currentUser}
+        WHERE 1=1
+        <if test="videoAdId !=null">AND VIDEO_AD_ID = #{videoAdId}</if>
+    </update>
+    <update id="active" parameterType="com.hdel.miri.api.domain.ad.video.VideoAD$VideoADActivation">
+        UPDATE TB_VIDEO_AD
+        SET ACTIVATION_YN = 'y'
+        ,LASTUPDATE_USER = #{currentUser}
+        WHERE
+        VIDEO_AD_ID IN
+        <foreach collection="videoAdIds" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </update>
+    <update id="inactive" parameterType="com.hdel.miri.api.domain.ad.video.VideoAD$VideoADActivation">
+        UPDATE TB_VIDEO_AD
+        SET ACTIVATION_YN = 'n'
+        ,LASTUPDATE_USER = #{currentUser}
+        WHERE
+        VIDEO_AD_ID IN
+        <foreach collection="videoAdIds" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </update>
+    <update id="remove" parameterType="com.hdel.miri.api.domain.ad.video.VideoAD$VideoADRemove">
+        UPDATE TB_VIDEO_AD
+        SET DEL_YN = 'y'
+        , LASTUPDATE_USER = #{currentUser}
+        WHERE   1=1
+        AND     VIDEO_AD_ID IN
+        <foreach collection="videoAdIds" item="item" open="(" close=")" separator=",">
+            <if test="item !=null"> #{item}</if>
+        </foreach>
+    </update>
+    <!-- UPDATE -->
+    <!-- INSERT -->
+    <insert id="insert" parameterType="com.hdel.miri.api.domain.ad.video.VideoAD$VideoADCreate">
+        INSERT INTO TB_VIDEO_AD(TITLE, CONTENTS, CREATION_USER, LASTUPDATE_USER)
+        VALUES(#{title}
+              ,#{contents}
+              ,#{currentUser}
+              ,#{currentUser}
+              )
+    </insert>
+    <!-- INSERT -->
+    <!-- DELETE -->
+    <!-- DELETE -->
+</mapper>

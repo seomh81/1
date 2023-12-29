@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.api.domain.privilege.policy.PolicyRepository">
+    <!-- RESULT MAP -->
+    <resultMap id="getFunction" type="com.hdel.miri.api.domain.privilege.policy.Policy$FunctionsByView">
+        <result column="STEP"            property="step" />
+        <result column="TREE_ID"            property="treeId" />
+        <result column="PARENT_ID"            property="parentId" />
+        <result column="VIEW_ID"            property="viewId" />
+        <result column="FUNCTION_ID"            property="functionId" />
+        <result column="VIEW_NAME"                 property="viewName" />
+        <result column="VUE_FILE_URL"            property="vueFileUrl" />
+        <result column="TYPE"            property="type" />
+        <result column="FUNCTION_NAME"            property="functionName" />
+        <result column="METHOD_NAME"            property="methodName" />
+    </resultMap>
+    <resultMap id="getView" type="com.hdel.miri.api.domain.privilege.policy.Policy$ViewsByMenu">
+        <result column="STEP"            property="step" />
+        <result column="TREE_ID"            property="treeId" />
+        <result column="PARENT_ID"            property="parentId" />
+        <result column="MENU_ID"            property="menuId" />
+        <result column="PARENT_MENU_ID"            property="parentMenuId" />
+        <result column="MENU_NAME"                 property="menuName" />
+        <result column="PAYLOAD"            property="payload" />
+        <result column="TYPE"            property="type" />
+        <result column="VIEW_ID"            property="viewId" />
+        <result column="VIEW_NAME"            property="viewName" />
+        <result column="VUE_FILE_URL"            property="vueFileUrl" />
+    </resultMap>
+    <resultMap id="getUser" type="com.hdel.miri.api.domain.privilege.policy.Policy$UsersByRole">
+        <result column="STEP"            property="step" />
+        <result column="TREE_ID"            property="treeId" />
+        <result column="PARENT_ID"            property="parentId" />
+        <result column="ROLE_ID"            property="roleId" />
+        <result column="PARENT_ROLE_ID"            property="parentRoleId" />
+        <result column="ROLE_NAME"                 property="roleName" />
+        <result column="PAYLOAD"            property="payload" />
+        <result column="USER_ID"            property="userId" />
+        <result column="TYPE"            property="type" />
+    </resultMap>
+    <resultMap id="getMenu" type="com.hdel.miri.api.domain.privilege.policy.Policy$MenusByRole">
+        <result column="TREE_ID"            property="treeId" />
+        <result column="PARENT_ID"            property="parentId" />
+        <result column="NAME"            property="name" />
+        <result column="TYPE"            property="type" />
+        <result column="MENU_ID"            property="menuId" />
+        <result column="PARENT_MENU_ID"            property="parentMenuId" />
+        <result column="ROLE_ID"                 property="roleId" />
+        <result column="PAYLOAD"            property="payload" />
+    </resultMap>
+    <!-- RESULT MAP -->
+    <!-- SELECT -->
+    <select id="selectFunctionsByView" resultMap="getFunction">
+        SELECT
+            1 AS STEP
+             ,(a.VIEW_ID||'-'||a.FUNCTION_ID) AS TREE_ID
+             ,TO_CHAR(a.VIEW_ID)  AS PARENT_ID
+             ,NULL AS VIEW_ID
+             ,a.FUNCTION_ID
+             ,'' AS VIEW_NAME
+             ,'' AS VUE_FILE_URL
+             ,c.TYPE
+             ,c.FUNCTION_NAME
+             ,c.METHOD_NAME
+        FROM TB_VIEW_FUNC_MAPPING a, TB_VIEW b, TB_FUNC c
+        WHERE     a.VIEW_ID = b.VIEW_ID
+          AND     a.FUNCTION_ID = c.FUNCTION_ID
+
+        UNION all
+
+        SELECT
+            0 AS STEP
+             ,TO_CHAR(b.VIEW_ID) AS TREE_ID
+             ,'0' AS PARENT_ID
+             ,b.VIEW_ID
+             ,null AS FUNCTION_ID
+             ,max(b.VIEW_NAME) AS VIEW_NAME
+             ,max(b.VUE_FILE_URL) AS VUE_FILE_URL
+             ,TYPE
+             ,'' AS FUNCTION_NAME
+             ,'' AS METHOD_NAME
+        FROM TB_VIEW_FUNC_MAPPING a, TB_VIEW b
+        WHERE a.VIEW_ID(+) = b.VIEW_ID
+        GROUP BY b.VIEW_ID, b.TYPE
+    </select>
+    <select id="selectViewsByMenu" resultMap="getView">
+        SELECT
+            distinct
+            1 AS STEP
+                   ,TO_CHAR(b.MENU_ID)  AS TREE_ID
+                   ,TO_CHAR(b.PARENT_MENU_ID)  AS PARENT_ID
+                   ,b.MENU_ID
+                   ,b.PARENT_MENU_ID
+                   ,b.MENU_NAME
+                   ,b.PAYLOAD
+                   ,b.TYPE
+                   ,null as VIEW_ID
+                   , NULL AS VIEW_NAME
+                   , NULL AS VUE_FILE_URL
+        FROM 	TB_MENU_VIEW_MAPPING a
+           ,(SELECT MENU_ID, MENU_NAME, PARENT_MENU_ID, PAYLOAD, TYPE  FROM TB_MENU tm
+            START WITH PARENT_MENU_ID IS NULL
+             CONNECT BY PRIOR MENU_ID = PARENT_MENU_ID) b
+        WHERE   a.MENU_ID(+)  = b.MENU_ID
+
+        UNION ALL
+
+        SELECT
+            9 AS STEP
+             ,TO_CHAR(MENU_ID||a.VIEW_ID)  AS TREE_ID
+             ,TO_CHAR(MENU_ID)  AS PARENT_ID
+             ,NULL AS MENU_ID
+             ,NULL AS PARENT_MENU_ID
+             ,NULL AS MENU_NAME
+             ,NULL AS PAYLOAD
+             ,TYPE
+             ,b.VIEW_ID
+             ,VIEW_NAME
+             ,VUE_FILE_URL
+        FROM 	TB_MENU_VIEW_MAPPING a, TB_VIEW b
+        WHERE     a.VIEW_ID = b.VIEW_ID
+    </select>
+    <select id="selectUsersByRole" resultMap="getUser">
+        SELECT
+            DISTINCT
+            1 AS STEP
+                   ,TO_CHAR(b.ROLE_ID)  AS TREE_ID
+                   ,TO_CHAR(b.PARENT_ROLE_ID)  AS PARENT_ID
+                   ,b.ROLE_ID
+                   ,b.PARENT_ROLE_ID
+                   ,b.ROLE_NAME
+                   ,b.PAYLOAD
+                   ,NULL AS USER_ID
+                   ,b.TYPE
+        FROM 	TB_ROLE_USER_MAPPING a
+           ,(SELECT ROLE_ID, ROLE_NAME, PARENT_ROLE_ID, PAYLOAD, TYPE  FROM TB_ROLE tm
+            START WITH PARENT_ROLE_ID IS NULL
+             CONNECT BY PRIOR ROLE_ID = PARENT_ROLE_ID) b
+        WHERE   a.ROLE_ID(+)  = b.ROLE_ID
+
+        UNION ALL
+
+        SELECT
+            DISTINCT
+            9 AS STEP
+                   ,TO_CHAR(a.ROLE_ID||'_'||b.USER_ID) AS TREE_ID
+                   ,TO_CHAR(a.ROLE_ID)  AS PARENT_ID
+                   ,NULL AS ROLE_ID
+                   ,NULL AS PARENT_ROLE_ID
+                   ,NULL AS ROLE_NAME
+                   ,NULL AS PAYLOAD
+                   ,a.USER_ID
+                   ,'user' AS TYPE
+        FROM 	TB_ROLE_USER_MAPPING a, TB_USER b
+        WHERE a.USER_ID = b.USER_ID
+    </select>
+    <select id="selectMenusByRole" resultMap="getMenu">
+        SELECT
+            TREE_ID,
+            (CASE NVL(PARENT_ID,'NULL')
+                 WHEN 'NULL' THEN PARENT_ID
+                 ELSE TO_CHAR('R'||PARENT_ID)
+                END ) AS PARENT_ID
+             ,NAME
+             ,TYPE
+             ,MENU_ID
+             ,ROLE_ID
+             ,PARENT_ROLE_ID
+             ,PARENT_MENU_ID
+             ,PAYLOAD
+        FROM (
+                 SELECT
+                     DISTINCT
+                     1 AS STEP
+                            ,TO_CHAR('R'||b.ROLE_ID)  AS TREE_ID
+                            ,TO_CHAR(b.PARENT_ROLE_ID) AS PARENT_ID
+                            ,b.ROLE_ID
+                            ,b.PARENT_ROLE_ID
+                            ,NULL AS PARENT_MENU_ID
+                            ,B.ROLE_NAME AS NAME
+                            ,b.PAYLOAD
+                            ,NULL AS MENU_ID
+                            ,'role' TYPE
+                 FROM TB_ROLE_MENU_MAPPING RMM
+                    ,(SELECT ROLE_ID, ROLE_NAME, PARENT_ROLE_ID, PAYLOAD, TYPE  FROM TB_ROLE tm
+                     START WITH PARENT_ROLE_ID IS NULL
+                      CONNECT BY PRIOR ROLE_ID = PARENT_ROLE_ID) b
+                 WHERE  RMM.ROLE_ID(+) = b.ROLE_ID ) BB
+        UNION ALL
+        SELECT
+            TREE_ID,
+            (CASE NVL(PARENT_ID,'NULL')
+                 WHEN 'NULL' THEN TO_CHAR('R'||PARENT_ROLE_ID)
+                 ELSE (SELECT
+                           (CASE
+                                WHEN CNT > 0 THEN TO_CHAR('R'||PARENT_ROLE_ID||'-'||'M'||PARENT_ID)
+                                ELSE TO_CHAR('R'||PARENT_ROLE_ID) END) AS ROLE_MENU_MAPPING_ID
+                       FROM (SELECT
+                                 COUNT(ROLE_MENU_MAPPING_ID) AS CNT
+                             FROM TB_ROLE_MENU_MAPPING trmm
+                             WHERE ROLE_ID = AA.PARENT_ROLE_ID AND MENU_ID = AA.PARENT_MENU_ID))
+                END ) AS PARENT_ID
+             ,NAME
+             ,TYPE
+             ,MENU_ID
+             ,ROLE_ID
+             ,PARENT_ROLE_ID
+             ,PARENT_MENU_ID
+             ,PAYLOAD
+        FROM (
+                 SELECT
+                     DISTINCT
+                     9 AS STEP
+                            ,TO_CHAR('R'||RMM.ROLE_ID||'-'||'M'||b.MENU_ID) AS TREE_ID
+                            ,TO_CHAR(b.PARENT_MENU_ID) AS PARENT_ID
+                            ,NULL AS ROLE_ID
+                            ,RMM.ROLE_ID  AS PARENT_ROLE_ID
+                            ,B.MENU_NAME  AS NAME
+                            ,NULL AS PAYLOAD
+                            ,B.MENU_ID MENU_ID
+                            ,B.PARENT_MENU_ID PARENT_MENU_ID
+                            ,'menu' AS TYPE
+                 FROM  TB_ROLE_MENU_MAPPING RMM, TB_MENU b
+                 WHERE (RMM.MENU_ID  = b.MENU_ID OR RMM.MENU_ID  = b.PARENT_MENU_ID) ) AA
+    </select>
+    <!--
+        SELECT
+            DISTINCT
+            1 AS STEP
+                   ,TO_CHAR(b.ROLE_ID)  AS TREE_ID
+                   ,TO_CHAR(b.PARENT_ROLE_ID)  AS PARENT_ID
+                   ,b.ROLE_ID
+                   ,b.PARENT_ROLE_ID
+                   ,b.ROLE_NAME
+                   ,b.PAYLOAD
+                   ,NULL AS MENU_ID
+                   ,b.TYPE
+        FROM TB_ROLE_MENU_MAPPING RMM
+           ,(SELECT ROLE_ID, ROLE_NAME, PARENT_ROLE_ID, PAYLOAD, TYPE  FROM TB_ROLE tm
+            START WITH PARENT_ROLE_ID IS NULL
+             CONNECT BY PRIOR ROLE_ID = PARENT_ROLE_ID) b
+        WHERE  RMM.ROLE_ID(+) = b.ROLE_ID
+        UNION ALL
+        SELECT
+            DISTINCT
+            9 AS STEP
+                   ,TO_CHAR(RMM.ROLE_ID||'_'||b.MENU_ID) AS TREE_ID
+                   ,TO_CHAR(RMM.ROLE_ID)  AS PARENT_ID
+                   ,NULL AS ROLE_ID
+                   ,NULL AS PARENT_ROLE_ID
+                   ,NULL AS ROLE_NAME
+                   ,NULL AS PAYLOAD
+                   ,RMM.MENU_ID
+                   ,'menu' AS TYPE
+        FROM  TB_ROLE_MENU_MAPPING RMM, TB_MENU b
+        WHERE RMM.MENU_ID  = b.MENU_ID
+        -->
+    <!-- SELECT -->
+    <!-- UPDATE -->
+    <update id="updateLinkVueFile">
+        UPDATE TB_VIEW
+        SET VUE_FILE_URL = #{vueFileUrl}
+          ,LASTUPDATE_USER = #{currentUser}
+        WHERE VIEW_ID = #{viewId}
+    </update>
+    <update id="updateUnlinkVueFile">
+        UPDATE TB_VIEW
+        SET VUE_FILE_URL = ''
+          ,LASTUPDATE_USER = #{currentUser}
+        WHERE VIEW_ID = #{viewId}
+    </update>
+
+    <!-- UPDATE -->
+    <!-- INSERT -->
+    <insert id="insertFunctionsByView" parameterType="com.hdel.miri.api.domain.privilege.policy.Policy$FunctionsMappedByView">
+        INSERT INTO TB_VIEW_FUNC_MAPPING(VIEW_ID, FUNCTION_ID, CREATION_USER, LASTUPDATE_USER)
+        WITH TEMP AS (
+        <foreach collection="functionIds" item="item" separator="UNION ALL">
+            SELECT #{viewId} as a,#{item} as b, #{currentUser} as c, #{currentUser} as d FROM DUAL
+        </foreach>
+        ) SELECT * FROM TEMP
+    </insert>
+    <insert id="insertViewsByMenu" parameterType="com.hdel.miri.api.domain.privilege.policy.Policy$ViewsMappedByMenu">
+        INSERT INTO TB_MENU_VIEW_MAPPING(MENU_ID, VIEW_ID, CREATION_USER, LASTUPDATE_USER)
+        WITH TEMP AS (
+        <foreach collection="viewIds" item="item" separator="UNION ALL">
+            SELECT #{menuId} as a, #{item} as b, #{currentUser} as c, #{currentUser} as d FROM DUAL
+        </foreach>
+        ) SELECT * FROM TEMP
+    </insert>
+    <insert id="insertUsersByRole" parameterType="com.hdel.miri.api.domain.privilege.policy.Policy$UsersMappedByRole">
+        INSERT INTO TB_ROLE_USER_MAPPING(ROLE_ID, USER_ID, CREATION_USER, LASTUPDATE_USER)
+        WITH TEMP AS (
+        <foreach collection="userIds" item="item" separator="UNION ALL">
+            SELECT #{roleId} as a, #{item} as b, #{currentUser} as c, #{currentUser} as d FROM DUAL
+        </foreach>
+        ) SELECT a,b,c,d FROM TEMP
+    </insert>
+    <insert id="insertMenusByRole" parameterType="com.hdel.miri.api.domain.privilege.policy.Policy$MenusMappedByRole">
+        INSERT INTO TB_ROLE_MENU_MAPPING(ROLE_ID, MENU_ID, CREATION_USER, LASTUPDATE_USER)
+        WITH TEMP AS (
+        <foreach collection="menuIds" item="item" separator="UNION ALL">
+            SELECT #{roleId} as a, #{item} as b, #{currentUser} as c, #{currentUser} as d FROM DUAL
+        </foreach>
+        ) SELECT a,b,c,d FROM TEMP
+    </insert>
+    <!-- INSERT -->
+    <!-- DELETE -->
+    <delete id="deleteFunctionsByView" parameterType="com.hdel.miri.api.domain.privilege.policy.Policy$FunctionsMappedByView">
+        DELETE FROM TB_VIEW_FUNC_MAPPING
+        WHERE   1=1
+        AND VIEW_ID = #{viewId}
+        AND FUNCTION_ID IN
+        <foreach collection="functionIds" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+    <delete id="deleteViewsByMenu" parameterType="com.hdel.miri.api.domain.privilege.policy.Policy$ViewsMappedByMenu">
+        DELETE FROM TB_MENU_VIEW_MAPPING
+        WHERE   MENU_ID = #{menuId}
+        AND     VIEW_ID IN
+        <foreach collection="viewIds" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+    <delete id="deleteUsersByRole" parameterType="com.hdel.miri.api.domain.privilege.policy.Policy$UsersMappedByRole" >
+        DELETE FROM TB_ROLE_USER_MAPPING
+        WHERE   1=1
+        AND
+        <foreach collection="userIds" item="item" separator=" OR ">
+            ( ROLE_ID = #{roleId} AND USER_ID = #{item} )
+        </foreach>
+    </delete>
+    <delete id="deleteMenusByRole" parameterType="com.hdel.miri.api.domain.privilege.policy.Policy$MenusMappedByRole" >
+        DELETE FROM TB_ROLE_MENU_MAPPING
+        WHERE   1=1
+        AND
+        <foreach collection="menuIds" item="item" separator=" OR ">
+            ( ROLE_ID = #{roleId} AND MENU_ID = #{item} )
+        </foreach>
+    </delete>
+    <!-- DELETE -->
+</mapper>

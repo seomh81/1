@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.api.domain.setup.SetupRepository">
+    <!-- RESULT MAP -->
+    <!-- RESULT MAP -->
+    <!-- SELECT -->
+    <select id="selectRenderType" parameterType="string" resultType="string">
+        SELECT LANDINGPAGE_TYPE
+        FROM TB_SETUP
+        WHERE USER_ID = #{userId}
+    </select>
+    <!-- SELECT -->
+    <!-- UPDATE -->
+    <update id="updateLandingPage" parameterType="com.hdel.miri.api.domain.setup.Setup$SetupLandingPageUpdate">
+        UPDATE TB_SETUP
+        SET LANDINGPAGE_TYPE = #{landingpageType}
+        WHERE USER_ID = #{currentUser}
+    </update>
+    <update id="updateTheme" parameterType="com.hdel.miri.api.domain.setup.Setup$SetupThemeUpdate">
+        UPDATE TB_SETUP
+        SET THEME = #{theme}
+        WHERE USER_ID = #{currentUser}
+    </update>
+    <update id="updateLocale" parameterType="com.hdel.miri.api.domain.setup.Setup$SetupLocaleUpdate">
+        UPDATE TB_SETUP
+            SET LOCALE = #{locale}
+        WHERE USER_ID = #{currentUser}
+
+    </update>
+    <!-- UPDATE -->
+    <!-- INSERT -->
+    <sql id="insert">
+        INSERT INTO TB_SETUP (USER_ID, LOCALE, THEME, CREATION_USER, LASTUPDATE_USER, LANDINGPAGE_TYPE)
+    </sql>
+    <insert id="insertDefault" parameterType="com.hdel.miri.api.domain.setup.Setup$SetupDefaultCreate">
+        <include refid="insert" /> VALUES(#{userId}, #{userLocale}  , 'light'  , #{userId}, #{userId},'map_page')
+    </insert>
+    <!-- INSERT -->
+    <!-- DELETE -->
+    <!-- DELETE -->
+</mapper>

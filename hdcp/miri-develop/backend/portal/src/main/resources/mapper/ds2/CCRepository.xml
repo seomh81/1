@@ -1,0 +1,1688 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.api.domain.cc.CCRepository">
+    <resultMap id="CCProjNoExtTRLineVO" type="com.hdel.miri.api.domain.cc.CC$CCProjNoExtTRLineVO">
+        <result column="INTG_PRJ_TRLINE_CD_CODE" property="intgPrjTrlineCdCode" />
+        <result column="PROJ_NO"       property="projNo" />
+        <result column="BULD_NM"       property="buldNm" />
+        <result column="ELEVATOR_NO"            property="elevatorNo" />
+        <result column="FRST_INSTALLATION_DE"   property="frstInstallationDe" />
+        <result column="INSTALLATION_DE"        property="installationDe" />
+        <result column="INSTALLATION_PLACE"        property="installationPlace" />
+        <result column="APPLC_EN_DT"            property="applcEnDt" />
+    </resultMap>
+    <resultMap id="CCCurrentElevatorChangeDateResponse" type="com.hdel.miri.api.domain.cc.CC$CCCurrentElevatorChangeDateResponse">
+        <result column="ELEVATOR_NO" property="elevatorNo" />
+        <result column="PROJ_NO"       property="projNo" />
+        <result column="INSTALLATION_DE"       property="installationDe" />
+        <result column="CHANGE_DATE"       property="changeDate" />
+        <result column="APPLC_EN_DT"       property="applcEnDt" />
+    </resultMap>
+    <resultMap id="IntegratedInspectVO" type="com.hdel.miri.api.domain.cc.CC$IntegratedInspectVO">
+        <result column="ELEVATOR_NO" property="elevatorNo" />
+        <result column="ELVTR_DIV_NM"       property="elvtrDivNm" />
+        <result column="BULD_NM"       property="buldNm" />
+        <result column="PROJ_NO"      property="projNo" />
+        <result column="REPORT_TYPE"       property="reportType" />
+        <result column="CHK_DATE" property="chkDate" />
+        <result column="END_DATE" property="endDate" />
+        <result column="CHK_RESULT" property="chkResult" />
+        <result column="FAIL_CD" property="failCd" />
+        <result column="YYYYMM" property="yyyymm" />
+    </resultMap>
+    <resultMap id="IntegratedMasterInfoVO" type="com.hdel.miri.api.domain.cc.CC$IntegratedMasterInfoVO">
+        <result column="ELEVATOR_NO" property="elevatorNo" />
+        <result column="BULD_NM"       property="buldNm" />
+        <result column="CRT_COMPANY"       property="crtCompany" />
+        <result column="ELVTR_DIV_NM"       property="elvtrDivNm" />
+        <result column="PRJ_NO" property="prjNo" />
+        <result column="ADDRESS1"      property="address1" />
+        <result column="INSTALLATION_PLACE"      property="installationPlace" />
+        <result column="INSTALLATION_DE"      property="installationDe" />
+        <result column="SELF_COMPANY"       property="selfCompany" />
+        <result column="SHUTTLE_FLOOR_CNT" property="shuttleFloorCnt" />
+        <result column="SHUTTLE_SECTION" property="shuttleSection" />
+        <result column="INSPCT_INSTT_NM" property="inspctInsttNm" />
+    </resultMap>
+    <resultMap id="SelfInspectHisotry" type="com.hdel.miri.api.domain.cc.CC$SelfInspectHistoryVO">
+        <result column="ELEVATOR_NO" property="elevatorNo" />
+        <result column="BULD_NM"       property="buldNm" />
+        <result column="ADDRESS1"      property="address1" />
+        <result column="INSTALLATION_PLACE"       property="installationPlace" />
+        <result column="SEL_CHK_BEGIN_DATE" property="selChkBeginDate" />
+        <result column="SEL_CHK_USNM" property="selChkUsnm" />
+        <result column="SEL_CHK_ST_DT" property="selChkStDt" />
+        <result column="SEL_CHK_EN_DT" property="selChkEnDt" />
+        <result column="COMPANY_NM" property="companyNm" />
+        <result column="SELCHK_RESULT_NM" property="selchkResultNm" />
+        <result column="TIT_NO" property="titNo" />
+        <result column="SEL_CHK_ITEM_NM" property="selChkItemNm" />
+        <result column="SEL_CHK_ITEM_DT_NM" property="selChkItemDtNm" />
+        <result column="SEL_CHK_RESULT" property="selChkResult" />
+        <result column="CNFIRM_DT" property="cnfirmDt" />
+        <result column="REGIST_DT" property="registDt" />
+        <result column="BEFORE_RESULT_NM" property="beforeResultNm" />
+    </resultMap>
+    <resultMap id="SelfInspect" type="com.hdel.miri.api.domain.cc.CC$SelfInspectVO">
+        <result column="ELEVATOR_NO" property="elevatorNo" />
+        <result column="SEL_CHK_BEGIN_DATE" property="selChkBeginDate" />
+        <result column="BULD_NM"       property="buldNm" />
+        <result column="ADDRESS1"      property="address1" />
+        <result column="INSTALLATION_PLACE"       property="installationPlace" />
+    </resultMap>
+    <resultMap id="SelfInspectHead" type="com.hdel.miri.api.domain.cc.CC$SelfInspectHeadVO">
+        <result column="ELEVATOR_NO" property="elevatorNo" />
+        <result column="SEL_CHK_BEGIN_DATE" property="selChkBeginDate" />
+        <result column="BULD_NM"       property="buldNm" />
+        <result column="ADDRESS1"      property="address1" />
+        <result column="INSTALLATION_PLACE"       property="installationPlace" />
+        <result column="CHECK_RST"   property="checkRst" />
+    </resultMap>
+    <resultMap id="Inspect" type="com.hdel.miri.api.domain.cc.CC$InspectVO">
+        <result column="ELEVATOR_NO" property="elevatorNo" />
+        <result column="BULD_NM"       property="buldNm" />
+        <result column="ADDRESS1"      property="address1" />
+        <result column="INSTALLATION_PLACE"       property="installationPlace" />
+        <result column="INSPCT_DE"  property="inspctDe" />
+        <result column="DISP_WORDS"   property="dispWords" />
+        <result column="FAIL_CD"  property="failCd" />
+        <result column="APPLC_ST_DT"   property="applcStDt" />
+        <result column="APPLC_EN_DT"   property="applcEnDt" />
+    </resultMap>
+    <resultMap id="InspectHead" type="com.hdel.miri.api.domain.cc.CC$InspectHeadVO">
+        <result column="ELEVATOR_NO" property="elevatorNo" />
+        <result column="BULD_NM"       property="buldNm" />
+        <result column="ADDRESS1"      property="address1" />
+        <result column="INSTALLATION_PLACE"       property="installationPlace" />
+        <result column="INSPCT_DE"  property="inspctDe" />
+        <result column="DISP_WORDS"   property="dispWords" />
+        <result column="FAIL_CD"  property="failCd" />
+        <result column="APPLC_ST_DT"   property="applcStDt" />
+        <result column="APPLC_EN_DT"   property="applcEnDt" />
+        <result column="CHECK_RST"   property="checkRst" />
+    </resultMap>
+    <resultMap id="ELInfoVO" type="com.hdel.miri.api.domain.cc.CC$ELInfoVO">
+        <result column="ELEVATOR_NO" property="elevatorNo" />
+        <result column="INTG_PRJ_NO" property="intgPrjNo" />
+        <result column="TRLINE_CD" property="trlineCd" />
+        <result column="PRJ_NO" property="prjNo" />
+        <result column="HO_NO" property="hoNo" />
+        <result column="SALES_EMPL" property="salesEmpl" />
+        <result column="SALES_EMPL_NM" property="salesEmplNm" />
+        <result column="COMPS_CNTR_NO" property="compsCntrNo" />
+        <result column="Address1" property="address1" />
+        <result column="Address2" property="address2" />
+        <result column="APPLC_BE_DT" property="applcBeDt" />
+        <result column="APPLC_EN_DT" property="applcEnDt" />
+        <result column="Sigungunm" property="sigungunm" />
+        <result column="BULD_MGT_NO1" property="buldMgtNo1" />
+        <result column="BULD_MGT_NO2" property="buldMgtNo2" />
+        <result column="BULD_NM" property="buldNm" />
+        <result column="ELVTR_DIV_NM" property="elvtrDivNm" />
+        <result column="ELVTR_DETAIL_FORM" property="elvtrDetailForm" />
+        <result column="ELVTR_KIND_NM" property="elvtrKindNm" />
+        <result column="ELVTR_STTS_NM" property="elvtrSttsNm" />
+        <result column="FRST_INSTALLATION_DE" property="frstInstallationDe" />
+        <result column="INSTALLATION_DE" property="installationDe" />
+        <result column="LIVE_LOAD" property="liveLoad" />
+        <result column="RATED_CAP" property="ratedCap" />
+        <result column="SHUTTLE_SECTION" property="shuttleSection" />
+        <result column="SHUTTLE_FLOOR_CNT" property="shuttleFloorCnt" />
+        <result column="GROUND_FLOOR_CNT" property="groundFloorCnt" />
+        <result column="UNDGRND_FLOOR_CNT" property="undgrndFloorCnt" />
+        <result column="WGSLAT" property="wgslat" />
+        <result column="WGSLON" property="wgslon" />
+    </resultMap>
+    <resultMap id="ELInfoJoin" type="com.hdel.miri.api.domain.cc.CC$ELInfoJoinToHCCC">
+        <result column="ELEVATOR_NO" property="elevatorNo" />
+        <result column="INTG_PRJ_NO" property="intgPrjNo" />
+        <result column="TRLINE_CD" property="trlineCd" />
+        <result column="PRJ_NO" property="prjNo" />
+        <result column="HO_NO" property="hoNo" />
+        <result column="SALES_EMPL" property="salesEmpl" />
+        <result column="SALES_EMPL_NM" property="salesEmplNm" />
+        <result column="COMPS_CNTR_NO" property="compsCntrNo" />
+        <result column="Address1" property="address1" />
+        <result column="Address2" property="address2" />
+        <result column="APPLC_BE_DT" property="applcBeDt" />
+        <result column="APPLC_EN_DT" property="applcEnDt" />
+        <result column="Sigungunm" property="sigungunm" />
+        <result column="BULD_MGT_NO1" property="buldMgtNo1" />
+        <result column="BULD_MGT_NO2" property="buldMgtNo2" />
+        <result column="BULD_NM" property="buldNm" />
+        <result column="ELVTR_DIV_NM" property="elvtrDivNm" />
+        <result column="ELVTR_DETAIL_FORM" property="elvtrDetailForm" />
+        <result column="ELVTR_KIND_NM" property="elvtrKindNm" />
+        <result column="ELVTR_STTS_NM" property="elvtrSttsNm" />
+        <result column="FRST_INSTALLATION_DE" property="frstInstallationDe" />
+        <result column="INSTALLATION_DE" property="installationDe" />
+        <result column="INSTALLATION_PLACE" property="installationPlace" />
+        <result column="LIVE_LOAD" property="liveLoad" />
+        <result column="RATED_CAP" property="ratedCap" />
+        <result column="SHUTTLE_SECTION" property="shuttleSection" />
+        <result column="SHUTTLE_FLOOR_CNT" property="shuttleFloorCnt" />
+        <result column="GROUND_FLOOR_CNT" property="groundFloorCnt" />
+        <result column="UNDGRND_FLOOR_CNT" property="undgrndFloorCnt" />
+        <result column="WGSLAT" property="wgslat" />
+        <result column="WGSLON" property="wgslon" />
+        <result column="EL_TYPE" property="elType" />
+        <result column="EL_L_EA" property="elLEa" />
+        <result column="EL_T_EA" property="elTEa" />
+        <result column="MGT_COM_NM" property="mgtComNm" />
+        <result column="MGT_COM_HP" property="mgtComHp" />
+        <result column="MGT_COM_TEL" property="mgtComTel" />
+        <result column="CONTRACT_START_DT" property="contractStartDt" />
+        <result column="CONTRACT_END_DT" property="contractEndDt" />
+    </resultMap>
+
+    <resultMap id="GetHcccReceptionInfoForMonthVO" type="com.hdel.miri.api.domain.cc.CC$CalenderVO">
+        <result column="ACPT_NO"        property="acptNo" />
+        <result column="INTG_PRJ_NO"    property="intgPrjNo" />
+        <result column="TRLINE_CD"      property="trlineCd" />
+        <result column="PRJ_NO"         property="prjNo" />
+        <result column="EL_NO"          property="elNo" />
+        <result column="HO_NO"          property="hoNo" />
+        <result column="BULD_NM"        property="prjNm" />
+        <result column="HO_NM"          property="hoNm" />
+        <result column="TARGET_DT"      property="targetDt" />
+        <result column="STATUS"         property="status" />
+        <result column="D_TYPE"         property="dType" />
+    </resultMap>
+
+    <resultMap id="GetPrjNoVO" type="com.hdel.miri.api.domain.cc.CC$PrjNoVO">
+        <result column="PRJ_NO"         property="prjNo" />
+        <result column="HO_NO"          property="hoNo" />
+        <result column="PRJNOS"          property="prjNos" />
+    </resultMap>
+    <resultMap id="ElevatorInfo" type="com.hdel.miri.api.domain.cc.CC$CCElevatorInfoVO">
+        <result column="ELEVATOR_NO"    property="elevatorNo" />
+        <result column="PRJ_NO"    property="prjNo" />
+        <result column="BUILD_NM"    property="buildNm" />
+        <result column="ELVTR_DIV"    property="elvtrDiv" />
+        <result column="HO_NO"    property="hoNo" />
+        <result column="ELVTR_STTS_NM"    property="elvtrSttsNm" />
+        <result column="APPLC_EN_DT"    property="applcEnDt" />
+        <result column="INSTALLATION_DE"    property="installationDe" />
+        <result column="INSTALLATION_PLACE"    property="installationPlace" />
+        <result column="BULD_NM"    property="buldNm" />
+        <result column="INSP_COMPANY_NM"    property="inspCompanyNm" />
+        <result column="INSP_COMPANY_TEL"    property="inspCompanyTel" />
+        <result column="ISSUE_COMPANY_NM"    property="issueCompanyNm" />
+        <result column="ISSUE_CONT_EN_DE"    property="issueContEnDe" />
+        <result column="MGR_SHUTTLE_MNGR_NM"    property="shuttleMngrNm" />
+        <result column="MGR_VALD_END_DT"    property="mgrValdEndDt" />
+    </resultMap>
+    <resultMap id="ServiceInfo" type="com.hdel.miri.api.domain.cc.CC$CCServiceVO">
+        <result column="REGIST_DT"              property="registDt" />
+        <result column="SERVICE_TYPE"           property="serviceType" />
+        <result column="SERVICE_NM"             property="serviceNm" />
+        <result column="PAID_CONTRACT_NUMBER"   property="paidContractNumber" />
+        <result column="PRJ_NO"                 property="prjNo" />
+        <result column="HO_NO"                  property="hoNo" />
+        <result column="SERVICE_CONTENTS"       property="serviceContents" />
+        <result column="RECEIVER_NM"            property="receiverNm" />
+        <result column="RECEIVER_EMPL"          property="receiverEmpl" />
+        <result column="RECEIVER_EMAIL"          property="receiverEmail" />
+        <result column="ELEVATOR_NO"            property="elevatorNo" />
+        <result column="FRST_INSTALLATION_DE"   property="frstInstallationDe" />
+    </resultMap>
+    <resultMap id="ElevatorInfoDetail" type="com.hdel.miri.api.domain.cc.CC$CCElevatorDetailInfoVO">
+        <result column="ELEVATOR_NO"    property="elevatorNo" />
+        <result column="PRJ_NO"    property="prjNo" />
+        <result column="BULD_NM"    property="buildNm" />
+        <result column="ELVTR_DIV"    property="elvtrDiv" />
+        <result column="HO_NO"    property="hoNo" />
+        <result column="ELVTR_STTS_NM"    property="elvtrSttsNm" />
+        <result column="INSPCT_DE"    property="inspctDe" />
+        <result column="INSPCT_DAYS"    property="inspctDays" />
+        <result column="INSPCT_CYCLE"    property="inspctCycle" />
+        <result column="APPLC_BE_DT"    property="applcBeDt" />
+        <result column="APPLC_EN_DT"    property="applcEnDt" />
+        <result column="INSTALLATION_DE"    property="installationDe" />
+        <result column="MODEL"       property="model" />
+        <result column="INSTALLATION_PLACE"    property="installationPlace" />
+        <result column="INSP_COMPANY_NM"    property="inspCompanyNm" />
+        <result column="INSP_COMPANY_TEL"    property="inspCompanyTel" />
+        <result column="ISSUE_COMPANY_NM"    property="issueCompanyNm" />
+        <result column="ISSUE_CONT_ST_DE"    property="issueContStDe" />
+        <result column="ISSUE_CONT_EN_DE"    property="issueContEnDe" />
+        <result column="MGR_SHUTTLE_MNGR_NM"    property="shuttleMngrNm" />
+        <result column="MGR_VALD_STR_DT"    property="mgrValdStrDt" />
+        <result column="MGR_VALD_END_DT"    property="mgrValdEndDt" />
+    </resultMap>
+    <resultMap id="BillHistory" type="com.hdel.miri.api.domain.cc.CC$CCBillHistoryVO">
+        <result column="INVOICE_DT" property="invoiceDt" />
+        <result column="BILL_TYPE" property="billType" />
+        <result column="COMPS_CNTR_NO" property="compsCntrNo" />
+        <result column="VIRTUAL_ACC_NO_SH" property="virtualAccNoSh" />
+        <result column="VIRTUAL_ACC_NO_NH" property="virtualAccNoNh" />
+        <result column="UNBILL_AMT" property="unbillAmt" />
+        <result column="INVOICE_AMT" property="invoiceAmt" />
+        <result column="CURRENCY" property="currency" />
+    </resultMap>
+    <resultMap id="UnitTree" type="com.hdel.miri.api.domain.cc.CC$CCUnitsTreeVO">
+        <result column="ID" property="id"/>
+        <result column="PARENT_ID" property="parentId"/>
+        <result column="BULD_NM" property="buldNm"/>
+        <result column="EL_NM" property="elNm"/>
+        <result column="NAME" property="name"/>
+        <result column="INSTALLATION_PLACE" property="installationPlace"/>
+        <result column="TYPE" property="type"/>
+    </resultMap>
+    <resultMap id="AlarmHisVO" type="com.hdel.miri.api.domain.cc.CC$AlarmHisVO">
+        <result column="ALARM_SEND_ID"      property="alarmSendId"/>
+        <result column="MSG_TEMPLATE_ID"    property="msgTemplateId"/>
+        <result column="ALARM_METHOD"       property="alarmMethod"/>
+        <result column="ALARM_TYPE"         property="alarmType"/>
+        <result column="ALARM_EVENT"        property="alarmEvent"/>
+        <result column="CONTENTS"           property="contents"/>
+        <result column="RECEIVER_ID"        property="receiverId"/>
+        <result column="RECEIVER_PHONE_NO"  property="receiverPhoneNo"/>
+        <result column="REGIST_DT"          property="registDt"/>
+    </resultMap>
+
+    <resultMap id="MsgTemplateVO" type="com.hdel.miri.api.domain.cc.CC$MsgTemplateVO">
+        <result column="MSG_TEMPLATE_ID"        property="msgTemplateId"/>
+        <result column="MSG_TEMPLATE_NAME"      property="msgTemplateName"/>
+        <result column="MSG_TEMPLATE_NOTE"      property="msgTemplateNote"/>
+        <result column="MSG_TEMPLATE_CONTENTS"  property="msgTemplateContents"/>
+        <result column="REGIST_DT"              property="registDt"/>
+        <result column="UPDATE_DT"              property="updateDt"/>
+    </resultMap>
+
+    <resultMap id="getContractEmployeeAPI" type="com.hdel.miri.api.domain.contract.Contract$ContractEmployeeAPI">
+        <result column="INTG_PRJ_NO"            property="intgPrjNo" />
+        <result column="TRLINE_CD"              property="trlineCd" />
+    </resultMap>
+    <resultMap id="getMIRIPortalLoginData" type="com.hdel.miri.api.domain.miri.MIRI$MIRIPortalLoginData">
+        <result column="USER_ID"            property="userId" />
+        <result column="USER_NAME"          property="userName" />
+        <result column="ROLE_TYPE"          property="roleType" />
+        <result column="PHONENUMBER"        property="phonenumber" />
+        <result column="ACCOUNT_STATUS"     property="accountStatus" />
+        <result column="DEL_YN"             property="delYn" />
+        <result column="CREATION_DT"        property="creationDt" />
+        <result column="APP_LOGIN_TIME"     property="appLoginTime" />
+        <result column="APP_LOGIN_CNT"      property="appLoginCnt" />
+        <result column="PC_LOGIN_TIME"      property="pcLoginTime" />
+        <result column="PC_LOGIN_CNT"       property="pcLoginCnt" />
+    </resultMap>
+    <!-- SELECT -->
+    <select id="selectSelfInsepectManage"
+            parameterType="com.hdel.miri.api.domain.cc.CC$InspectSearch"
+            resultMap="SelfInspectHead"
+    >
+    SELECT
+        C.ELEVATOR_NO ELEVATOR_NO
+        , C.BULD_NM BULD_NM
+        , C.ADDRESS1 ADDRESS1
+        , C.INSTALLATION_PLACE INSTALLATION_PLACE
+        , C.SEL_CHK_BEGIN_DATE SEL_CHK_BEGIN_DATE
+        , CHECK_RST
+    FROM (
+            SELECT
+                RN
+                , ELEVATOR_NO
+                , BULD_NM
+                , ADDRESS1
+                , INSTALLATION_PLACE
+                , SEL_CHK_BEGIN_DATE
+                , CHECK_RST
+            FROM (
+                    SELECT
+                        ROWNUM RN
+                        , A.ELEVATOR_NO ELEVATOR_NO
+                        , A.BULD_NM BULD_NM
+                        , A.ADDRESS1 ADDRESS1
+                        , A.INSTALLATION_PLACE INSTALLATION_PLACE
+                        , A.SEL_CHK_BEGIN_DATE SEL_CHK_BEGIN_DATE
+                        , CASE WHEN CHECK_RST IS NULL THEN NULL
+                                WHEN CHECK_RST IN ('제외','양호') THEN '합격'
+                                ELSE '불합격'
+                            END CHECK_RST
+                    FROM (
+                            SELECT
+                                EL.ELEVATOR_NO ELEVATOR_NO
+                                    , EL.BULD_NM BULD_NM
+                                    , EL.ADDRESS1
+                                    , EL.INSTALLATION_PLACE
+                                    , SIH.SEL_CHK_BEGIN_DATE SEL_CHK_BEGIN_DATE
+                                    , LISTAGG(DISTINCT SIH.SELCHK_RESULT_NM) AS CHECK_RST
+                            FROM
+                                ( SELECT *
+                                    FROM CT_EL_INFO A, TB_PORTFOLIO_CONTRACT_MAPPING B
+                                    WHERE A.INTG_PRJ_NO = substr(B.INTG_PRJ_TRLINE_CD_CODE,1,6)
+                                    AND   A.TRLINE_CD = substr(B.INTG_PRJ_TRLINE_CD_CODE,-3)
+                                    AND   B.USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+                                    ) EL
+                                    LEFT JOIN CT_EL_SELF_INSP_HIS SIH
+                                                ON EL.ELEVATOR_NO = SIH.ELEVATOR_NO AND SEL_CHK_BEGIN_DATE BETWEEN TO_CHAR(TRUNC(SYSDATE,'MM'),'YYYYMMDD') AND TO_CHAR(LAST_DAY(sysdate), 'YYYYMMDD')
+                            GROUP BY
+                                EL.ELEVATOR_NO , EL.BULD_NM , EL.ADDRESS1, EL.INSTALLATION_PLACE, SIH.SEL_CHK_BEGIN_DATE
+                        ) A
+                ) B
+            ORDER BY SEL_CHK_BEGIN_DATE DESC
+        ) C
+    </select>
+    <select id="selectSelfInsepect"
+        parameterType="com.hdel.miri.api.domain.cc.CC$InspectSearch"
+            resultMap="SelfInspect"
+    >
+        <!-- SELECT
+        C.ELEVATOR_NO ELEVATOR_NO
+        , C.BULD_NM BULD_NM
+        , C.ADDRESS1 ADDRESS1
+        , C.INSTALLATION_PLACE INSTALLATION_PLACE
+        , C.SEL_CHK_BEGIN_DATE SEL_CHK_BEGIN_DATE
+        FROM (
+        SELECT
+        RN
+        , ELEVATOR_NO
+        , BULD_NM
+        , ADDRESS1
+        , INSTALLATION_PLACE
+        , SEL_CHK_BEGIN_DATE
+        FROM (
+        SELECT
+        ROWNUM RN
+        , A.ELEVATOR_NO ELEVATOR_NO
+        , A.BULD_NM BULD_NM
+        , A.ADDRESS1 ADDRESS1
+        , A.INSTALLATION_PLACE INSTALLATION_PLACE
+        , A.SEL_CHK_BEGIN_DATE SEL_CHK_BEGIN_DATE
+        FROM (
+        SELECT
+        EL.ELEVATOR_NO ELEVATOR_NO
+        , EL.BULD_NM BULD_NM
+        , EL.ADDRESS1
+        , EL.INSTALLATION_PLACE
+        , SIH.SEL_CHK_BEGIN_DATE SEL_CHK_BEGIN_DATE
+        FROM
+        ( SELECT *
+        FROM CT_EL_INFO
+        WHERE INTG_PRJ_NO = #{intgPrjNo}
+                AND TRLINE_CD =#{trlineCd}
+                AND PRJ_NO = #{prjNo}
+                AND HO_NO =#{carNo}) EL
+        LEFT JOIN CT_EL_SELF_INSP_HIS SIH
+        ON EL.ELEVATOR_NO = SIH.ELEVATOR_NO
+        GROUP BY
+        EL.ELEVATOR_NO , EL.BULD_NM , EL.ADDRESS1, EL.INSTALLATION_PLACE, SIH.SEL_CHK_BEGIN_DATE
+        ) A
+        ) B -->
+        SELECT *
+        FROM 
+        (
+            SELECT 
+            A.ELEVATOR_NO 
+            ,A.BULD_NM 
+            , A.ADDRESS1 || A.ADDRESS2  AS ADDRESS1 
+            , A.INSTALLATION_PLACE 
+            , B.SEL_CHK_BEGIN_DATE
+            FROM CT_EL_INFO A, CT_EL_SELF_INSP_HIS B
+            WHERE A.ELEVATOR_NO = B.ELEVATOR_NO 
+            AND A.PRJ_NO = #{prjNo}
+            AND A.HO_NO = #{carNo}
+            ORDER BY SEL_CHK_BEGIN_DATE DESC
+        )
+        WHERE 1 = 1
+        AND <![CDATA[ ROWNUM <= 12 ]]>
+        <!-- <where>
+            <if test="mobile == true"><![CDATA[WHERE ROWNUM <= 3 ]]></if>
+        </where> -->
+    </select>
+    <select id="selectSelfInsepectHistory"
+            parameterType="com.hdel.miri.api.domain.cc.CC$SelfInspectVO"
+            resultMap="SelfInspectHisotry"
+    >
+                SELECT
+                EL.ELEVATOR_NO ELEVATOR_NO
+                , EL.BULD_NM BULD_NM
+                , EL.ADDRESS1 ADDRESS1
+                , EL.INSTALLATION_PLACE INSTALLATION_PLACE
+                , HIS.SEL_CHK_BEGIN_DATE SEL_CHK_BEGIN_DATE
+                , HIS.SEL_CHK_USNM SEL_CHK_USNM
+                , HIS.SEL_CHK_ST_DT SEL_CHK_ST_DT
+                , HIS.SEL_CHK_EN_DT SEL_CHK_EN_DT
+                , HIS.COMPANY_NM COMPANY_NM
+                , HIS.SELCHK_RESULT_NM SELCHK_RESULT_NM
+                , HIS.TIT_NO TIT_NO
+                , HIS.SEL_CHK_ITEM_NM SEL_CHK_ITEM_NM
+                , HIS.SEL_CHK_ITEM_DT_NM SEL_CHK_ITEM_DT_NM
+                , HIS.SEL_CHK_RESULT SEL_CHK_RESULT
+                , HIS.CNFIRM_DT CNFIRM_DT
+                , HIS.REGIST_DT REGIST_DT
+        FROM
+        ( SELECT *
+          FROM CT_EL_INFO
+          WHERE ELEVATOR_NO =#{elevatorNo}) EL
+        LEFT JOIN CT_EL_SELF_INSP_HIS HIS
+        ON EL.ELEVATOR_NO = HIS.ELEVATOR_NO
+        WHERE SEL_CHK_BEGIN_DATE = #{selChkBeginDate}
+    </select>
+    <!-- <select id="selectSelfInsepectHeadHistory"
+            parameterType="com.hdel.miri.api.domain.cc.CC$InspectSearchBySelfInspectHead"
+            resultMap="SelfInspectHisotry"
+    >
+        SELECT
+            EL.ELEVATOR_NO ELEVATOR_NO
+            , EL.BULD_NM BULD_NM
+            , EL.ADDRESS1 ADDRESS1
+            , EL.INSTALLATION_PLACE INSTALLATION_PLACE
+            , HIS.SEL_CHK_BEGIN_DATE SEL_CHK_BEGIN_DATE
+            , HIS.SEL_CHK_USNM SEL_CHK_USNM
+            , HIS.SEL_CHK_ST_DT SEL_CHK_ST_DT
+            , HIS.SEL_CHK_EN_DT SEL_CHK_EN_DT
+            , HIS.COMPANY_NM COMPANY_NM
+            , CASE  WHEN HIS.SEL_CHK_RESULT = 'D' THEN '제외'
+                    WHEN HIS.SEL_CHK_RESULT = 'E' THEN '없음'
+                ELSE HIS.SEL_CHK_RESULT END AS SELCHK_RESULT_NM
+            , HIS.TIT_NO TIT_NO
+            , HIS.SEL_CHK_ITEM_NM SEL_CHK_ITEM_NM
+            , HIS.SEL_CHK_ITEM_DT_NM SEL_CHK_ITEM_DT_NM
+            , HIS.SEL_CHK_RESULT SEL_CHK_RESULT
+            , HIS.CNFIRM_DT CNFIRM_DT
+            , HIS.REGIST_DT REGIST_DT
+            ,'' as BEFORE_RESULT_NM
+        FROM CT_EL_SELF_INSP_HIS HIS, CT_EL_INFO EL
+        WHERE HIS.ELEVATOR_NO = EL.ELEVATOR_NO
+        AND HIS.ELEVATOR_NO = #{elevatorNo}
+        AND INSP_YYYYMM = #{selChkBeginDate}
+    </select> -->
+
+    <select id="selectInsepect" parameterType="com.hdel.miri.api.domain.cc.CC$InspectSearch" resultMap="Inspect">
+        SELECT
+            RN
+            , BULD_NM
+            , ADDRESS1
+            , ELEVATOR_NO
+            , INSTALLATION_PLACE
+            , APPLC_ST_DT
+            , APPLC_EN_DT
+            , INSPCT_DE
+            , DISP_WORDS
+        , FAIL_CD
+        FROM (
+            SELECT
+                ROWNUM RN
+                , EL.BULD_NM BULD_NM
+                , EL.ADDRESS1 ADDRESS1
+                , EL.ELEVATOR_NO ELEVATOR_NO
+                , EL.INSTALLATION_PLACE INSTALLATION_PLACE
+                , EIH.APPLC_ST_DT APPLC_ST_DT
+                , EIH.APPLC_EN_DT APPLC_EN_DT
+                , EIH.INSPCT_DE INSPCT_DE
+                , EIH.DISP_WORDS DISP_WORDS
+                , EIH.FAIL_CD FAIL_CD
+            FROM (
+                    SELECT *
+                    FROM CT_EL_INFO
+                    WHERE INTG_PRJ_NO = #{intgPrjNo}
+                    AND TRLINE_CD =#{trlineCd}
+                    AND PRJ_NO = #{prjNo}
+                    AND HO_NO =#{carNo}) EL
+                    LEFT JOIN CT_EL_INSP_HIS EIH
+                    ON EL.ELEVATOR_NO = EIH.ELEVATOR_NO
+                    ORDER BY EIH.INSPCT_DE DESC
+        ) B
+        WHERE 1 = 1
+        AND <![CDATA[ RN <= 5 ]]>
+        <!-- <where>
+            <if test="mobile == true"><![CDATA[ RN <= 3 ]]></if>
+        </where> -->
+    </select>
+    <select id="selectInsepectManage" parameterType="com.hdel.miri.api.domain.cc.CC$InspectSearchByPortfolio" resultMap="InspectHead">
+        <!-- SELECT
+        BULD_NM
+        , ADDRESS1
+        , ELEVATOR_NO
+        , INSTALLATION_PLACE
+        , APPLC_ST_DT
+        , APPLC_EN_DT
+        , INSPCT_DE
+        , DISP_WORDS
+        , CASE  WHEN DISP_WORDS IS NULL THEN NULL
+                WHEN DISP_WORDS IN ('합격','현장시정조치', '조건부합격','조건후합격') THEN '합격'
+                ELSE '불합격'
+            END CHECK_RST
+        , FAIL_CD
+        FROM (
+        SELECT
+        EL.BULD_NM BULD_NM
+        , EL.ADDRESS1 ADDRESS1
+        , EL.ELEVATOR_NO ELEVATOR_NO
+        , EL.INSTALLATION_PLACE INSTALLATION_PLACE
+        , EIH.APPLC_ST_DT APPLC_ST_DT
+        , EIH.APPLC_EN_DT APPLC_EN_DT
+        , EIH.INSPCT_DE INSPCT_DE
+        , EIH.DISP_WORDS DISP_WORDS
+        , EIH.FAIL_CD FAIL_CD
+        FROM (
+            SELECT *
+            FROM CT_EL_INFO A, TB_PORTFOLIO_CONTRACT_MAPPING B
+            WHERE   A.INTG_PRJ_NO = substr(B.INTG_PRJ_TRLINE_CD_CODE,1,6)
+            AND     A.TRLINE_CD  = substr(B.INTG_PRJ_TRLINE_CD_CODE,-3)
+            AND     B.USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+        ) EL
+        LEFT JOIN CT_EL_INSP_HIS EIH
+        ON EL.ELEVATOR_NO = EIH.ELEVATOR_NO AND substr(INSPCT_DE,0,4) = to_char(sysdate,'YYYY')
+        ORDER BY EIH.INSPCT_DE DESC
+        ) B -->
+        SELECT
+            BULD_NM
+            , ADDRESS1
+            , ELEVATOR_NO
+            , INSTALLATION_PLACE
+            , APPLC_ST_DT
+            , APPLC_EN_DT
+            , INSPCT_DE
+            , DISP_WORDS
+            ,CASE 
+                WHEN DISP_WORDS IN ('차기안전검사','조건후합격','현장시정조치','보완후합격') THEN
+                    '합격'      
+                WHEN DISP_WORDS IN ('조건후불합격','보완후불합격') THEN
+                    '불합격'
+                ELSE
+                    DISP_WORDS
+            END CHECK_RST
+            <!-- , CASE  WHEN DISP_WORDS IS NULL THEN NULL
+                    WHEN DISP_WORDS IN ('합격','현장시정조치', '조건부합격','조건후합격','보완후합격') THEN '합격'
+                    ELSE '불합격'
+                END CHECK_RST -->
+            , FAIL_CD
+        FROM (
+            SELECT
+            EL.BULD_NM BULD_NM
+            , EL.ADDRESS1 ADDRESS1
+            , EL.ELEVATOR_NO ELEVATOR_NO
+            , EL.INSTALLATION_PLACE INSTALLATION_PLACE
+            , EIH.APPLC_ST_DT APPLC_ST_DT
+            , EIH.APPLC_EN_DT APPLC_EN_DT
+            , EIH.INSPCT_DE INSPCT_DE
+            , EIH.DISP_WORDS DISP_WORDS
+            , EIH.FAIL_CD FAIL_CD
+            FROM (
+                SELECT *
+                FROM CT_EL_INFO A, TB_PORTFOLIO_CONTRACT_MAPPING B
+                WHERE   A.INTG_PRJ_NO = substr(B.INTG_PRJ_TRLINE_CD_CODE,1,6)
+                AND     A.TRLINE_CD  = substr(B.INTG_PRJ_TRLINE_CD_CODE,-3)
+                AND     B.USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+        ) EL
+        LEFT JOIN (SELECT *
+                    FROM (
+                        SELECT 
+                            ELEVATOR_NO 
+                            ,APPLC_ST_DT
+                            ,APPLC_EN_DT
+                            ,INSPCT_DE
+                            ,DISP_WORDS
+                            ,FAIL_CD
+                            ,RANK() OVER (PARTITION BY ELEVATOR_NO  ORDER BY INSPCT_DE DESC) AS RNK
+                        FROM CT_EL_INSP_HIS EIH
+                        WHERE substr(INSPCT_DE,0,4) = to_char(sysdate,'YYYY') 
+                    )
+                    WHERE RNK =1) EIH
+        ON EL.ELEVATOR_NO = EIH.ELEVATOR_NO AND substr(INSPCT_DE,0,4) = to_char(sysdate,'YYYY')
+        ORDER BY EIH.INSPCT_DE DESC
+        ) B
+    </select>
+    <select id="selectInspectUnion">
+
+    </select>
+    <select id="selectCurrentELInfoJoinToHCCC"
+            parameterType="com.hdel.miri.api.domain.cc.CC$CCCurrentRequest"
+            resultMap="ELInfoJoin"
+    >
+        SELECT
+            ELEVATOR_NO
+            , INTG_PRJ_NO
+            , TRLINE_CD
+            , PRJ_NO
+            , HO_NO
+            , SALES_EMPL
+            , SALES_EMPL_NM
+            , COMPS_CNTR_NO
+            , ADDRESS1
+            , ADDRESS2
+            , APPLC_BE_DT
+            , APPLC_EN_DT
+            , SIGUNGUNM
+            , BULD_MGT_NO1
+            , BULD_MGT_NO2
+            , BULD_NM
+            , ELVTR_DIV_NM
+            , ELVTR_DETAIL_FORM
+            , ELVTR_KIND_NM
+            , ELVTR_STTS_NM
+            , FRST_INSTALLATION_DE
+            , INSTALLATION_DE
+            , INSTALLATION_PLACE
+            , LIVE_LOAD
+            , RATED_CAP
+            , SHUTTLE_SECTION
+            , SHUTTLE_FLOOR_CNT
+            , GROUND_FLOOR_CNT
+            , UNDGRND_FLOOR_CNT
+            , WGSLAT
+            , WGSLON
+        FROM CT_EL_INFO
+        WHERE (INTG_PRJ_NO,TRLINE_CD) IN (
+            SELECT
+                SUBSTR(INTG_PRJ_TRLINE_CD_CODE,0,6) AS INTG_PRJ_NO,SUBSTR(INTG_PRJ_TRLINE_CD_CODE,-3) AS TRLINE_CD
+            FROM TB_PORTFOLIO_CONTRACT_MAPPING PC
+            WHERE PC.USER_PORTFOLIO_MAPPING_ID IN (
+                SELECT USER_PORTFOLIO_MAPPING_ID
+                FROM TB_PORTFOLIO
+                WHERE USER_ID = #{currentUser}
+            )
+        )
+    </select>
+    <select id="selectPortfolioELInfoJoinToHCCC"
+            parameterType="com.hdel.miri.api.domain.cc.CC$CCCurrentPortfolioRequest"
+            resultMap="ELInfoJoin"
+    >
+        SELECT
+            ELEVATOR_NO
+            , INTG_PRJ_NO
+            , TRLINE_CD
+            , PRJ_NO
+            , HO_NO
+            , SALES_EMPL
+            , SALES_EMPL_NM
+            , COMPS_CNTR_NO
+            , ADDRESS1
+            , ADDRESS2
+            , APPLC_BE_DT
+            , APPLC_EN_DT
+            , SIGUNGUNM
+            , BULD_MGT_NO1
+            , BULD_MGT_NO2
+            , BULD_NM
+            , ELVTR_DIV_NM
+            , ELVTR_DETAIL_FORM
+            , ELVTR_KIND_NM
+            , ELVTR_STTS_NM
+            , FRST_INSTALLATION_DE
+            , INSTALLATION_DE
+            , INSTALLATION_PLACE
+            , LIVE_LOAD
+            , RATED_CAP
+            , SHUTTLE_SECTION
+            , SHUTTLE_FLOOR_CNT
+            , GROUND_FLOOR_CNT
+            , UNDGRND_FLOOR_CNT
+            , WGSLAT
+            , WGSLON
+            ,substr(HO_NO,1,1) AS EL_TYPE
+            ,count(*) over(partition BY prj_no||substr(HO_NO,1,1)) AS EL_L_EA
+            ,count(*) over(partition BY prj_no) AS EL_T_EA
+            ,NVL(MGT_COM_NM,'-') as MGT_COM_NM
+            ,NVL(MGT_COM_HP,'-') as MGT_COM_HP
+            ,NVL(MGT_COM_TEL,'-') as MGT_COM_TEL
+            ,CONTRACT_START_DT
+            ,CONTRACT_END_DT
+        FROM CT_EL_INFO
+        WHERE (INTG_PRJ_NO,TRLINE_CD) IN (
+            SELECT
+                SUBSTR(INTG_PRJ_TRLINE_CD_CODE,0,6) AS INTG_PRJ_NO,SUBSTR(INTG_PRJ_TRLINE_CD_CODE,-3) AS TRLINE_CD
+            FROM TB_PORTFOLIO_CONTRACT_MAPPING PC
+            WHERE PC.USER_PORTFOLIO_MAPPING_ID IN (
+                SELECT USER_PORTFOLIO_MAPPING_ID
+                FROM TB_PORTFOLIO
+                WHERE USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+            )
+        )
+        ORDER BY PRJ_NO, HO_NO
+    </select>
+    <select id="selectSelfInsepectCurrentCalender" parameterType="com.hdel.miri.api.domain.cc.CC$CCCurrentCalenderRequest" resultMap="GetHcccReceptionInfoForMonthVO">
+        SELECT '999'            AS ACPT_NO	
+            ,max(B.INTG_PRJ_NO) AS INTG_PRJ_NO
+            ,max(B.TRLINE_CD)   AS TRLINE_CD
+            ,max(B.PRJ_NO)      AS PRJ_NO
+            ,max(B.HO_NO)       AS HO_NO
+            ,max(B.BULD_NM)     AS BULD_NM
+            ,NVL(max(A.CNFIRM_DT), max(SEL_CHK_BEGIN_DATE)) AS TARGET_DT
+            ,LISTAGG(DISTINCT SELCHK_RESULT_NM,',') WITHIN GROUP (ORDER BY a.ELEVATOR_NO) AS STATUS 
+            ,'SELF_INSP_HIS' AS D_TYPE
+            ,a.ELEVATOR_NO AS EL_NO
+            ,MAX(B.INSTALLATION_PLACE) AS HO_NM
+        FROM 	CT_EL_SELF_INSP_HIS A, CT_EL_INFO B, TB_PORTFOLIO_CONTRACT_MAPPING C
+        WHERE  	A.ELEVATOR_NO = B.ELEVATOR_NO 
+        AND		NVL(A.CNFIRM_DT, SEL_CHK_BEGIN_DATE) BETWEEN #{startDate} AND #{endDate}
+        AND	 	B.INTG_PRJ_NO = substr(C.INTG_PRJ_TRLINE_CD_CODE,1,6)
+        AND     B.TRLINE_CD = substr(C.INTG_PRJ_TRLINE_CD_CODE,-3)
+        AND 	C.USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+        GROUP BY a.ELEVATOR_NO
+    </select>
+    <select id="selectInsepectCurrentCalender" parameterType="com.hdel.miri.api.domain.cc.CC$CCCurrentCalenderRequest" resultMap="GetHcccReceptionInfoForMonthVO">
+        SELECT '999'       AS ACPT_NO
+            ,B.INTG_PRJ_NO
+            ,B.TRLINE_CD
+            ,B.PRJ_NO 
+            ,B.HO_NO
+            ,B.ELEVATOR_NO AS EL_NO
+            ,A.BULD_NM
+            ,B.INSTALLATION_PLACE AS HO_NM
+            ,A.INSPCT_DE AS TARGET_DT
+            ,CASE 
+                WHEN DISP_WORDS IN ('차기안전검사','조건후합격','현장시정조치','보완후합격') THEN
+                    '합격'      
+                WHEN DISP_WORDS IN ('조건후불합격','보완후불합격') THEN
+                    '불합격'
+                ELSE
+                    DISP_WORDS
+            END AS STATUS            
+            ,'INSP_HIS' AS D_TYPE
+        FROM 	CT_EL_INSP_HIS A, CT_EL_INFO B, TB_PORTFOLIO_CONTRACT_MAPPING C
+        WHERE  	A.ELEVATOR_NO = B.ELEVATOR_NO 
+        AND	 	B.INTG_PRJ_NO = substr(C.INTG_PRJ_TRLINE_CD_CODE,1,6)
+        AND     B.TRLINE_CD = substr(C.INTG_PRJ_TRLINE_CD_CODE,-3)
+        AND 	C.USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+        AND     A.INSPCT_DE BETWEEN #{startDate} AND #{endDate}
+    </select>
+    <select id="selectElevatorTotalCount"
+            parameterType="com.hdel.miri.api.domain.cc.CC$CCCurrentPortfolioRequest"
+            resultType="long"
+    >
+        SELECT
+            COUNT(A.ELEVATOR_NO) TOT
+        FROM CT_EL_INFO A, TB_PORTFOLIO_CONTRACT_MAPPING B
+        WHERE   A.INTG_PRJ_NO = substr(B.INTG_PRJ_TRLINE_CD_CODE,1,6)
+        AND     A.TRLINE_CD = substr(B.INTG_PRJ_TRLINE_CD_CODE,-3)
+        AND     B.USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+    </select>
+
+    <select id="selectProjNosFromMappingId"
+            parameterType="com.hdel.miri.api.domain.cc.CC$CCCurrentPortfolioRequest"
+            resultMap="GetPrjNoVO"
+    >
+        SELECT
+            DISTINCT
+            A.PRJ_NO||A.HO_NO as PRJNOS,
+            A.PRJ_NO,
+            A.HO_NO
+        FROM CT_EL_INFO A, TB_PORTFOLIO_CONTRACT_MAPPING B
+        WHERE   A.INTG_PRJ_NO = substr(B.INTG_PRJ_TRLINE_CD_CODE,1,6)
+        AND     A.TRLINE_CD = substr(B.INTG_PRJ_TRLINE_CD_CODE,-3)
+        AND     B.USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+    </select>
+
+    <select id="selectElevatorSuccessCount"
+            parameterType="com.hdel.miri.api.domain.cc.CC$CCCurrentPortfolioRequest"
+            resultType="long"
+    >
+    <!--  SELECT
+            COUNT(*)
+        FROM CT_EL_INFO EL, CT_EL_INSP_HIS INS, TB_PORTFOLIO_CONTRACT_MAPPING C
+        WHERE   EL.ELEVATOR_NO  = INS.ELEVATOR_NO
+        AND 	EL.INTG_PRJ_NO 	= substr(C.INTG_PRJ_TRLINE_CD_CODE,1,6)
+        AND 	EL.TRLINE_CD 	= substr(C.INTG_PRJ_TRLINE_CD_CODE,-3)
+        AND     C.USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+        AND TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN INS.APPLC_ST_DT AND INS.APPLC_EN_DT
+        AND (INS.DISP_WORDS != '보완' OR INS.DISP_WORDS != '불합격' OR INS.DISP_WORDS != '보완후불합격' OR INS.DISP_WORDS != '조건후불합격') -->
+        SELECT COUNT(*)
+          FROM CT_EL_INFO EL
+         INNER JOIN CT_EL_SELF_INSP_HIS INS
+            ON INS.SEL_CHK_BEGIN_DATE BETWEEN TO_CHAR(TRUNC(SYSDATE,'MM'),'YYYYMMDD') AND TO_CHAR(LAST_DAY(SYSDATE), 'YYYYMMDD')
+           AND INS.SELCHK_RESULT_NM IN ('제외', '양호')
+           AND INS.ELEVATOR_NO = EL.ELEVATOR_NO
+         INNER JOIN TB_PORTFOLIO_CONTRACT_MAPPING C
+            ON C.USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+           AND SUBSTR(C.INTG_PRJ_TRLINE_CD_CODE,1,6) = EL.INTG_PRJ_NO
+           AND SUBSTR(C.INTG_PRJ_TRLINE_CD_CODE,-3)  = EL.TRLINE_CD
+    </select>
+    <select id="selectElevatorFailCount"
+            parameterType="com.hdel.miri.api.domain.cc.CC$CCCurrentPortfolioRequest"
+            resultType="long"
+    >
+    <!--    SELECT
+            COUNT(*)
+        FROM CT_EL_INFO EL, CT_EL_INSP_HIS INS, TB_PORTFOLIO_CONTRACT_MAPPING C
+        WHERE   EL.ELEVATOR_NO  = INS.ELEVATOR_NO
+        AND 	EL.INTG_PRJ_NO 	= substr(C.INTG_PRJ_TRLINE_CD_CODE,1,6)
+        AND 	EL.TRLINE_CD 	= substr(C.INTG_PRJ_TRLINE_CD_CODE,-3)
+        AND     C.USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+        AND TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN INS.APPLC_ST_DT AND INS.APPLC_EN_DT
+        AND (INS.DISP_WORDS = '보완' OR INS.DISP_WORDS = '불합격' OR INS.DISP_WORDS = '보완후불합격' OR INS.DISP_WORDS = '조건후불합격') -->
+        SELECT COUNT(*)
+          FROM CT_EL_INFO EL
+         INNER JOIN CT_EL_SELF_INSP_HIS INS
+            ON INS.SEL_CHK_BEGIN_DATE BETWEEN TO_CHAR(TRUNC(SYSDATE,'MM'),'YYYYMMDD') AND TO_CHAR(LAST_DAY(SYSDATE), 'YYYYMMDD')
+           AND INS.SELCHK_RESULT_NM NOT IN ('제외', '양호')
+           AND INS.SELCHK_RESULT_NM IS NOT NULL
+           AND INS.ELEVATOR_NO = EL.ELEVATOR_NO
+         INNER JOIN TB_PORTFOLIO_CONTRACT_MAPPING C
+            ON C.USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+           AND SUBSTR(C.INTG_PRJ_TRLINE_CD_CODE,1,6) = EL.INTG_PRJ_NO
+           AND SUBSTR(C.INTG_PRJ_TRLINE_CD_CODE,-3)  = EL.TRLINE_CD
+    </select>
+
+    <select id="selectCompTotalCount"
+            parameterType="com.hdel.miri.api.domain.cc.CC$CCCurrentPortfolioRequest"
+            resultType="long"
+    >
+        SELECT SUM(CT) TOT
+        FROM (
+            SELECT COUNT(EL.COMPS_CNTR_NO) CT
+            FROM CT_EL_INFO EL, TB_PORTFOLIO_CONTRACT_MAPPING B
+            WHERE EL.INTG_PRJ_NO = substr(B.INTG_PRJ_TRLINE_CD_CODE,1,6)
+            AND   EL.TRLINE_CD = substr(B.INTG_PRJ_TRLINE_CD_CODE,-3)
+            AND   B.USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+            GROUP BY EL.INTG_PRJ_NO||EL.TRLINE_CD
+        ) TOT
+    </select>
+    <select id="selectMisuTotalCount"
+            parameterType="com.hdel.miri.api.domain.cc.CC$CCCurrentPortfolioRequest"
+            resultType="long"
+    >
+        SELECT NVL(COUNT(COMPS_CNTR_NO),0) TOT
+        FROM
+            (
+                SELECT COMPS_CNTR_NO
+                FROM CT_EL_MISU_HIS MISU
+                GROUP BY MISU.COMPS_CNTR_NO
+            ) A
+        WHERE A.COMPS_CNTR_NO IN (
+            SELECT EL.COMPS_CNTR_NO
+            FROM CT_EL_INFO EL, TB_PORTFOLIO_CONTRACT_MAPPING B
+            WHERE EL.INTG_PRJ_NO = substr(B.INTG_PRJ_TRLINE_CD_CODE,1,6)
+            AND   EL.TRLINE_CD = substr(B.INTG_PRJ_TRLINE_CD_CODE,-3)
+            AND   B.USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+            GROUP BY EL.COMPS_CNTR_NO
+        )
+    </select>
+
+    <select id="getPrjInfoWithPortfolioId" resultType="String">
+        SELECT 
+            distinct INTG_PRJ_TRLINE_CD_CODE 
+        FROM TB_PORTFOLIO_CONTRACT_MAPPING  A, CT_EL_INFO B
+        WHERE USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+        AND A.INTG_PRJ_TRLINE_CD_CODE = B.INTG_PRJ_NO || B.TRLINE_CD
+    </select>
+
+    <select id="selectElevatorList"
+            parameterType="com.hdel.miri.api.domain.cc.CC$CCCurrentElevatorSearchByPortfolio"
+            resultMap="ElevatorInfo"
+    >
+        SELECT
+            distinct
+            EL.ELEVATOR_NO ELEVATOR_NO
+            ,EL.PRJ_NO PRJ_NO
+            ,EL.ELVTR_DIV_NM ELVTR_DIV
+            ,EL.HO_NO HO_NO
+            ,EL.ELVTR_STTS_NM ELVTR_STTS_NM
+            ,EL.APPLC_EN_DT APPLC_EN_DT
+            ,EL.BULD_NM BULD_NM
+            ,EL.INSTALLATION_DE INSTALLATION_DE
+            ,EL.BULD_NM || '-' || EL.INSTALLATION_PLACE as INSTALLATION_PLACE
+            ,EL.MGT_COM_NM INSP_COMPANY_NM
+            ,EL.MGT_COM_TEL INSP_COMPANY_TEL
+            ,ISSU.COMPANY_NM ISSUE_COMPANY_NM
+            ,ISSU.CONT_EN_DE ISSUE_CONT_EN_DE
+        ,(SELECT SHUTTLE_MNGR_NM FROM CT_EL_SAFETY_MGR_INFO WHERE ELEVATOR_NO = EL.ELEVATOR_NO AND (TO_CHAR(SYSDATE,'YYYY-MM-DD') BETWEEN VALD_STR_DT  AND VALD_END_DT) AND ROWNUM = 1) MGR_SHUTTLE_MNGR_NM
+        ,(SELECT VALD_END_DT FROM CT_EL_SAFETY_MGR_INFO WHERE ELEVATOR_NO = EL.ELEVATOR_NO AND (TO_CHAR(SYSDATE,'YYYY-MM-DD') BETWEEN VALD_STR_DT  AND VALD_END_DT) AND ROWNUM = 1) MGR_VALD_END_DT
+        FROM (
+            SELECT A.*
+            FROM CT_EL_INFO A, TB_PORTFOLIO_CONTRACT_MAPPING B
+            WHERE A.INTG_PRJ_NO = substr(B.INTG_PRJ_TRLINE_CD_CODE,1,6)
+            AND   A.TRLINE_CD = substr(B.INTG_PRJ_TRLINE_CD_CODE,-3)
+            AND   B.USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+        ) EL
+        LEFT JOIN CT_EL_INSP_HIS INSP
+        <!-- ON EL.ELEVATOR_NO = INSP.ELEVATOR_NO  AND TO_DATE(EL.APPLC_EN_DT) = TO_DATE(INSP.APPLC_EN_DT) -->
+        ON EL.ELEVATOR_NO = INSP.ELEVATOR_NO  AND EL.APPLC_EN_DT = INSP.APPLC_EN_DT
+        LEFT JOIN CT_EL_INSSURANCE_INFO ISSU
+        ON EL.ELEVATOR_NO = ISSU.ELEVATOR_NO AND (TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN ISSU.CONT_ST_DE AND  ISSU.CONT_EN_DE)
+        LEFT JOIN CT_EL_SAFETY_MGR_INFO MGR
+        ON EL.ELEVATOR_NO = MGR.ELEVATOR_NO AND (TO_CHAR(SYSDATE,'YYYY-MM-DD') BETWEEN MGR.VALD_STR_DT  AND MGR.VALD_END_DT)
+        <where>
+            <if test="type != null and type != '' and type != 'ALL' and type != 'all' "> AND EL.HO_NO LIKE  '%'||#{type}||'%' </if>
+            <if test="prjNo !=null and prjNo != '' and carNo != null and carNo != ''"> AND PRJ_NO = #{prjNo} AND HO_NO = #{carNo}</if>
+        </where>
+    </select>
+    <select id="selectElevator"
+            parameterType="com.hdel.miri.api.domain.cc.CC$CCCurrentElevatorRequest"
+            resultMap="ElevatorInfoDetail"
+    >
+        SELECT
+            distinct
+            EL.ELEVATOR_NO
+            ,EL.PRJ_NO PRJ_NO
+            ,EL.BULD_NM BULD_NM
+            ,EL.ELVTR_DIV_NM ELVTR_DIV
+            ,EL.HO_NO HO_NO
+            ,EL.ELVTR_STTS_NM ELVTR_STTS_NM
+            ,(SELECT NVL(max(INSPCT_DE),'')
+                FROM CT_EL_INSP_HIS WHERE ELEVATOR_NO = EL.ELEVATOR_NO) INSPCT_DE
+            ,ROUND(TO_DATE(NVL(EL.APPLC_EN_DT,SYSDATE), 'YYYY-MM-DD') - SYSDATE,0) AS INSPCT_DAYS
+            ,1 INSPCT_CYCLE
+            ,EL.ELVTR_DETAIL_FORM as MODEL
+            ,EL.APPLC_BE_DT APPLC_BE_DT
+            ,EL.APPLC_EN_DT APPLC_EN_DT
+            ,EL.INSTALLATION_DE INSTALLATION_DE
+            ,EL.INSTALLATION_PLACE INSTALLATION_PLACE
+            ,EL.MGT_COM_NM INSP_COMPANY_NM
+            ,EL.MGT_COM_TEL INSP_COMPANY_TEL
+            ,ISSU.COMPANY_NM ISSUE_COMPANY_NM
+            ,ISSU.CONT_ST_DE ISSUE_CONT_ST_DE
+            ,ISSU.CONT_EN_DE ISSUE_CONT_EN_DE
+            ,MGR.SHUTTLE_MNGR_NM MGR_SHUTTLE_MNGR_NM
+            ,MGR.VALD_STR_DT MGR_VALD_STR_DT
+            ,MGR.VALD_END_DT MGR_VALD_END_DT
+        FROM (
+                 SELECT *
+                 FROM CT_EL_INFO WHERE PRJ_NO = #{prjNo} AND HO_NO = #{carNo}
+             ) EL
+                 LEFT JOIN CT_EL_INSP_HIS INSP
+                           ON EL.ELEVATOR_NO = INSP.ELEVATOR_NO  AND EL.APPLC_EN_DT = INSP.APPLC_EN_DT
+                 LEFT JOIN CT_EL_INSSURANCE_INFO ISSU
+                           ON EL.ELEVATOR_NO = ISSU.ELEVATOR_NO AND (TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN ISSU.CONT_ST_DE AND  ISSU.CONT_EN_DE)
+                 LEFT JOIN CT_EL_SAFETY_MGR_INFO MGR
+                           ON EL.ELEVATOR_NO = MGR.ELEVATOR_NO AND (TO_CHAR(SYSDATE,'YYYY-MM-DD') BETWEEN MGR.VALD_STR_DT  AND MGR.VALD_END_DT)
+        WHERE ROWNUM = 1
+    </select>
+    <select id="selectBillHistory"
+        parameterType="com.hdel.miri.api.domain.cc.CC$CCCurrentBillHistoryRequest"
+            resultMap="BillHistory"
+    >
+        SELECT
+            distinct
+            INVOICE_DT
+            , BILL_TYPE
+            , COMPS_CNTR_NO
+            , VIRTUAL_ACC_NO_SH
+            , VIRTUAL_ACC_NO_NH
+            , INVOICE_AMT
+            , UNBILL_AMT
+            , CURRENCY
+        FROM CT_EL_MISU_HIS MISU
+        WHERE   INTG_PRJ_NO = #{intgPrjNo}
+        AND     TRLINE_CD = #{trlineCd}
+        AND     <![CDATA[ UNBILL_AMT > 1000 ]]>
+        ORDER BY INVOICE_DT
+    </select>
+
+    <select id="selectUnitTreeByPortfolio"
+            parameterType="com.hdel.miri.api.domain.cc.CC$CCCurrentPortfolioRequest"
+            resultMap="UnitTree"
+    >
+        SELECT
+            'P'||P.USER_PORTFOLIO_MAPPING_ID ID
+            , '0' PARENT_ID
+            ,'' BULD_NM
+            ,'' EL_NM
+            , P.PORTFOLIO_NAME NAME
+            ,'' as INSTALLATION_PLACE
+            ,'portfolio' type
+        FROM TB_PORTFOLIO P
+        WHERE USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+        UNION ALL
+        SELECT
+        DISTINCT
+            INTG_PRJ_TRLINE_CD_CODE ID
+            , 'P'||USER_PORTFOLIO_MAPPING_ID PARENT_ID
+                ,Max(BULD_NM) OVER (PARTITION BY EL.INTG_PRJ_NO, EL.TRLINE_CD) AS BULD_NM
+                ,'' EL_NM
+                ,'' NAME
+                ,'' as INSTALLATION_PLACE
+                ,'contract' type
+        FROM CT_EL_INFO EL, TB_PORTFOLIO_CONTRACT_MAPPING PC        
+        WHERE   EL.INTG_PRJ_NO = substr(PC.INTG_PRJ_TRLINE_CD_CODE,1,6)
+        AND     EL.TRLINE_CD = substr(PC.INTG_PRJ_TRLINE_CD_CODE,-3)
+        AND     PC.USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+        UNION ALL
+        SELECT
+            EL.PRJ_NO||EL.HO_NO ID
+            ,EL.INTG_PRJ_NO||EL.TRLINE_CD PARENT_ID
+            ,BULD_NM
+            ,EL.BULD_NM  EL_NM
+            ,EL.HO_NO NAME
+            ,EL.INSTALLATION_PLACE
+            ,'el' type
+        FROM CT_EL_INFO EL, TB_PORTFOLIO_CONTRACT_MAPPING PC
+        WHERE   EL.INTG_PRJ_NO = substr(PC.INTG_PRJ_TRLINE_CD_CODE,1,6)
+        AND     EL.TRLINE_CD = substr(PC.INTG_PRJ_TRLINE_CD_CODE,-3)
+        AND     PC.USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+        ORDER BY BULD_NM, NAME
+        
+<!-- 트리 수정 원본 -->
+        <!-- SELECT
+            'P'||P.USER_PORTFOLIO_MAPPING_ID ID
+            , '0' PARENT_ID
+            ,'' BULD_NM
+            ,'' EL_NM
+            , P.PORTFOLIO_NAME NAME
+            ,'portfolio' type
+        FROM TB_PORTFOLIO P
+        WHERE USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+        UNION ALL
+        SELECT
+            'C-'||INTG_PRJ_TRLINE_CD_CODE ID
+            , 'P'||USER_PORTFOLIO_MAPPING_ID PARENT_ID
+            ,'' BULD_NM
+            ,'' EL_NM
+            , INTG_PRJ_TRLINE_CD_CODE NAME
+            ,'contract' type
+
+        FROM TB_PORTFOLIO_CONTRACT_MAPPING
+        WHERE USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+        UNION ALL
+        SELECT
+            DISTINCT 'O-'||EL.PRJ_NO ID
+                ,'C-'||EL.INTG_PRJ_NO||EL.TRLINE_CD PARENT_ID
+                ,EL.BULD_NM BULD_NM
+                ,'' EL_NM
+                ,EL.PRJ_NO NAME
+                ,'contract' type
+
+        FROM CT_EL_INFO EL, TB_PORTFOLIO_CONTRACT_MAPPING PC        
+        WHERE 	EL.INTG_PRJ_NO = substr(PC.INTG_PRJ_TRLINE_CD_CODE,1,6)
+        AND 	EL.TRLINE_CD = substr(PC.INTG_PRJ_TRLINE_CD_CODE,-3)
+        AND     PC.USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+        UNION ALL
+        SELECT
+            EL.PRJ_NO||EL.HO_NO ID
+            ,'O-'||EL.PRJ_NO
+            ,'' BULD_NM
+            ,EL.BULD_NM || ' ' || REGEXP_REPLACE(EL.HO_NO, '^L', '') || '호기' EL_NM
+
+            ,EL.HO_NO NAME
+            ,'el' type
+
+        FROM CT_EL_INFO EL, TB_PORTFOLIO_CONTRACT_MAPPING PC
+        WHERE 	EL.INTG_PRJ_NO = substr(PC.INTG_PRJ_TRLINE_CD_CODE,1,6)
+        AND 	EL.TRLINE_CD = substr(PC.INTG_PRJ_TRLINE_CD_CODE,-3)
+        AND     PC.USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId} -->
+    </select>
+
+    <select id="selectProjnosByPortfolio" parameterType="string" resultType="string">
+        SELECT EL.PRJ_NO||HO_NO CAR
+        FROM TB_PORTFOLIO P
+                INNER JOIN TB_PORTFOLIO_CONTRACT_MAPPING PC
+                        ON P.USER_PORTFOLIO_MAPPING_ID = PC.USER_PORTFOLIO_MAPPING_ID 
+                        <!-- AND PC.APPROVAL_YN = 'y' -->
+                INNER JOIN CT_EL_INFO EL
+                        ON PC.INTG_PRJ_TRLINE_CD_CODE = EL.INTG_PRJ_NO||EL.TRLINE_CD
+        WHERE P.USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+    </select>
+    <select id="selectProjnosByPortfolioExtTRLine" parameterType="string" resultMap="CCProjNoExtTRLineVO">
+        SELECT
+            INTG_PRJ_TRLINE_CD_CODE INTG_PRJ_TRLINE_CD_CODE
+            ,EL.PRJ_NO||HO_NO PROJ_NO
+            ,EL.BULD_NM BULD_NM
+            ,EL.ELEVATOR_NO
+            ,EL.FRST_INSTALLATION_DE
+            ,EL.INSTALLATION_DE
+            ,EL.INSTALLATION_PLACE
+            ,EL.APPLC_EN_DT
+        FROM TB_PORTFOLIO P
+                INNER JOIN TB_PORTFOLIO_CONTRACT_MAPPING PC
+                            ON P.USER_PORTFOLIO_MAPPING_ID = PC.USER_PORTFOLIO_MAPPING_ID 
+                INNER JOIN CT_EL_INFO EL
+                            ON PC.INTG_PRJ_TRLINE_CD_CODE = EL.INTG_PRJ_NO||EL.TRLINE_CD
+        WHERE P.USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+    </select>
+    <select id="selectSelfInspTotalWithMonth"
+            parameterType="com.hdel.miri.api.domain.cc.CC$InspectSearchByPortfolioExtMonth"
+            resultType="long"
+    >
+        SELECT COUNT(distinct elevator_no) SELP_INSP
+        FROM CT_EL_INFO EL
+        <where>
+            <if test="projnos == null or projnos.size == 0 ">
+                EL.PRJ_NO||EL.HO_NO = ''
+            </if>
+            <if test="projnos != null and projnos.size > 0">
+                EL.PRJ_NO||EL.HO_NO IN
+                <foreach collection="projnos" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <select id="selectSelfInspSuccessWithMonth"
+            parameterType="com.hdel.miri.api.domain.cc.CC$InspectSearchByPortfolioExtMonth"
+            resultType="long"
+    >
+        SELECT NVL(COUNT(*),0) SELP_INSP
+        FROM (
+        SELECT  SI.INSP_YYYYMM ,SI.ELEVATOR_NO
+        FROM CT_EL_INFO EL
+        LEFT JOIN CT_EL_SELF_INSP_HIS SI
+        ON EL.ELEVATOR_NO = SI.ELEVATOR_NO
+        <where>
+            <if test="projnos == null or projnos.size == 0 ">
+                EL.PRJ_NO||EL.HO_NO = ''
+            </if>
+            <if test="projnos != null and projnos.size > 0">
+                EL.PRJ_NO||EL.HO_NO IN
+                <foreach collection="projnos" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+        </where>
+        AND SI.SEL_CHK_BEGIN_DATE BETWEEN #{startMonth}||'01' AND #{endMonth}||'31'
+        AND SI.SELCHK_RESULT_NM = '양호'<!-- IN ('제외','양호') -->
+        GROUP BY SI.INSP_YYYYMM ,SI.ELEVATOR_NO
+        ) TOT
+    </select>
+
+
+    <select id="selectIntegratedInspList"
+            parameterType="com.hdel.miri.api.domain.cc.CC$CCCurrentPortfolioRequestExtSearch"
+            resultMap="IntegratedInspectVO"
+    >
+        SELECT *
+        FROM (
+                <if test="inspType == 'insp' or inspType == 'all' or inspType == null">
+                SELECT
+                    DISTINCT
+                    EL.ELEVATOR_NO ELEVATOR_NO
+                        ,EL.ELVTR_DIV_NM ELVTR_DIV_NM
+                        ,EL.BULD_NM  BULD_NM
+                        ,EL.PRJ_NO||EL.HO_NO PROJ_NO
+                        ,'정기검사' REPORT_TYPE
+                        ,INSP.INSPCT_DE CHK_DATE
+                        ,INSP.APPLC_EN_DT END_DATE
+                        ,CASE 
+                            WHEN INSP.DISP_WORDS IN ('차기안전검사','조건후합격','현장시정조치','보완후합격') THEN
+                                '합격'      
+                            WHEN INSP.DISP_WORDS IN ('조건후불합격','보완후불합격') THEN
+                                '불합격'
+                            ELSE
+                                INSP.DISP_WORDS
+                         END CHK_RESULT
+                        ,INSP.FAIL_CD FAIL_CD
+                        ,'' as YYYYMM
+                FROM TB_PORTFOLIO P
+                        INNER JOIN TB_PORTFOLIO_CONTRACT_MAPPING PC
+                                    ON P.USER_PORTFOLIO_MAPPING_ID = PC.USER_PORTFOLIO_MAPPING_ID 
+                                    <!-- AND PC.APPROVAL_YN = 'y' -->
+                        INNER JOIN CT_EL_INFO EL
+                                    ON PC.INTG_PRJ_TRLINE_CD_CODE = EL.INTG_PRJ_NO||EL.TRLINE_CD
+                        LEFT JOIN CT_EL_INSP_HIS INSP
+                                ON EL.ELEVATOR_NO = INSP.ELEVATOR_NO
+                WHERE P.USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+                    <if test="keyword != null and keyword != ''">
+                        AND EL.PRJ_NO||EL.HO_NO = #{keyword}
+                    </if>
+                    <if test="keyword == null or keyword == ''">
+                        <if test="projnos == null or projnos.size == 0 ">
+                            AND EL.PRJ_NO||EL.HO_NO = ''
+                        </if>
+                        <if test="projnos != null and projnos.size > 0">
+                           AND EL.PRJ_NO||EL.HO_NO IN
+                            <foreach collection="projnos" item="item" separator="," open="(" close=")">
+                                #{item}
+                            </foreach>                           
+                        </if>
+                    </if>
+                <if test="startDate != null and startDate != ''">
+                    <if test="endDate != null and endDate != ''">
+                        AND substr(INSP.INSPCT_DE,1,6) BETWEEN #{startDate} AND #{endDate}
+                    </if>
+                </if>
+                </if>
+                <if test="inspType == 'all' or inspType == null">
+                 UNION ALL
+                </if>
+                <if test="inspType == 'selfInsp' or inspType == 'all' or inspType == null">
+                 SELECT
+                     DISTINCT
+                     EL.ELEVATOR_NO  ELEVATOR_NO
+                            ,EL.ELVTR_DIV_NM  ELVTR_DIV_NM
+                            ,EL.BULD_NM  BULD_NM
+                            ,EL.PRJ_NO||EL.HO_NO PROJ_NO
+                            ,'정기점검' REPORT_TYPE
+                            ,INSP.SEL_CHK_BEGIN_DATE CHK_DATE
+                            ,'' END_DATE
+                            ,'' CHK_RESULT
+                            ,'' FAIL_CD
+                            ,INSP_YYYYMM as YYYYMM
+                 FROM TB_PORTFOLIO P
+                          INNER JOIN TB_PORTFOLIO_CONTRACT_MAPPING PC
+                                     ON P.USER_PORTFOLIO_MAPPING_ID = PC.USER_PORTFOLIO_MAPPING_ID 
+                                     <!-- AND PC.APPROVAL_YN = 'y' -->
+                          INNER JOIN CT_EL_INFO EL
+                                     ON PC.INTG_PRJ_TRLINE_CD_CODE = EL.INTG_PRJ_NO||EL.TRLINE_CD
+                          LEFT JOIN CT_EL_SELF_INSP_HIS INSP
+                                    ON EL.ELEVATOR_NO  = INSP.ELEVATOR_NO
+                 WHERE P.USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+                    <if test="keyword != null and keyword != ''">
+                        AND EL.PRJ_NO||EL.HO_NO = #{keyword}
+                    </if>
+                    <if test="keyword == null or keyword == ''">
+                        <if test="projnos == null or projnos.size == 0 ">
+                            AND EL.PRJ_NO||EL.HO_NO = ''
+                        </if>
+                        <if test="projnos != null and projnos.size > 0"> 
+                            AND EL.PRJ_NO||EL.HO_NO IN
+                            <foreach collection="projnos" item="item" separator="," open="(" close=")">
+                                #{item}
+                            </foreach> 
+                        </if>
+                    </if>
+                    <if test="startDate != null and startDate != ''">
+                        <if test="endDate != null and endDate != ''">
+                            AND substr(INSP.SEL_CHK_BEGIN_DATE,1,6) BETWEEN #{startDate} AND #{endDate}
+                        </if>
+                    </if>
+                </if>
+             ) TOT
+        ORDER BY CHK_DATE DESC
+    </select>
+    <select id="selectProjnosByPortfoliAIMasterJoin" parameterType="com.hdel.miri.api.domain.hrts.HRTS$HRTSMasterSearchWeb" resultMap="IntegratedInspectVO">
+        SELECT
+            EL.ELEVATOR_NO ELEVATOR_NO
+             , EL.ELVTR_DIV_NM ELVTR_DIV_NM
+             , EL.BULD_NM BULD_NM
+             ,PRJ_NO||HO_NO PROJ_NO
+             ,'원격점검' REPORT_TYPE
+        FROM TB_PORTFOLIO P
+                 INNER JOIN TB_PORTFOLIO_CONTRACT_MAPPING PC
+                            ON P.USER_PORTFOLIO_MAPPING_ID = PC.USER_PORTFOLIO_MAPPING_ID 
+                            <!-- AND PC.APPROVAL_YN = 'y' -->
+                 INNER JOIN CT_EL_INFO EL
+                            ON PC.INTG_PRJ_TRLINE_CD_CODE = EL.INTG_PRJ_NO||EL.TRLINE_CD
+        WHERE P.USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+        <if test="keyword != null and keyword != ''">
+            AND EL.PRJ_NO||EL.HO_NO = #{keyword}
+        </if>
+    </select>
+    <select id="selectIntegratedMasterInfo"
+        parameterType="com.hdel.miri.api.domain.cc.CC$ElvSearch"
+        resultMap="IntegratedMasterInfoVO"
+    >
+        SELECT
+            DISTINCT
+            EL.ELEVATOR_NO ELEVATOR_NO
+                ,EL.BULD_NM BULD_NM
+                ,INSP.COMPANY_NM CRT_COMPANY
+                ,EL.PRJ_NO||EL.HO_NO PRJ_NO
+                ,EL.ELVTR_DIV_NM ELVTR_DIV_NM
+                ,EL.ADDRESS1 ADDRESS1
+                ,EL.INSTALLATION_PLACE INSTALLATION_PLACE
+                ,EL.INSTALLATION_DE INSTALLATION_DE
+                ,SINSP.COMPANY_NM SELF_COMPANY
+                ,EL.SHUTTLE_FLOOR_CNT SHUTTLE_FLOOR_CNT
+                ,EL.SHUTTLE_SECTION SHUTTLE_SECTION
+                ,INSP.INSPCT_INSTT_NM INSPCT_INSTT_NM
+        FROM CT_EL_INFO EL
+                LEFT JOIN CT_EL_INSP_HIS INSP
+                        ON EL.ELEVATOR_NO = INSP.ELEVATOR_NO
+                LEFT JOIN CT_EL_SELF_INSP_HIS SINSP
+                        ON EL.ELEVATOR_NO = SINSP.ELEVATOR_NO
+        WHERE EL.ELEVATOR_NO = #{elevatorNo}
+        AND ROWNUM = 1
+    </select>
+    <select id="selectElevatorInfoWithChangeDate"
+        parameterType="com.hdel.miri.api.domain.cc.CC$CCCurrentElevatorChangeDateRequest"
+            resultMap="CCCurrentElevatorChangeDateResponse"
+    >
+        SELECT
+            EL.ELEVATOR_NO ELEVATOR_NO
+             ,EL.PRJ_NO||EL.HO_NO PROJ_NO
+             ,EL.INSTALLATION_DE INSTALLATION_DE
+             ,#{changeDate} CHANGE_DATE
+             ,EL.APPLC_EN_DT APPLC_EN_DT
+        FROM CT_EL_INFO EL
+        WHERE PRJ_NO = #{prjNo}
+          AND HO_NO = #{carNo}
+    </select>
+
+    <select id="getServices" parameterType="com.hdel.miri.api.domain.cc.CC$CCServiceRequest" resultMap="ServiceInfo">
+        SELECT 
+            TO_CHAR(TH.CREATION_DT, 'YYYY-mm-dd HH24:mi:ss') AS REGIST_DT
+            ,TH.SERVICE_TYPE
+            ,MA.VALUE_1 AS SERVICE_NM
+            ,TH.PAID_CONTRACT_NUMBER 
+            ,C.PRJ_NO
+            ,C.HO_NO
+            ,TH.PAYLOAD AS SERVICE_CONTENTS
+            ,TH.RECEIVER_NM 
+            ,TH.RECEIVER_EMPL 
+            ,TH.RECEIVER_EMAIL
+            ,C.ELEVATOR_NO
+            ,C.FRST_INSTALLATION_DE
+        FROM TB_SERVICE_HIS TH, (SELECT B.* FROM TB_MASTERDATA a, TB_MASTERDATA_DETAIL b
+                                WHERE a.MASTERDATA_ID = b.MASTERDATA_ID 
+                                AND a.MASTERDATA_KEY = 'SERVICE_TYPE') MA,
+            CT_EL_INFO C
+        WHERE TH.SERVICE_TYPE = MA.CODE 
+        AND   TH.EL_NUMBER = C.ELEVATOR_NO
+        <if test=" intgPrjNoAndTrlineCds != null and intgPrjNoAndTrlineCds.size > 0">
+            AND INTG_PRJ_TRLINE_CD_CODE IN 
+            <foreach collection="intgPrjNoAndTrlineCds" item="item" separator=" , " open="(" close=")">
+                #{item}
+            </foreach>  
+        </if>
+        <if test="serviceType !=null and serviceType !='' and serviceType != 'ALL' and serviceType != 'all'"> AND TH.SERVICE_TYPE = #{serviceType} </if>
+        <if test="startDate !=null and endDate != null and startDate !='' and endDate != ''"> AND TO_CHAR(TH.CREATION_DT,'YYYYMMDD') between #{startDate} and #{endDate}</if>
+        <if test="searchKeyword !=null and searchKeyword !=''"> AND TH.PAYLOAD LIKE '%'||#{searchKeyword}||'%'</if>
+        ORDER BY TH.LASTUPDATE_DT DESC
+    </select>
+
+    <select id="getAlarmHis" parameterType="com.hdel.miri.api.domain.cc.CC$AlarmSearchREQ" resultMap="AlarmHisVO">
+        SELECT 
+            ALARM_SEND_ID
+            ,ALARM_METHOD
+            ,(SELECT DISTINCT C.VALUE_1 FROM TB_MASTERDATA A, TB_MASTERDATA_DETAIL B, TB_MASTERDATA_DETAIL C
+            WHERE A.MASTERDATA_ID = B.MASTERDATA_ID 
+            AND   A.MASTERDATA_ID = C.MASTERDATA_ID 
+            AND   A.LOCALE = 'ko_kr'
+            AND   A.MASTERDATA_KEY ='ALARM_TYPE'
+            AND   B.CODE  = AA.ALARM_TYPE
+            AND   C.CODE  = B.VALUE_2) AS ALARM_TYPE
+            ,(SELECT DISTINCT C.VALUE_1 FROM TB_MASTERDATA A, TB_MASTERDATA_DETAIL B, TB_MASTERDATA_DETAIL C
+            WHERE A.MASTERDATA_ID = B.MASTERDATA_ID 
+            AND   A.MASTERDATA_ID = C.MASTERDATA_ID 
+            AND   A.LOCALE = 'ko_kr'
+            AND   A.MASTERDATA_KEY ='ALARM_TYPE'
+            AND   B.CODE  = AA.ALARM_TYPE
+            AND   C.CODE  = B.VALUE_3) AS ALARM_EVENT
+            ,CONTENTS
+            ,RECEIVER_ID
+            ,RECEIVER_PHONE_NO
+            ,TO_CHAR(CREATION_DT, 'YYYY-MM-DD HH24:MI:SS') AS REGIST_DT
+        FROM TB_ALARM_HIS AA
+        WHERE RECEIVER_ID = #{userId}
+        <if test="alarmType != 'ALL' and alarmType != 'all' and alarmType != null and alarmType !=''"> AND AA.ALARM_TYPE = #{alarmType}</if>
+        <if test="startDate != null and startDate !='' and endDate != null and endDate != ''"> AND TO_CHAR(CREATION_DT,'YYYYMMDD') BETWEEN #{startDate} and #{endDate}</if>
+        AND <![CDATA[ ROWNUM <= 10 ]]> 
+        ORDER BY CREATION_DT DESC
+    </select>
+
+    <select id="getMsgTemplate" parameterType="com.hdel.miri.api.domain.cc.CC$MsgTemplateSearchREQ" resultMap="MsgTemplateVO">
+            SELECT
+                MSG_TEMPLATE_ID
+                ,TO_CHAR(CREATION_DT, 'YYYY-MM-DD HH24:MI:SS') AS REGIST_DT
+                ,TO_CHAR(LASTUPDATE_DT, 'YYYY-MM-DD HH24:MI:SS') AS UPDATE_DT
+                ,AA.MSG_TEMPLATE_NAME
+                ,AA.MSG_TEMPLATE_NOTE
+                ,AA.MSG_TEMPLATE_CONTENTS
+            FROM TB_MSG_TEMPLATE AA
+            WHERE 1=1
+        <!-- SELECT 
+            MSG_TEMPLATE_ID
+            ,(SELECT DISTINCT C.VALUE_1 FROM TB_MASTERDATA A, TB_MASTERDATA_DETAIL B, TB_MASTERDATA_DETAIL C
+            WHERE A.MASTERDATA_ID = B.MASTERDATA_ID 
+            AND   A.MASTERDATA_ID = C.MASTERDATA_ID 
+            AND   A.LOCALE = #{userLocale}
+            AND   A.MASTERDATA_KEY ='ALARM_TYPE'
+            AND   B.CODE  = AA.ALARM_TYPE
+            AND   C.CODE  = B.VALUE_2) AS ALARM_TYPE
+            ,(SELECT DISTINCT C.VALUE_1 FROM TB_MASTERDATA A, TB_MASTERDATA_DETAIL B, TB_MASTERDATA_DETAIL C
+            WHERE A.MASTERDATA_ID = B.MASTERDATA_ID 
+            AND   A.MASTERDATA_ID = C.MASTERDATA_ID 
+            AND   A.LOCALE = #{userLocale}
+            AND   A.MASTERDATA_KEY ='ALARM_TYPE'
+            AND   B.CODE  = AA.ALARM_TYPE
+            AND   C.CODE  = B.VALUE_3) AS ALARM_EVENT
+            ,TO_CHAR(CREATION_DT, 'YYYY-MM-DD HH24:MI:SS') AS REGIST_DT
+            ,AA.MSG_TEMPLATE_NAME
+            ,AA.MSG_TEMPLATE_NOTE
+            ,AA.MSG_TEMPLATE_CONTENTS
+        FROM TB_MSG_TEMPLATE AA
+        WHERE 1=1 -->
+        <if test="searchKeyword != null and searchKeyword !=''"> AND AA.MSG_TEMPLATE_CONTENTS  LIKE  '%'||#{searchKeyword}||''</if>
+    </select>
+
+    <select id="getCompanionDaysDistinct" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractSearchCurrentUser" resultType="Integer">
+        SELECT NVL(TRUNC(SYSDATE) - TRUNC(TO_DATE(MIN(NVL(A.CONTRACT_START_DT, TO_CHAR(SYSDATE,'YYYYMMDD'))),'YYYYMMDD')),1) AS COMPANION
+          FROM CT_EL_INFO A
+         INNER JOIN TB_PORTFOLIO_CONTRACT_MAPPING B
+            ON B.INTG_PRJ_TRLINE_CD_CODE = A.INTG_PRJ_NO||A.TRLINE_CD
+         INNER JOIN TB_PORTFOLIO C
+            ON C.PORTFOLIO_NAME = 'lobby'
+           AND C.USER_ID = NVL(#{userId}, #{currentUser})
+           AND C.USER_PORTFOLIO_MAPPING_ID = B.USER_PORTFOLIO_MAPPING_ID
+         WHERE TRUNC(SYSDATE) BETWEEN TO_DATE(A.CONTRACT_START_DT,'YYYYMMDD') AND TO_DATE(A.CONTRACT_END_DT,'YYYYMMDD')
+       <!-- SELECT 
+            nvl(trunc(sysdate) - trunc(to_date(min(nvl(CONTRACT_START_DT, TO_char(sysdate,'YYYYMMDD'))),'YYYYMMDD')),1) AS COMPANION
+        FROM CT_EL_INFO
+        WHERE 
+        AND TRUNC(SYSDATE) BETWEEN TO_DATE(CONTRACT_START_DT,'YYYYMMDD') AND TO_DATE(CONTRACT_END_DT,'YYYYMMDD') -->
+    </select>
+
+    <select id="getFailRemakrOr" resultType="String">
+        SELECT B.VALUE_2
+        FROM TB_MASTERDATA A, TB_MASTERDATA_DETAIL B 
+        WHERE A.MASTERDATA_ID = B.MASTERDATA_ID 
+        AND   A.LOCALE = 'ko_kr'
+        AND   A.MASTERDATA_KEY = 'REMARK_STR'
+        AND   B.VALUE_1='STR_OR'
+    </select>
+
+    <select id="getFailRemakrNot" resultType="String">
+        SELECT B.VALUE_2
+        FROM TB_MASTERDATA A, TB_MASTERDATA_DETAIL B
+        WHERE A.MASTERDATA_ID = B.MASTERDATA_ID 
+        AND   A.LOCALE='ko_kr'
+        AND   A.MASTERDATA_KEY='REMARK_STR'
+        AND   B.VALUE_1='STR_NOT'
+    </select>
+
+    <select id="getBuldNms"  parameterType="List" resultType="com.hdel.miri.api.domain.cc.CC$BuldNmVO">
+        SELECT
+            DISTINCT PRJ_NO||HO_NO AS PRJHNO, BULD_NM 
+        FROM CT_EL_INFO
+        WHERE 1=1 
+        <if test="list != null and list.size > 0"> 
+            AND (PRJ_NO, HO_NO) IN
+            <foreach collection="list" item="item" open="(" close=")" separator=",">
+                (substr(#{item},1,6), substr(#{item}, -3))
+            </foreach>
+            
+        </if>
+    </select>
+
+    <update id="updateMsgTemplate" parameterType="com.hdel.miri.api.domain.cc.CC$MsgTemplateUpdateREQ">
+        UPDATE TB_MSG_TEMPLATE
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="msgTemplateNote != null and  msgTemplateNote != '' ">MSG_TEMPLATE_NOTE = #{msgTemplateNote},</if>
+            <if test="msgTemplateContents != null and  msgTemplateContents != '' ">MSG_TEMPLATE_CONTENTS = #{msgTemplateContents},</if>
+        </trim>
+        WHERE MSG_TEMPLATE_ID = #{msgTemplateId}
+    </update>
+
+    <update id="updateWidgets" parameterType="com.hdel.miri.api.domain.cc.CC$DashboardWidgetREQ">
+        UPDATE TB_USER
+        <trim prefix="SET">
+            <if test="widgets != null and  widgets != '' ">WIDGETS = #{widgets}</if>
+        </trim>
+        WHERE USER_ID = #{userId}
+    </update>
+    <!-- SELECT -->
+
+    <select id="selectServiceReqInfo" parameterType="com.hdel.miri.api.domain.cc.CC$CCServiceREQ" resultType="com.hdel.miri.api.domain.cc.CC$ServiceReqInfoVO">
+        SELECT 
+            #{serviceType} as serviceType
+            , ELEVATOR_NO as elevatorNo
+            , COMPS_CNTR_NO as compsCntrNo
+            , INTG_PRJ_NO||TRLINE_CD as intgPrjNoTrlineCd
+            , INTG_PRJ_NO as intgPrjNo
+            , TRLINE_CD as trlineCd
+            , PRJ_NO as prjNo
+            , HO_NO as hoNo
+            , '['||#{serviceTypeNm}||'] ' || VALUE_2||'-'|| #{contents} as contents
+            , VALUE_2 as receiverEmail
+            , VALUE_3 as receiverNm
+            , VALUE_4 as receiverEmpl
+            FROM CT_EL_INFO elInfo,  
+        (SELECT B.* FROM TB_MASTERDATA A, TB_MASTERDATA_DETAIL B
+        WHERE A.MASTERDATA_ID = B.MASTERDATA_ID 
+        AND A.MASTERDATA_KEY = 'ONECLICK_CONTACT'
+        AND LOCALE = #{userLocale}) masterInfo 
+        WHERE elInfo.MGT_COM_NM = masterInfo.VALUE_1
+        AND PRJ_NO = #{prjNo}
+        AND HO_NO = #{hoNo}
+    </select>
+
+    <select id="employeeContractSearch" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractSearchEmployee" resultMap="getContractEmployeeAPI">
+        SELECT 
+            INTG_PRJ_NO
+            ,TRLINE_CD
+        FROM CT_EL_INFO
+        WHERE 1=1
+        <choose>
+            <when test=" empId != null and empId != '' "> AND SALES_EMPL = #{empId} </when>
+            <otherwise> AND 1=2 </otherwise>
+        </choose>
+        GROUP BY INTG_PRJ_NO, TRLINE_CD  
+    </select>
+
+    <select id="GetMsgTemplateContents" parameterType="String" resultType="String">
+        SELECT MSG_TEMPLATE_CONTENTS  
+          FROM TB_MSG_TEMPLATE
+         WHERE ALARM_TYPE  = #{msgCode}
+           AND ALARM_EVENT = #{msgCode}
+    </select>
+
+    <!-- 조재현 -->
+    <insert id="insertServiceRequest" useGeneratedKeys="true" parameterType="com.hdel.miri.api.domain.cc.CC$ServiceReqInfoVO" keyProperty="serviceHisId" keyColumn="SERVICE_HIS_ID">
+        INSERT INTO TB_SERVICE_HIS(SERVICE_TYPE, EL_NUMBER, PAID_CONTRACT_NUMBER, INTG_PRJ_TRLINE_CD_CODE, PAYLOAD, RECEIVER_NM, RECEIVER_EMPL, RECEIVER_EMAIL, CREATION_USER)
+        VALUES(
+            #{serviceType}
+            ,#{elevatorNo}
+            ,#{compsCntrNo}
+            ,#{intgPrjNoTrlineCd}
+            ,#{contents}
+            ,#{receiverNm}
+            ,#{receiverEmpl}
+            ,#{receiverEmail}
+            ,#{userId}
+        )
+    </insert>
+    <!--이메일 로그-->
+    <insert id="insertMailLog" useGeneratedKeys="true" parameterType="com.hdel.miri.api.domain.cc.CC$mailLogVO" keyProperty="emailSeq" keyColumn="EMAIL_SEQ">
+        INSERT
+          INTO TB_EMAIL_LOG
+               (
+                 FROM_USER
+               , TO_USER
+               , SUB_TITLE
+               , CONTENTS
+               , CREATION_DT
+               , CREATION_USER
+               , LASTUPDATE_DT
+               , LASTUPDATE_USER
+               )
+        VALUES (
+                 #{fromAddress}
+               , <foreach collection="toAddress" item="item" separator="||','||">
+                    #{item}
+                 </foreach>
+                 <if test="ccAddress != null">
+                    <foreach collection="ccAddress" item="item" separator="||','||"  open="||','||">
+                        #{item}
+                    </foreach>
+                 </if>
+                 <if test="bccAddress != null">
+                    <foreach collection="bccAddress" item="item" separator="||','||"  open="||','||">
+                        #{item}
+                    </foreach>
+                 </if>
+               , #{subject}
+               , #{content}
+               , SYSDATE
+               , #{userId}
+               , SYSDATE
+               , #{userId}
+               )
+    </insert>
+    <!--미리 PORTAL LOGIN DATA-->
+    <select id="getMIRIPortalData" parameterType="com.hdel.miri.api.domain.miri.MIRI$MIRIPortalLoginSearch" resultMap="getMIRIPortalLoginData">
+        SELECT A.USER_ID
+             , A.USER_NAME
+             , B.ROLE_NAME                                                                                     AS ROLE_TYPE
+             , CASE WHEN TRIM(A.PHONENUMBER) IS NULL THEN ''
+                    ELSE SUBSTR(A.PHONENUMBER, 0, 3)||'-'||SUBSTR(A.PHONENUMBER, 4, 4)||'-'||SUBSTR(A.PHONENUMBER, 8, 4) 
+                END                                                                                            AS PHONENUMBER
+             , C.VALUE_1                                                                                       AS ACCOUNT_STATUS
+             , D.VALUE_1                                                                                       AS DEL_YN
+             , A.CREATION_DT
+             , A.APP_LOGIN_TIME
+             , A.APP_LOGIN_CNT
+             , A.PC_LOGIN_TIME
+             , A.PC_LOGIN_CNT
+          FROM (
+                 SELECT A.USER_ID
+                      , A.USER_NAME
+                      , A.ROLE_TYPE
+                      , REPLACE(A.PHONENUMBER, '-', '') AS PHONENUMBER
+                      , A.ACCOUNT_STATUS
+                      , A.DEL_YN
+                      , TO_CHAR(A.CREATION_DT, 'YYYY-MM-DD') AS CREATION_DT
+                      , MAX(CASE WHEN B.LOGIN_TOOL != 'DESKTOP' THEN B.LOGIN_TIME
+                                 ELSE NULL
+                             END) AS APP_LOGIN_TIME
+                      , SUM(CASE WHEN B.LOGIN_TOOL IS NULL      THEN 0
+                                 WHEN B.LOGIN_TOOL != 'DESKTOP' THEN 1
+                                 ELSE 0
+                             END) AS APP_LOGIN_CNT
+                      , MAX(CASE WHEN B.LOGIN_TOOL != 'DESKTOP' THEN NULL
+                                 ELSE B.LOGIN_TIME
+                             END) AS PC_LOGIN_TIME
+                      , SUM(CASE WHEN B.LOGIN_TOOL != 'DESKTOP' THEN 0
+                                 WHEN B.LOGIN_TOOL IS NULL      THEN 0
+                                 ELSE 1
+                             END) AS PC_LOGIN_CNT
+                   FROM TB_USER A
+                   LEFT OUTER JOIN (
+                                     SELECT SUBSTR(IN_VALUE, ST_IDX, (EN_IDX - ST_IDX)) AS USER_ID
+                                          , LOGIN_TOOL
+                                          , LOGIN_TIME
+                                       FROM (
+                                              SELECT INSTR(A.IN_VALUE, '"', INSTR(A.IN_VALUE, '"userId"'), 3) + 1 AS ST_IDX
+                                                   , INSTR(A.IN_VALUE, '"', INSTR(A.IN_VALUE, '"', INSTR(A.IN_VALUE, '"userId"'), 3) + 1) AS EN_IDX
+                                                   , A.IN_VALUE
+                                                   , MOBILE||CASE WHEN A.MOBILE = 'DESKTOP' THEN NULL
+                                                                  ELSE '/'||A.PLATFORM
+                                                              END AS LOGIN_TOOL
+                                                   , TO_CHAR(A.START_DT, 'YYYY-MM-DD HH24:MI:SS') AS LOGIN_TIME
+                                                   , LOG_ID
+                                                FROM TB_SYSTEM_LOG A
+                                               WHERE A.CONTROLLER_NAME = '/miri/v2/auth/signin'
+                                                 AND TO_CHAR(START_DT, 'YYYYMMDD') BETWEEN #{startDate} AND #{endDate}
+                                            )
+                                   ) B
+                     ON B.USER_ID = A.USER_ID
+                  WHERE 1 = 1
+                  <if test="roleType != null and roleType != '' and roleType != 'ALL'">
+                    AND A.ROLE_TYPE = #{roleType}
+                  </if>
+                  <if test="accountStatus != null and accountStatus != '' and accountStatus != 'ALL'">
+                    AND A.ACCOUNT_STATUS = #{accountStatus}
+                  </if>
+                  <if test="delYn != null and delYn != '' and delYn != 'ALL'">
+                    AND A.DEL_YN = #{delYn}
+                  </if>
+                  GROUP BY A.USER_ID, A.USER_NAME, A.PHONENUMBER, A.ROLE_TYPE, A.DEL_YN, A.ACCOUNT_STATUS, A.CREATION_DT
+               ) A
+          LEFT OUTER JOIN TB_ROLE B
+            ON B.PAYLOAD = A.ROLE_TYPE
+          LEFT OUTER JOIN (
+                            SELECT B.CODE
+                                 , B.VALUE_1
+                              FROM TB_MASTERDATA A
+                             INNER JOIN TB_MASTERDATA_DETAIL B
+                                ON B.CODE != 'ALL'
+                               AND B.MASTERDATA_ID = A.MASTERDATA_ID
+                             WHERE A.MASTERDATA_KEY = 'ACCOUNT_STATUS'
+                               AND A.LOCALE         = #{userLocale}
+                          ) C
+            ON C.CODE = A.ACCOUNT_STATUS
+          LEFT OUTER JOIN (
+                            SELECT B.CODE
+                                 , B.VALUE_1
+                              FROM TB_MASTERDATA A
+                             INNER JOIN TB_MASTERDATA_DETAIL B
+                                ON B.CODE != 'ALL'
+                               AND B.MASTERDATA_ID = A.MASTERDATA_ID
+                             WHERE A.MASTERDATA_KEY = 'DEL_YN'
+                               AND A.LOCALE         = #{userLocale}
+                          ) D
+            ON D.CODE          = A.DEL_YN
+         ORDER BY A.USER_ID
+    </select>
+</mapper>

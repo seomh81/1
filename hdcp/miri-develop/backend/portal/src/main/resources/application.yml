@@ -1,0 +1,603 @@
+# 활성화 모드 : 로컬
+spring:
+    config:
+        activate:
+            on-profile: local
+    # DevTool 비활성화
+    devtools:
+        add-properties: false
+    # E-mail 발송 정보    
+    mail:
+        host: email-smtp.ap-northeast-2.amazonaws.com
+        password: BGu63M1qaa3QGXz5SIlyZl1N68VSvyMvNQfpbmKUYsKP
+        port: 587
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+        username: AKIAYKFVLAG7FMH6PBWI
+    # i18n 다국어 설정 정보
+    messages:
+        basename: i18n/messages
+        encoding: UTF-8
+        fallback-to-system-locale: false
+        use-code-as-default-message: true
+    # console 색상
+    output:
+        ansi:
+            enabled: always
+    # Multipart 설정 정보
+    servlet:
+        multipart:
+            # 단일 파일 최대 크기
+            max-file-size: 20MB
+            # 전체 파일 최대 크기
+            max-request-size: 100MB
+    #App 설정 정보
+    app:
+        base-host: http://localhost:8080
+        db:
+            debug: false
+        # 시스템 로케일 정보
+        locale: ko_kr
+        # Input각을 로깅할지 여부, 로깅시 중요정보가 DB에 보일수 있음. EX) password, business contents.
+        log:
+            invalue: false
+        #Jasypt 테스트 코드
+        test:
+            string1: ENC(pR5NZXkNZYf/HaeEmUXhKBDH3EptEG1v)
+        #파일 업로드 폴더 경로
+        win:
+            upload: C:\\miri_storage
+            temp: C:\\miri_temp
+        mac:
+            upload: ~/tmp/miri_storage
+            temp: ~/tmp/miri_temp
+        other:
+            upload: /miri_storage
+            temp: /miri_temp
+        #계약서 정보 NAS ROOT Path
+        contract-nas: C:\\bsiot_nas\\uploaddir
+        #Cors
+        cors:
+            allowedOrigin: http://localhost:3000,http://127.0.0.1:3000,http://localhost:8080,http://127.0.0.1:8080,https://miricp-dev.hdel.co.kr,125.129.14.153
+            credential: true
+        #Daia MariaDB
+        ds1:
+            auto-commit: true
+            connection-test-query: SELECT 'DS1-LOCAL'
+            connection-timeout: 100000
+            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+            jdbc-url: jdbc:log4jdbc:mariadb://daialab.co.kr:3306/battlground?allowMultiQueries=true
+            maximum-pool-size: 10
+            minimum-idle: 5
+            username: daiamond
+            password: Daiawelcome1!
+        #MIRI Portal OracleDB
+        ds2:
+            auto-commit: true
+            connection-test-query: SELECT 'DS2-LOCAL' from dual
+            connection-timeout: 100000
+            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+            jdbc-url: jdbc:log4jdbc:oracle:thin:@hel-miricp-db-dev.cti520qwxli8.ap-northeast-2.rds.amazonaws.com:1521:ORCL
+            maximum-pool-size: 10
+            minimum-idle: 5
+            password: Hyundai_Miri2023!
+            username: DBADMIN
+        # SCRM OracleDB ( Require VPN )
+        ds3:
+            auto-commit: true
+            connection-test-query: SELECT 'DS3-LOCAL' from dual
+            connection-timeout: 100000
+            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+            jdbc-url: jdbc:log4jdbc:oracle:thin:@nsrmd.sys.hdel.co.kr:1521:ORCL?allowMultiQueries=true
+            maximum-pool-size: 10
+            minimum-idle: 5
+            password: miri1357$
+            username: MIRIUSER
+        # SRM DB2 ( Require VPN )
+        ds4:
+            auto-commit: true
+            connection-test-query: SELECT 'DS4-LOCAL' FROM SYSIBM.SYSDUMMY1
+            connection-timeout: 100000
+            driver-class-name: com.ibm.db2.jcc.DB2Driver
+            jdbc-url: jdbc:db2://10.105.200.142:5912/HSQ
+            maximum-pool-size: 10
+            minimum-idle: 5
+            password: HyundaiMiri2023
+            username: miriuser
+        # HRTS MariaDB ( Require VPN )
+        ds5:
+            auto-commit: true
+            connection-test-query: SELECT 'DS5-LOCAL'
+            connection-timeout: 100000
+            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+            jdbc-url: jdbc:log4jdbc:mariadb://172.20.52.166:3306/BSFM?allowMultiQueries=true
+            maximum-pool-size: 10
+            minimum-idle: 5
+            password: miri2023!
+            username: miriuser
+        # HCCC OracleDB ( Require VPN )
+        ds6:
+            auto-commit: true
+            connection-test-query: SELECT 'DS6-LOCAL' from dual
+            connection-timeout: 100000
+            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+            jdbc-url: jdbc:log4jdbc:oracle:thin:@nhcccp.sys.hdel.co.kr:1521:ucaredb?allowMultiQueries=true
+            maximum-pool-size: 10
+            minimum-idle: 5
+            password: hdel_miri23
+            username: MIRIUSER
+    #Jasypt 설정 정보
+    jasypt:
+        encryptor:
+            bean: jasyptStringEncryptor
+    # 서버 설정 정보
+    server:
+        # 오류 처리
+        error:
+            include-exception: true
+            include-stacktrace: always
+        # 포트 설정
+        port: 8080
+springdoc:
+    appVersion: v1.0
+    appTitle: HDEL PORTAL API
+    appDescription: 어플리케이션 API입니다.
+    appContactName: 현대엘리베이터
+    appContactUrl: https://www.hyundaielevator.com/ko/index/
+    appContactEmail: MIRIPortaladmin@hyundaielevator.com
+    #sping doc 설정
+    swagger-ui:
+        path: swagger
+        #"사용해 보기" 섹션이 기본적으로 활성화되어야 하는지 여부를 제어
+        tryItOutEnabled: true
+        # filter 검색
+        filter: true
+        operationsSorter: alpha
+        tagsSorter: alpha
+        displayRequestDuration: true
+        supportedSubmitMethods: get,put,post,delete,options,head,patch,trace
+api:
+    service-key: 8jg9zaWM2xY4jW8lvQIrcEUB4S4%2B0pOqVolH6vbducn3fzcC7aqUidB4dOBlW75ym4aX1BibidM%2FuK0bPIQOIw%3D%3D
+    inspect-key: http://openapi.elevator.go.kr/openapi/service/ElevatorInspectsafeService/getInspectFailList
+    self-inspect-key: http://openapi.elevator.go.kr/openapi/service/ElevatorSelfCheckService/getSelfCheckList
+    hrts-conn: http://172.20.53.19:8080/hrts/manager/miri_portal/el/projno/#projectcarno/connection/on/#command
+    hrts-monit: http://172.20.53.19:8080/hrts/manager/miri_portal/el/projno/#projectcarno/info/realtime
+    hrts-rules: http://172.20.53.19:8080/hrts/manager/miri_portal/el/projno/#projectcarno/info/run/service/#command
+    hrts-hccc: http://hrts-hccc.sys.hdel.co.kr/hrtsReportHandler.do?projno=
+    unit-service1: http://172.20.52.234:8084/material/predict/projnos
+    miri-robot-api: http://13.125.50.47:8080/api/v1/history/calls/robot
+    miri-robot-key: HDEc27e81ace33211ed92a
+    miri-robot-sec: c27e81e1e33211ed92a802b67259d33a
+    miri-call-api: https://mirisvc.hdel.co.kr/miricall/api/v1/application/mystatus
+    miri-call-key: f6e3a357-3bd1-4195-b7ce-1d2a8fd193fe230420
+    miri-view-api: https://mirisvc.hdel.co.kr/miriview/api/v1/application/get_device_status
+    miri-view-key: qNsg1WHLSKGLBkn4tIjFl5KRbLuZbxIyUABHaEkGFN6NnhS9aCkQr85o+W0=
+    hccc-service-req: http://hecs.hdel.co.kr/MIRIBrkAcpt.do
+    kakao-api: http://dapi.kakao.com/v2/maps/sdk.js
+    kakao-key: 7070fad5c7541bcc5809e78fa3805e3b
+cloud:
+    aws:
+        credentials:
+            instance-profile: false
+            access-key: AKIA3F52Q2M2DPSQIZQX
+            secret-key: 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
+        region:
+            static: ap-northeast-2
+        stack:
+            auto: false
+        s3:
+            bucket: hrts-report-new
+logging:
+    level:
+        com:
+            amazonaws:
+                util:
+                    EC2MetadataUtils: error
+
+---
+# 활성화 모드 : 개발
+spring:
+    config:
+        activate:
+            on-profile: dev
+    # DevTool 비활성화
+    devtools:
+        add-properties: false
+    # E-mail 발송 정보
+    mail:
+        host: email-smtp.ap-northeast-2.amazonaws.com
+        password: BGu63M1qaa3QGXz5SIlyZl1N68VSvyMvNQfpbmKUYsKP
+        port: 587
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+        username: AKIAYKFVLAG7FMH6PBWI
+    # i18n 다국어 설정 정보
+    messages:
+        basename: i18n/messages
+        encoding: UTF-8
+        fallback-to-system-locale: false
+        use-code-as-default-message: true
+    # console 색상
+    output:
+        ansi:
+            enabled: always
+    # Multipart 설정 정보
+    servlet:
+        multipart:
+            # 단일 파일 최대 크기
+            max-file-size: 20MB
+            # 전체 파일 최대 크기
+            max-request-size: 100MB
+    #App 설정 정보
+    app:
+        base-host: https://miricp-api-dev.hdel.co.kr
+        db:
+            debug: false
+        # 시스템 로케일 정보
+        locale: ko_kr
+        # Input각을 로깅할지 여부, 로깅시 중요정보가 DB에 보일수 있음. EX) password, business contents.
+        log:
+            invalue: false
+        #Jasypt 테스트 코드
+        test:
+            string1: ENC(pR5NZXkNZYf/HaeEmUXhKBDH3EptEG1v)
+        #파일 업로드 폴더 경로
+        win:
+            upload: C:\\miri_storage
+            temp: C:\\miri_temp
+        mac:
+            upload: ~/tmp/miri_storage
+            temp: ~/tmp/miri_temp
+        other:
+            upload: /app_data/miri_storage
+            temp: /app_data/miri_temp
+        #계약서 정보 NAS ROOT Path
+        contract-nas: /bsiot_nas/uploaddir/
+        #Cors
+        cors:
+            allowedOrigin: http://localhost:3000,http://127.0.0.1:3000,http://localhost:8080,http://127.0.0.1:8080,https://miricp-dev.hdel.co.kr,https://miricp-api-dev.hdel.co.kr,125.129.14.153
+            credential: true
+        # Daia MariaDB
+        ds1:
+            auto-commit: true
+            connection-test-query: SELECT 'DS1-DEV' from dual
+            connection-timeout: 100000
+            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+            jdbc-url: jdbc:log4jdbc:oracle:thin:@hel-miricp-db-dev.cti520qwxli8.ap-northeast-2.rds.amazonaws.com:1521:ORCL
+            maximum-pool-size: 10
+            minimum-idle: 5
+            password: Hyundai_Miri2023!
+            username: DBADMIN
+        # MIRI Portal OracleDB
+        ds2:
+            auto-commit: true
+            connection-test-query: SELECT 'DS2-DEV' from dual
+            connection-timeout: 100000
+            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+            jdbc-url: jdbc:log4jdbc:oracle:thin:@hel-miricp-db-dev.cti520qwxli8.ap-northeast-2.rds.amazonaws.com:1521:ORCL
+            maximum-pool-size: 10
+            minimum-idle: 5
+            password: Hyundai_Miri2023!
+            username: DBADMIN
+        # SCRM OracleDB ( Require VPN )
+        ds3:
+            auto-commit: true
+            connection-test-query: SELECT 'DS3-DEV' from dual
+            connection-timeout: 100000
+            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+            jdbc-url: jdbc:log4jdbc:oracle:thin:@nsrmp.sys.hdel.co.kr:1521:ORCL?allowMultiQueries=true
+            maximum-pool-size: 10
+            minimum-idle: 5
+            password: miri1357$
+            username: MIRIUSER
+        # SRM DB2 ( Require VPN )
+        ds4:
+            auto-commit: true
+            connection-test-query: SELECT 'DS4-DEV' FROM SYSIBM.SYSDUMMY1
+            connection-timeout: 100000
+            driver-class-name: com.ibm.db2.jcc.DB2Driver
+            jdbc-url: jdbc:db2://10.105.200.151:5912/HSP
+            maximum-pool-size: 10
+            minimum-idle: 5
+            password: HyundaiMiri2023
+            username: miriuser
+        # HRTS MariaDB ( Require VPN )
+        ds5:
+            auto-commit: true
+            connection-test-query: SELECT 'DS5-DEV'
+            connection-timeout: 100000
+            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+            jdbc-url: jdbc:log4jdbc:mariadb://hdel-kr-rds-01.cti520qwxli8.ap-northeast-2.rds.amazonaws.com:3306/BSFM?allowMultiQueries=true
+            maximum-pool-size: 10
+            minimum-idle: 5
+            password: miri2023!
+            username: miriuser
+        # HCCC OracleDB  ( Require VPN )
+        ds6:
+            auto-commit: true
+            connection-test-query: SELECT 'DS6-DEV' from dual
+            connection-timeout: 100000
+            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+            jdbc-url: jdbc:log4jdbc:oracle:thin:@nhcccp.sys.hdel.co.kr:1521:ucaredb?allowMultiQueries=true
+            maximum-pool-size: 10
+            minimum-idle: 5
+            password: hdel_miri23
+            username: MIRIUSER
+    #Jasypt 설정 정보
+    jasypt:
+        encryptor:
+            bean: jasyptStringEncryptor
+    # 서버 설정 정보
+    server:
+        # 오류 처리
+        error:
+            include-exception: true
+            include-stacktrace: always
+        # 포트 설정
+        port: 8080
+springdoc:
+    appVersion: v1.0
+    appTitle: HDEL PORTAL API
+    appDescription: 어플리케이션 API입니다.
+    appContactName: 현대엘리베이터
+    appContactUrl: https://www.hyundaielevator.com/ko/index/
+    appContactEmail: MIRIPortaladmin@hyundaielevator.com
+    #sping doc 설정
+    swagger-ui:
+        path: swagger
+        #"사용해 보기" 섹션이 기본적으로 활성화되어야 하는지 여부를 제어
+        tryItOutEnabled: true
+        # filter 검색
+        filter: true
+        operationsSorter: alpha
+        tagsSorter: alpha
+        displayRequestDuration: true
+        supportedSubmitMethods: get,put,post,delete,options,head,patch,trace
+api:
+    service-key: 8jg9zaWM2xY4jW8lvQIrcEUB4S4%2B0pOqVolH6vbducn3fzcC7aqUidB4dOBlW75ym4aX1BibidM%2FuK0bPIQOIw%3D%3D
+    inspect-key: http://openapi.elevator.go.kr/openapi/service/ElevatorInspectsafeService/getInspectFailList
+    self-inspect-key: http://openapi.elevator.go.kr/openapi/service/ElevatorSelfCheckService/getSelfCheckList
+    hrts-conn: http://172.20.53.19:8080/hrts/manager/miri_portal/el/projno/#projectcarno/connection/on/#command
+    hrts-monit: http://172.20.53.19:8080/hrts/manager/miri_portal/el/projno/#projectcarno/info/realtime
+    hrts-rules: http://172.20.53.19:8080/hrts/manager/miri_portal/el/projno/#projectcarno/info/run/service/#command
+    hrts-hccc: http://hrts-hccc.sys.hdel.co.kr/hrtsReportHandler.do?projno=
+    unit-service1: http://172.20.52.234:8084/material/predict/projnos
+    miri-robot-api: http://13.125.50.47:8080/api/v1/history/calls/robot
+    miri-robot-key: HDE2144bc4ce32f11ed92a
+    miri-robot-sec: 2144bc80e32f11ed92a802b67259d33a
+    miri-call-api: https://mirisvc.hdel.co.kr/miricall/api/v1/application/mystatus
+    miri-call-key: f6e3a357-3bd1-4195-b7ce-1d2a8fd193fe230420
+    miri-view-api: https://mirisvc.hdel.co.kr/miriview/api/v1/application/get_device_status
+    miri-view-key: qNsg1WHLSKGLBkn4tIjFl5KRbLuZbxIyUABHaEkGFN6NnhS9aCkQr85o+W0=
+    hccc-service-req: http://hecs.hdel.co.kr/MIRIBrkAcpt.do
+    kakao-api: http://dapi.kakao.com/v2/maps/sdk.js
+    kakao-key: 7070fad5c7541bcc5809e78fa3805e3b
+cloud:
+    aws:
+        credentials:
+            instance-profile: false
+            access-key: AKIA3F52Q2M2DPSQIZQX
+            secret-key: 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
+        region:
+            static: ap-northeast-2
+        stack:
+            auto: false
+        s3:
+            bucket: hrts-report-new
+logging:
+    level:
+        com:
+            amazonaws:
+                util:
+                    EC2MetadataUtils: error
+
+---
+# 활성화 모드 : 운영
+spring:
+    config:
+        activate:
+            on-profile: prod
+    # DevTool 비활성화
+    devtools:
+        add-properties: false
+    # E-mail 발송 정보
+    mail:
+        host: email-smtp.ap-northeast-2.amazonaws.com
+        password: BGu63M1qaa3QGXz5SIlyZl1N68VSvyMvNQfpbmKUYsKP
+        port: 587
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+        username: AKIAYKFVLAG7FMH6PBWI
+    # i18n 다국어 설정 정보
+    messages:
+        basename: i18n/messages
+        encoding: UTF-8
+        fallback-to-system-locale: false
+        use-code-as-default-message: true
+    # console 색상
+    output:
+        ansi:
+            enabled: always
+    # Multipart 설정 정보
+    servlet:
+        multipart:
+            # 단일 파일 최대 크기
+            max-file-size: 20MB
+            # 전체 파일 최대 크기
+            max-request-size: 100MB
+    #App 설정 정보
+    app:
+        base-host: https://miri-api.hdel.co.kr
+        db:
+            debug: false
+        # 시스템 로케일 정보
+        locale: ko_kr
+        # Input각을 로깅할지 여부, 로깅시 중요정보가 DB에 보일수 있음. EX) password, business contents.
+        log:
+            invalue: false
+        #Jasypt 테스트 코드
+        test:
+            string1: ENC(pR5NZXkNZYf/HaeEmUXhKBDH3EptEG1v)
+        #파일 업로드 폴더 경로
+        win:
+            upload: C:\\miri_storage
+            temp: C:\\miri_temp
+        mac:
+            upload: ~/tmp/miri_storage
+            temp: ~/tmp/miri_temp
+        other:
+            upload: /app_data/miri_storage
+            temp: /app_data/miri_temp
+        #계약서 정보 NAS ROOT Path
+        contract-nas: /bsiot_nas/uploaddir
+        #Cors
+        cors:
+            allowedOrigin: http://localhost:3000,http://127.0.0.1:3000,http://localhost:8080,http://127.0.0.1:8080,https://miricp-dev.hdel.co.kr,https://miricp-api-dev.hdel.co.kr,125.129.14.153,http://miri-api.hdel.co.kr,https://miri-api.hdel.co.kr,https://miri.hdel.co.kr,http://miri.hdel.co.kr
+            credential: true
+        # Daia MariaDB
+        ds1:
+            auto-commit: true
+            connection-test-query: SELECT 'DS1-PROD' from dual
+            connection-timeout: 100000
+            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+            jdbc-url: jdbc:log4jdbc:oracle:thin:@hel-miricp-db-prod.cti520qwxli8.ap-northeast-2.rds.amazonaws.com:1521:ORCL
+            maximum-pool-size: 10
+            minimum-idle: 5
+            password: Hyundai_Miri2023!
+            username: DBADMIN
+        # MIRI Portal OracleDB
+        ds2:
+            auto-commit: true
+            connection-test-query: SELECT 'DS2-PROD' from dual
+            connection-timeout: 100000
+            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+            jdbc-url: jdbc:log4jdbc:oracle:thin:@hel-miricp-db-prod.cti520qwxli8.ap-northeast-2.rds.amazonaws.com:1521:ORCL
+            maximum-pool-size: 10
+            minimum-idle: 5
+            password: Hyundai_Miri2023!
+            username: DBADMIN
+        # SCRM OracleDB ( Require VPN )
+        ds3:
+            auto-commit: true
+            connection-test-query: SELECT 'DS3-PROD' from dual
+            connection-timeout: 100000
+            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+            jdbc-url: jdbc:log4jdbc:oracle:thin:@nsrmp.sys.hdel.co.kr:1521:ORCL?allowMultiQueries=true
+            maximum-pool-size: 10
+            minimum-idle: 5
+            password: miri1357$
+            username: MIRIUSER
+        # SRM DB2 ( Require VPN )
+        ds4:
+            auto-commit: true
+            connection-test-query: SELECT 'DS4-PROD' FROM SYSIBM.SYSDUMMY1
+            connection-timeout: 100000
+            driver-class-name: com.ibm.db2.jcc.DB2Driver
+            jdbc-url: jdbc:db2://10.105.200.151:5912/HSP
+            maximum-pool-size: 10
+            minimum-idle: 5
+            password: HyundaiMiri2023
+            username: miriuser
+        # HRTS MariaDB ( Require VPN )
+        ds5:
+            auto-commit: true
+            connection-test-query: SELECT 'DS5-PROD'
+            connection-timeout: 100000
+            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+            jdbc-url: jdbc:log4jdbc:mariadb://hdel-kr-rds-01.cti520qwxli8.ap-northeast-2.rds.amazonaws.com:3306/BSFM?allowMultiQueries=true
+            maximum-pool-size: 10
+            minimum-idle: 5
+            password: miri2023!
+            username: miriuser
+        # HCCC OracleDB  ( Require VPN )
+        ds6:
+            auto-commit: true
+            connection-test-query: SELECT 'DS6-PROD' from dual
+            connection-timeout: 100000
+            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+            jdbc-url: jdbc:log4jdbc:oracle:thin:@nhcccp.sys.hdel.co.kr:1521:ucaredb?allowMultiQueries=true
+            maximum-pool-size: 10
+            minimum-idle: 5
+            password: hdel_miri23
+            username: MIRIUSER
+    #Jasypt 설정 정보
+    jasypt:
+        encryptor:
+            bean: jasyptStringEncryptor
+    # 서버 설정 정보
+    server:
+        # 오류 처리
+        error:
+            include-exception: true
+            include-stacktrace: always
+        # 포트 설정
+        port: 8080
+springdoc:
+    appVersion: v1.0
+    appTitle: HDEL PORTAL API
+    appDescription: 어플리케이션 API입니다.
+    appContactName: 현대엘리베이터
+    appContactUrl: https://www.hyundaielevator.com/ko/index/
+    appContactEmail: MIRIPortaladmin@hyundaielevator.com
+    #sping doc 설정
+    swagger-ui:
+        path: swagger
+        #"사용해 보기" 섹션이 기본적으로 활성화되어야 하는지 여부를 제어
+        tryItOutEnabled: true
+        # filter 검색
+        filter: true
+        operationsSorter: alpha
+        tagsSorter: alpha
+        displayRequestDuration: true
+        supportedSubmitMethods: get,put,post,delete,options,head,patch,trace
+api:
+    service-key: 8jg9zaWM2xY4jW8lvQIrcEUB4S4%2B0pOqVolH6vbducn3fzcC7aqUidB4dOBlW75ym4aX1BibidM%2FuK0bPIQOIw%3D%3D
+    inspect-key: http://openapi.elevator.go.kr/openapi/service/ElevatorInspectsafeService/getInspectFailList
+    self-inspect-key: http://openapi.elevator.go.kr/openapi/service/ElevatorSelfCheckService/getSelfCheckList
+    hrts-conn: http://172.20.52.248:8080/hrts/manager/miri_portal/el/projno/#projectcarno/connection/on/#command
+    hrts-monit: http://172.20.52.248:8080/hrts/manager/miri_portal/el/projno/#projectcarno/info/realtime
+    hrts-rules: http://172.20.52.248:8080/hrts/manager/miri_portal/el/projno/#projectcarno/info/run/service/#command
+    hrts-hccc: http://hrts-hccc.sys.hdel.co.kr/hrtsReportHandler.do?projno=
+    unit-service1: http://172.20.52.234:8084/material/predict/projnos
+    miri-robot-api: http://13.125.50.47:8080/api/v1/history/calls/robot
+    miri-robot-key: HDE2144bc4ce32f11ed92a
+    miri-robot-sec: 2144bc80e32f11ed92a802b67259d33a
+    miri-call-api: https://mirisvc.hdel.co.kr/miricall/api/v1/application/mystatus
+    miri-call-key: f6e3a357-3bd1-4195-b7ce-1d2a8fd193fe230420
+    miri-view-api: https://mirisvc.hdel.co.kr/miriview/api/v1/application/get_device_status
+    miri-view-key: qNsg1WHLSKGLBkn4tIjFl5KRbLuZbxIyUABHaEkGFN6NnhS9aCkQr85o+W0=
+    hccc-service-req: http://hecs.hdel.co.kr/MIRIBrkAcpt.do
+    kakao-api: http://dapi.kakao.com/v2/maps/sdk.js
+    kakao-key: 7070fad5c7541bcc5809e78fa3805e3b
+cloud:
+    aws:
+        credentials:
+            instance-profile: false
+            access-key: AKIA3F52Q2M2DPSQIZQX
+            secret-key: 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
+        region:
+            static: ap-northeast-2
+        stack:
+            auto: false
+        s3:
+            bucket: hrts-report-new
+logging:
+    level:
+        com:
+            amazonaws:
+                util:
+                    EC2MetadataUtils: error
+
+---

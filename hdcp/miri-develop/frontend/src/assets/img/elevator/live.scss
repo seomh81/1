@@ -1,0 +1,325 @@
+.live-container {
+  padding-right: 0;
+  padding-left: 0;
+  /* // 상단 엘레베이터 영역 */
+
+  .floor-text {
+    height: 4.5rem;
+    font-size: 3.375rem;
+    line-height: 4.5rem;
+    text-align: center;
+    color: #ffffff;
+    background: #787878;
+  }
+
+  .animation-wrap {
+    width: 100%;
+    height: 100vw;
+
+    .absolute-wrap {
+      width: 100%;
+      position: relative;
+      .body {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+
+      .fake-door {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 6;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+
+      .door-wrap {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+      }
+
+      .door {
+        position: relative;
+        z-index: 3;
+
+        .left-door {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+
+        .right-door {
+          position: absolute;
+          top: 0;
+          right: 0;
+          width: 100%;
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+      }
+
+      .elevator-active {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        opacity: 0;
+        z-index: 9;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+
+      .dark-background-up,
+      .dark-background-down {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vw;
+        z-index: 7;
+        opacity: 0;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        background: url('@/assets/img/elevator/up-ing-img.png') repeat-y center /
+          100vw;
+      }
+
+      .dark-line {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        opacity: 0;
+        z-index: 7;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+
+      .arrivar-floor,
+      .arrivar-floor-down {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vw;
+        z-index: 8;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        background: url('@/assets/img/elevator/middle-door.png') no-repeat center -500px /
+          100%;
+      }
+    }
+  }
+}
+
+.disabled_elv {
+  opacity: 0.5;
+}
+
+/* // 엘베 올라가는 어두운 화면 나타남 1 */
+.dark-background-up {
+  animation: dark-background 1s ease 1.5s forwards, displace 3s ease 2s infinite;
+}
+
+/* //내려갈때 어두운 화면 나타남 1 */
+.dark-background-down {
+  animation: dark-background 1s ease 1.5s forwards, dispdark 3s ease 2s infinite;
+}
+
+/* // 엘베 올라가는 어두운 화면 나타남 2 */
+@keyframes dark-background {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+/* // 올라갈때 어두운 배경 3 (올라가는 애니메이션) */
+@keyframes displace {
+  0% {
+    background-position: center 0;
+  }
+  100% {
+    /* // 올라갈때 100vh */
+    /* //내려갈때 -100vh */
+    background-position: center 100vw;
+  }
+}
+
+/* // 내려갈 때 나오는 어두운 배경 3 (내려가는 애니메이션) */
+@keyframes dispdark {
+  0% {
+    background-position: center 0;
+  }
+  100% {
+    // 올라갈때 100vh
+    //내려갈때 -100vh
+    background-position: center -100vw;
+  }
+}
+
+/* //층 도착시 어두워지면서 나타나는 엘리베이터 */
+.elevator-active {
+  animation: elevator-active 1s ease-in 1.5s forwards;
+}
+
+@keyframes elevator-active {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* //어두워질 때 줄 */
+.dark-line {
+  animation: dark-line 1s ease-in 1.5s forwards;
+}
+
+@keyframes dark-line {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* // 도착 층 벽 내려옴 1 */
+.arrivar-floor {
+  animation: arrival-middle 1s ease 1s forwards;
+}
+
+/* // 도착 층 벽 내려옴 2 */
+@keyframes arrival-middle {
+  0% {
+    z-index: 7;
+    /* // 내려올때 -375px */
+    /* // 올라갈때 375px */
+    background-position: center -375px;
+  }
+  100% {
+    z-index: 7;
+    background-position: center 0;
+  }
+}
+
+/* // 도착 층 벽 내려옴 1 */
+.arrivar-floor-down {
+  animation: arrival-middle-down 1s ease 1s forwards;
+}
+
+/* // 도착 층 벽 내려옴 2 */
+@keyframes arrival-middle-down {
+  0% {
+    z-index: 7;
+    /* // 내려올때 -375px */
+    /* // 올라갈때 375px */
+    background-position: center 375px;
+  }
+  100% {
+    z-index: 7;
+    background-position: center 0;
+  }
+}
+
+/* //문 왼쪽 */
+.left-open {
+  animation: left-move 1s ease 1s forwards;
+}
+
+@keyframes left-move {
+  0% {
+    transform: translate(0);
+  }
+  100% {
+    transform: translate(-60px);
+  }
+}
+
+/* //문 오른쪽 */
+.right-open {
+  animation: right-move 1s ease 1s forwards;
+}
+
+@keyframes right-move {
+  0% {
+    transform: translate(0);
+  }
+  100% {
+    transform: translate(60px);
+  }
+}
+
+/* //문 왼쪽 */
+.left-close {
+  transform: translate(-60px);
+  animation: left-close-move 1s ease 1s forwards;
+}
+
+@keyframes left-close-move {
+  0% {
+    transform: translate(-60px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+
+/* //문 오른쪽 */
+.right-close {
+  transform: translate(60px);
+  animation: right-close-move 1s ease 1s forwards;
+}
+
+@keyframes right-close-move {
+  0% {
+    transform: translate(60px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}

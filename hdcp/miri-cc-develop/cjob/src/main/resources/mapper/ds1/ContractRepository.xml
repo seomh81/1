@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.concurrent.domain.contract.ContractRepository">
+    <!-- RESULT MAP -->
+    <!-- RESULT MAP -->
+    <!-- SELECT -->
+    <!-- SELECT -->
+    <!-- UPDATE -->
+    <!-- UPDATE -->
+    <!-- INSERT -->
+    <sql id="insert">
+        INSERT INTO TB_USER_CONTRACT_MAPPING (USER_PORTFOLIO_MAPPING_ID, INTG_PRJ_TRLINE_CD_CODE, CREATION_USER, LASTUPDATE_USER)
+    </sql>
+    <insert id="insertDefault"
+        parameterType="com.hdel.miri.concurrent.domain.contract.Contract$ContractDefaultCreate">
+        <include refid="insert" /> VALUES(#{userPortfolioMappingId}, #{IntgPrjTrlineCdCode}, #{userId}, #{userId})
+    </insert>
+    <!-- INSERT -->
+    <!-- DELETE -->
+    <!-- DELETE -->
+</mapper>

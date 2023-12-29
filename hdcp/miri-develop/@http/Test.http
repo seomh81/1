@@ -1,0 +1,31 @@
+@miriToken =eyJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2OTQ1ODkzODEsImV4cCI6MTY5NDY3NTc4MX0.6AJVQqrt0hXseZ4ppHInYqfg3bYb38GfHZg2nqeTyUyvEsj4onEwiwN73sgdo0f8Ln-FF_MrkXMNtSJRpao-SA 
+### 2030-09-12
+POST https://miri-api.hdel.co.kr/miri/v2/auth/signin
+Content-Type: application/json
+
+{
+    "userId": "otj1027@gmail.com",
+    "password":"Miri1234"
+}
+
+###
+POST https://miri-api.hdel.co.kr/miri/v2/user/already
+Content-Type: application/json
+
+{
+  "userLocale": "ko_kr",
+  "userId": "minhyuk.seo@hyundaielevator.com"
+}
+
+###
+#POST https://miri-api.hdel.co.kr/miri/v2/cc/bill/history
+#POST https://miricp-api-dev.hdel.co.kr/miri/v2/cc/bill/history
+POST http://localhost:8080/miri/v2/cc/bill/history
+Content-Type: application/json
+Authorization: Bearer {{miriToken}}
+
+{
+  "userId": "minhyuck.seo@hyundaielevator.com",
+  "intgPrjNo": "165796",
+  "trlineCd": "A04"
+}

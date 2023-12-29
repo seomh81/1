@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.api.domain.portfolio.PortfolioRepository">
+    <!-- RESULT MAP -->
+    <resultMap id="Portfolio" type="com.hdel.miri.api.domain.portfolio.Portfolio$VO">
+        <result column="USER_PORTFOLIO_MAPPING_ID" property="userPortfolioMappingId"></result>
+        <result column="PORTFOLIO_NAME" property="portfolioName"></result>
+        <result column="PORTFOLIO_IN_CONTRACT_EA" property="portfolioInContractEa"></result>
+        <result column="DEFAULT_YN" property="defaultYn"></result>
+        <result column="SORT_SEQ" property="sortSeq"></result>
+    </resultMap>
+    <!-- RESULT MAP -->
+    <!-- SELECT -->
+    <select id="selectListByUser"
+        parameterType="com.hdel.miri.api.domain.portfolio.Portfolio$PortfolioSearch"
+        resultMap="Portfolio">
+        <!-- SELECT
+            USER_PORTFOLIO_MAPPING_ID
+            , PORTFOLIO_NAME
+            , PORTFOLIO_IN_CONTRACT_EA
+            , DEFAULT_YN
+            , SORT_SEQ
+        FROM TB_PORTFOLIO
+        WHERE USER_ID = #{currentUser}
+        ORDER BY LASTUPDATE_DT DESC 
+        SELECT 
+            max(A.USER_PORTFOLIO_MAPPING_ID) AS USER_PORTFOLIO_MAPPING_ID
+            ,A.PORTFOLIO_NAME 
+            ,count(DISTINCT B.INTG_PRJ_TRLINE_CD_CODE) AS PORTFOLIO_IN_CONTRACT_EA
+            ,max(A.DEFAULT_YN) AS DEFAULT_YN
+            ,max(NVL(A.SORT_SEQ,0)) AS SORT_SEQ
+        FROM TB_PORTFOLIO A, TB_PORTFOLIO_CONTRACT_MAPPING B, CT_EL_INFO C
+        WHERE A.USER_PORTFOLIO_MAPPING_ID = B.USER_PORTFOLIO_MAPPING_ID(+)
+        AND substr(B.INTG_PRJ_TRLINE_CD_CODE,0,6) = C.INTG_PRJ_NO(+)
+        AND substr(B.INTG_PRJ_TRLINE_CD_CODE, -3) = C.TRLINE_CD(+)
+        AND A.USER_ID = #{currentUser}
+        GROUP BY PORTFOLIO_NAME
+        -->
+        SELECT MAX(A.USER_PORTFOLIO_MAPPING_ID)         AS USER_PORTFOLIO_MAPPING_ID
+             , A.PORTFOLIO_NAME 
+             , COUNT(DISTINCT B.INTG_PRJ_TRLINE_CD_CODE) AS PORTFOLIO_IN_CONTRACT_EA
+             , MAX(A.DEFAULT_YN)                         AS DEFAULT_YN
+             , MAX(NVL(A.SORT_SEQ,0))                    AS SORT_SEQ
+         FROM TB_PORTFOLIO A
+        INNER JOIN TB_ROLE_USER_MAPPING D
+           ON D.USER_ID = A.USER_ID
+         LEFT OUTER JOIN TB_PORTFOLIO_CONTRACT_MAPPING B
+           ON B.USER_PORTFOLIO_MAPPING_ID = A.USER_PORTFOLIO_MAPPING_ID
+         LEFT OUTER JOIN CT_EL_INFO C
+           ON C.INTG_PRJ_NO = SUBSTR(B.INTG_PRJ_TRLINE_CD_CODE, 0, 6)
+          AND C.TRLINE_CD   = SUBSTR(B.INTG_PRJ_TRLINE_CD_CODE, -3)
+        WHERE A.USER_ID        = #{currentUser}
+          AND A.PORTFOLIO_NAME != CASE WHEN D.ROLE_ID IN ('87', '88') THEN 'lobby'
+                                       ELSE '%$^#'
+                                   END  
+        GROUP BY A.PORTFOLIO_NAME
+    </select>
+    <!-- SELECT -->
+    <!-- UPDATE -->
+    <update id="update" parameterType="com.hdel.miri.api.domain.portfolio.Portfolio$PortfolioUpdate">
+        UPDATE TB_PORTFOLIO
+        SET PORTFOLIO_NAME = #{portfolioName}
+        , LASTUPDATE_USER = #{currentUser}
+        WHERE USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+    </update>
+    <update id="updateNotDefault" parameterType="com.hdel.miri.api.domain.portfolio.Portfolio$PortfolioUpdate">
+        UPDATE TB_PORTFOLIO
+        SET DEFAULT_YN = 'n'
+          , LASTUPDATE_USER = #{currentUser}
+        WHERE USER_ID = #{currentUser}
+    </update>
+    <update id="updateDefault" parameterType="com.hdel.miri.api.domain.portfolio.Portfolio$PortfolioUpdate">
+        UPDATE TB_PORTFOLIO
+        SET DEFAULT_YN = 'y'
+          , LASTUPDATE_USER = #{currentUser}
+        WHERE USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+    </update>
+    <!-- UPDATE -->
+    <!-- INSERT -->
+    <insert id="insertDefault" useGeneratedKeys="true" keyColumn="USER_PORTFOLIO_MAPPING_ID" keyProperty="userPortfolioMappingId"
+        parameterType="com.hdel.miri.api.domain.portfolio.Portfolio$PortfolioDefaultCreate">
+        INSERT INTO TB_PORTFOLIO
+        (USER_ID, PORTFOLIO_NAME, PORTFOLIO_IN_CONTRACT_EA, DEFAULT_YN, CREATION_USER, LASTUPDATE_USER)
+        VALUES(#{userId}, #{portfolioName}, 0, #{defaultYn}, #{userId}, #{userId})
+    </insert>
+    <insert id="insert" parameterType="com.hdel.miri.api.domain.portfolio.Portfolio$PortfolioCreate">
+        INSERT INTO TB_PORTFOLIO
+        (USER_ID, PORTFOLIO_NAME, PORTFOLIO_IN_CONTRACT_EA, DEFAULT_YN, SORT_SEQ, CREATION_USER, LASTUPDATE_USER)
+        VALUES(#{currentUser}, #{portfolioName}, 0, 'n'
+        , (SELECT
+               NVL(MAX(SORT_SEQ),0)+1 AS SORT_SEQ
+           FROM TB_PORTFOLIO
+           WHERE USER_ID = #{currentUser})
+        , #{currentUser}, #{currentUser})
+    </insert>
+
+    <select id="getElevatorNoByUserPortfolioMappingId" parameterType="com.hdel.miri.api.domain.miri.MIRI$MIRIServiceSearch" resultType="String">
+            SELECT DISTINCT ELEVATOR_NO FROM CT_EL_INFO
+            WHERE (INTG_PRJ_NO, TRLINE_CD) IN (
+                SELECT DISTINCT substr(INTG_PRJ_TRLINE_CD_CODE,0,6) AS INTG_PRJ_NO, substr(INTG_PRJ_TRLINE_CD_CODE, -3) AS TRLINE_CD FROM TB_PORTFOLIO_CONTRACT_MAPPING
+                WHERE USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+            )
+            <if test=" 'robot' == miriType "> AND MIRIROBOT_YN = 'Y' </if>
+            <if test=" 'call' == miriType "> AND MIRICALL_YN = 'Y' </if>
+            <if test=" 'view' == miriType "> AND MIRIVIEW_YN = 'Y' </if>
+    </select>
+
+    <!-- INSERT -->
+    <!-- DELETE -->
+    <delete id="delete" parameterType="com.hdel.miri.api.domain.portfolio.Portfolio$PortfolioDelete">
+        DELETE FROM TB_PORTFOLIO
+        WHERE USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+    </delete>
+    <!-- DELETE -->
+</mapper>

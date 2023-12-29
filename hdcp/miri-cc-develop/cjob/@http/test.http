@@ -1,0 +1,10 @@
+###
+POST http://localhost:8080/v2/cc/send-mail-account
+Content-Type: application/json
+
+
+
+###
+Post https://miricp-api-dev.hdel.co.kr/miri-cc/v2/cc/send-mail-account
+Content-Type: application/json
+

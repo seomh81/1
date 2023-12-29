@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.api.domain.auth.AuthRepository">
+    <!-- RESULT MAP -->
+    <resultMap id="getAuthDetail" type="com.hdel.miri.api.domain.auth.AuthVO$Summary">
+        <result column="USER_ID"            property="userId" />
+        <result column="PASSWORD" property="password" />
+        <result column="USER_NAME" property="userName" />
+        <result column="ROLE_TYPE"       property="roleType" />
+    </resultMap>
+    <resultMap id="getMy" type="com.hdel.miri.api.domain.auth.AuthVO$My">
+        <result column="USER_ID"            property="userId" />
+        <result column="USER_NAME"                 property="userName" />
+        <result column="AVATAR"            property="avatar" />
+        <result column="PHONENUMBER"       property="phonenumber" />
+        <result column="POSTNUMBER"             property="postnumber" />
+        <result column="ADDRESS"             property="address" />
+        <result column="DETAILADDRESS"             property="detailaddress" />
+        <result column="ROLE_TYPE"             property="roleType" />
+        <result column="LOCALE"       property="locale" />
+        <result column="THEME"       property="theme" />
+        <result column="LANDINGPAGE_TYPE"       property="landingpageType" />
+        <result column="SERVICE_USE_AG"       property="serviceUseAg" />
+        <result column="SERVICE_USE_AG_DT"       property="serviceUseAgDt" />
+        <result column="PL_INFO_USING_AG"       property="plInfoUsingAg" />
+        <result column="PL_INFO_USING_AG_DT"       property="plInfoUsingAgDt" />
+        <result column="PL_INFO_STORE_TIME_AG"       property="plInfoStoreTimeAg" />
+        <result column="PL_INFO_STORE_TIME_AG_DT"       property="plInfoStoreTimeAgDt" />
+        <result column="AD_RECV_AG"       property="adRecvAg" />
+        <result column="AD_RECV_AG_DT"       property="adRecvAgDt" />
+        <result column="WIDGETS"       property="widgets" />
+    </resultMap>
+
+    <resultMap id="checkValid" type="com.hdel.miri.api.domain.auth.AuthVO$ValidUserVO">
+        <result column="USER_ID"    property="userId" />
+        <result column="REGIST_YN"  property="registYn" />
+        <result column="ROW_CNT"  property="rowCnt" />
+        <collection property="contractList" resultMap="ContractInfo" >
+            <id column="USER_ID" property="userId" />
+        </collection>
+    </resultMap>
+    <resultMap id="ContractInfo" type="com.hdel.miri.api.domain.contract.Contract$ContractAPI">
+        <result column="INTG_PRJ_NO"    property="intgPrjNo"/>
+        <result column="TRLINE_CD"      property="trlineCd"/>
+        <result column="MODEL"          property="model"/>
+        <result column="SITE_NM"        property="siteNm"/>
+        <result column="ADDR"           property="addr"/>
+    </resultMap>
+    <!-- RESULT MAP -->
+
+    <!-- SELECT -->
+    <select id="findByEmail" parameterType="String" resultMap="getAuthDetail">
+        SELECT USER_ID, USER_NAME, PASSWORD, ROLE_TYPE FROM TB_USER WHERE DEL_YN = 'n' AND ACCOUNT_STATUS = '0040'
+        <if test="userId != null">AND USER_ID = #{userId}</if>
+    </select>
+    <select id="selectByCurrentUser"
+            parameterType="com.hdel.miri.api.util.request.AbstractRequest" resultMap="getMy">
+        SELECT
+        U.USER_ID AS USER_ID
+        , U.USER_NAME AS USER_NAME
+        , U.AVATAR AS AVATAR
+        , U.PHONENUMBER AS PHONENUMBER
+        , U.POSTNUMBER AS POSTNUMBER
+        , U.ADDRESS AS ADDRESS
+        , U.DETAILADDRESS AS DETAILADDRESS
+        , U.ROLE_TYPE AS ROLE_TYPE
+        , ST.LOCALE AS LOCALE
+        , ST.THEME AS THEME
+        , ST.LANDINGPAGE_TYPE AS LANDINGPAGE_TYPE
+        , TERM.SERVICE_USE_AG AS SERVICE_USE_AG
+        , TO_CHAR(TERM.SERVICE_USE_AG_DT,'YYYY-MM-DD') AS SERVICE_USE_AG_DT
+        , TERM.PL_INFO_USING_AG AS PL_INFO_USING_AG
+        , TO_CHAR(TERM.PL_INFO_USING_AG_DT,'YYYY-MM-DD') AS PL_INFO_USING_AG_DT
+        , TERM.PL_INFO_STORE_TIME_AG AS PL_INFO_STORE_TIME_AG
+        , TO_CHAR(TERM.PL_INFO_STORE_TIME_AG_DT,'YYYY-MM-DD') AS PL_INFO_STORE_TIME_AG_DT
+        , TERM.AD_RECV_AG AS AD_RECV_AG
+        , TO_CHAR(TERM.AD_RECV_AG_DT,'YYYY-MM-DD') AS AD_RECV_AG_DT
+        , WIDGETS
+        FROM TB_USER U
+            LEFT JOIN TB_SETUP ST ON U.USER_ID = ST.USER_ID
+            LEFT JOIN TB_SERVICE_TERMS TERM ON U.USER_ID = TERM.USER_ID
+        WHERE DEL_YN = 'n'
+        <if test="currentUser != null">AND U.USER_ID = #{currentUser} </if>
+    </select>
+
+    <select id="checkAccountValidate" parameterType="com.hdel.miri.api.domain.auth.AuthVO$UserIdsVO" resultMap="checkValid">
+        SELECT USER_ID
+             , CASE WHEN ORDER_CNT = 1 THEN REGIST_YN
+                    ELSE 'N'
+                END REGIST_YN
+             , ROW_CNT
+             , INTG_PRJ_NO
+             , TRLINE_CD
+             , MODEL
+             , SITE_NM
+             , ADDR
+          FROM (
+                SELECT A.USER_ID AS USER_ID
+                    , CASE WHEN B.USER_ID IS NULL THEN 'Y' 
+                            ELSE 'N' 
+                        END AS REGIST_YN
+                    , A.ROW_CNT
+                    , A.INTG_PRJ_NO
+                    , A.TRLINE_CD
+                    , A.MODEL
+                    , A.SITE_NM
+                    , A.ADDR
+                    , ROW_NUMBER() OVER(PARTITION BY A.USER_ID ORDER BY A.ROW_CNT) AS ORDER_CNT
+                FROM (
+                    <foreach collection="userIds" item="item" separator=" UNION ALL ">
+                        SELECT DISTINCT
+                              #{item.userId} AS USER_ID
+                            , #{item.rowCnt} AS ROW_CNT
+                            , B.INTG_PRJ_NO
+                            , B.TRLINE_CD
+                            , B.MODEL
+                            , B.SITE_NM
+                            , B.ADDRESS1 AS ADDR
+                        FROM DUAL A
+                        LEFT OUTER JOIN CT_EL_INFO B
+                            ON B.COMPS_CNTR_NO = #{item.compsCntrNo}
+                        AND 1 = 1
+                    </foreach>
+                    ) A
+                LEFT OUTER JOIN TB_USER B
+                    ON B.USER_ID = A.USER_ID
+               )
+    </select>
+    <select id="checkAccountValidate2" parameterType="com.hdel.miri.api.domain.auth.AuthVO$UserIdsVO" resultMap="checkValid">
+        SELECT USER_ID
+             , CASE WHEN ORDER_CNT = 1 THEN REGIST_YN
+                    ELSE 'N'
+                END REGIST_YN
+             , ROW_CNT
+             , INTG_PRJ_NO
+             , TRLINE_CD
+             , MODEL
+             , SITE_NM
+             , ADDR
+          FROM (
+                SELECT A.USER_ID AS USER_ID
+                    , CASE WHEN B.USER_ID IS NULL                            THEN 'N'
+                           WHEN A.INTG_PRJ_NO IS NULL OR A.TRLINE_CD IS NULL THEN 'N'
+                           ELSE 'Y' 
+                       END AS REGIST_YN
+                    , A.ROW_CNT
+                    , A.INTG_PRJ_NO
+                    , A.TRLINE_CD
+                    , A.MODEL
+                    , A.SITE_NM
+                    , A.ADDR
+                    , ROW_NUMBER() OVER(PARTITION BY A.USER_ID, A.INTG_PRJ_NO, A.TRLINE_CD ORDER BY A.ROW_CNT) AS ORDER_CNT
+                FROM (
+                    <foreach collection="userIds" item="item" separator=" UNION ALL ">
+                        SELECT DISTINCT
+                              #{item.userId} AS USER_ID
+                            , #{item.rowCnt} AS ROW_CNT
+                            , B.INTG_PRJ_NO
+                            , B.TRLINE_CD
+                            , B.MODEL
+                            , B.SITE_NM
+                            , B.ADDRESS1 AS ADDR
+                        FROM DUAL A
+                        LEFT OUTER JOIN CT_EL_INFO B
+                            ON B.COMPS_CNTR_NO = #{item.compsCntrNo}
+                        AND 1 = 1
+                    </foreach>
+                    ) A
+                LEFT OUTER JOIN TB_USER B
+                    ON B.USER_ID = A.USER_ID
+               )
+    </select>
+    <!-- SELECT -->
+
+    <!-- INSERT -->
+    <!-- INSERT -->
+
+    <!-- UPDATE -->
+    <!-- UPDATE -->
+
+    <update id="upsertFirebaseUserId" parameterType="com.hdel.miri.api.domain.auth.AuthVO$SignIn">
+    MERGE INTO TB_USER
+            USING DUAL
+            ON (USER_ID = #{userId})
+            WHEN MATCHED THEN
+                UPDATE SET FIREBASE_USER_ID  = #{firebaseUserId}
+    </update>
+
+    <select id="GetNotAllowStatusUser" parameterType="com.hdel.miri.api.domain.auth.AuthVO$SignIn" resultType="String">
+        SELECT
+            CASE 	WHEN ACCOUNT_STATUS = '0001' THEN '0001' 
+                    WHEN ACCOUNT_STATUS = '0010' THEN '0010'
+            ELSE '0000' END AS ACCOUNT_STATUS
+        from tb_user
+            where USER_ID = #{userId}
+            AND ACCOUNT_STATUS IN ('0001','0010')
+    </select>
+
+</mapper>

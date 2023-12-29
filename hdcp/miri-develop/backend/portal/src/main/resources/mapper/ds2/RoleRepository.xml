@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.api.domain.privilege.role.RoleRepository">
+    <!-- RESULT MAP -->
+    <!-- RESULT MAP -->
+
+    <!-- SELECT -->
+    <!-- SELECT -->
+
+
+    <!-- INSERT -->
+    <insert id="insert" parameterType="com.hdel.miri.api.domain.privilege.role.Role$RoleCreate">
+        INSERT INTO TB_ROLE(
+                            PARENT_ROLE_ID
+                           ,ROLE_NAME
+                           ,TYPE
+                           ,PAYLOAD
+                           ,CREATION_USER
+                           ,LASTUPDATE_USER)
+        VALUES(
+                  #{parentRoleId}
+              ,#{roleName}
+              ,#{type}
+              ,#{payload}
+              ,#{currentUser}
+              ,#{currentUser}
+              )
+    </insert>
+    <insert id="copy" parameterType="java.util.HashMap">
+        {
+            CALL
+            DECLARE
+            TYPE T_ROLE_ROW IS RECORD(LEVEL NUMBER, ROLE_ID NUMBER, PARENT_ROLE_ID NUMBER, ROLE_NAME VARCHAR2(100), TYPE VARCHAR2(100), PAYLOAD VARCHAR2(4000));
+            TYPE T_ROLE_ROW2 IS RECORD(LEVEL NUMBER, OLD_ROLE_ID NUMBER, NEW_ROLE_ID NUMBER);
+            TYPE T_ROLE IS TABLE OF T_ROLE_ROW;
+            TYPE T_ROLE2 IS TABLE OF T_ROLE_ROW2;
+            TYPE T_ROLE_ID IS TABLE OF NUMBER INDEX BY VARCHAR2(100);
+
+            C_TB T_ROLE;
+            R_TB T_ROLE2;
+            R_HASH T_ROLE_ID;
+
+            BEGIN
+                SELECT
+                LEVEL
+                ,ROLE_ID
+                ,PARENT_ROLE_ID
+                ,ROLE_NAME
+                ,TYPE
+            ,PAYLOAD BULK COLLECT INTO C_TB
+            FROM
+            TB_ROLE START WITH ROLE_ID = #{srcRoleId}
+            CONNECT BY
+            PRIOR ROLE_ID = PARENT_ROLE_ID;
+            FORALL idx IN C_TB.FIRST..C_TB.LAST
+            INSERT INTO TB_ROLE(PARENT_ROLE_ID, ROLE_NAME, TYPE, PAYLOAD, CREATION_USER, LASTUPDATE_USER)
+            VALUES(DECODE(C_TB(idx).LEVEL, 1, #{tgtRoleId}, C_TB(idx).PARENT_ROLE_ID), C_TB(idx).ROLE_NAME||'_COPY', C_TB(idx).TYPE, C_TB(idx).PAYLOAD, #{currentUser}, #{currentUser})
+            RETURNING C_TB(idx).LEVEL, C_TB(idx).ROLE_ID, ROLE_ID BULK COLLECT INTO R_TB;
+
+            FOR idx IN R_TB.FIRST..R_TB.LAST
+            LOOP
+                R_HASH(TO_CHAR(R_TB(idx).OLD_ROLE_ID)) := R_TB(idx).NEW_ROLE_ID;
+                DBMS_OUTPUT.PUT_LINE(R_TB(idx).LEVEL||'-이전:'||R_TB(idx).OLD_ROLE_ID||'-신규:'||R_TB(idx).NEW_ROLE_ID);
+                END LOOP;
+
+
+                FOR idx IN C_TB.FIRST..C_TB.LAST
+                LOOP
+
+                INSERT INTO TB_ROLE_USER_MAPPING(USER_ID, ROLE_ID, CREATION_USER, LASTUPDATE_USER)
+            WITH TEMP AS (
+            SELECT USER_ID, R_HASH(TO_CHAR(C_TB(idx).ROLE_ID)) as b, #{currentUser} as c, #{currentUser} as d FROM TB_ROLE_USER_MAPPING
+                WHERE ROLE_ID = C_TB(idx).ROLE_ID
+            ) SELECT * FROM TEMP;
+
+            INSERT INTO TB_ROLE_MENU_MAPPING(MENU_ID, ROLE_ID, CREATION_USER, LASTUPDATE_USER)
+            WITH TEMP AS (
+                SELECT MENU_ID, R_HASH(TO_CHAR(C_TB(idx).ROLE_ID)) as b, #{currentUser} as c, #{currentUser} as d FROM TB_ROLE_MENU_MAPPING
+                    WHERE ROLE_ID = C_TB(idx).ROLE_ID
+                ) SELECT * FROM TEMP;
+
+                IF C_TB(idx).LEVEL = 1 THEN CONTINUE;
+                END IF;
+
+            DBMS_OUTPUT.PUT_LINE('신아이디:'||R_HASH(C_TB(idx).PARENT_ROLE_ID));
+
+            UPDATE TB_ROLE
+            SET PARENT_ROLE_ID = R_HASH(TO_CHAR(C_TB(idx).PARENT_ROLE_ID))
+            ,CREATION_USER      = #{currentUser}
+                ,LASTUPDATE_USER    = #{currentUser}
+            WHERE ROLE_ID           = R_HASH(TO_CHAR(C_TB(idx).ROLE_ID));
+            END LOOP;
+            END
+            }
+    </insert>
+    <!-- INSERT -->
+
+
+    <!-- UPDATE -->
+    <update id="update" parameterType="com.hdel.miri.api.domain.privilege.role.Role$RoleUpdate">
+        UPDATE TB_ROLE
+        SET     ROLE_NAME = #{roleName}
+          ,TYPE = #{type}
+          ,PAYLOAD = #{payload}
+          ,LASTUPDATE_USER = #{currentUser}
+        WHERE   ROLE_ID = #{roleId}
+    </update>
+    <update id="move" parameterType="com.hdel.miri.api.domain.privilege.role.Role$RoleMove">
+        UPDATE TB_ROLE
+        SET     PARENT_ROLE_ID           = #{tgtRoleId}
+        ,LASTUPDATE_USER    = #{currentUser}
+        WHERE 1=1
+        AND ROLE_ID IN
+        <foreach collection="srcRoleIds" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </update>
+    <!-- UPDATE -->
+
+    <!-- DELETE -->
+    <delete id="delete" parameterType="com.hdel.miri.api.domain.privilege.role.Role$RoleDelete">
+        {
+            CALL
+            BEGIN
+            DELETE FROM TB_ROLE_USER_MAPPING
+            WHERE ROLE_ID IN ( SELECT ROLE_ID FROM TB_ROLE START WITH ROLE_ID = #{roleId} CONNECT BY PRIOR ROLE_ID = PARENT_ROLE_ID );
+            DELETE FROM TB_ROLE_MENU_MAPPING
+            WHERE ROLE_ID IN ( SELECT ROLE_ID FROM TB_ROLE START WITH ROLE_ID = #{roleId} CONNECT BY PRIOR ROLE_ID = PARENT_ROLE_ID );
+            DELETE FROM TB_ROLE
+            WHERE ROLE_ID IN ( SELECT ROLE_ID FROM TB_ROLE START WITH ROLE_ID = #{roleId} CONNECT BY PRIOR ROLE_ID = PARENT_ROLE_ID );
+            END
+        }
+    </delete>
+    <!-- DELETE -->
+</mapper>

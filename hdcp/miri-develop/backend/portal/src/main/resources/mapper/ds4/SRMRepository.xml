@@ -1,0 +1,891 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.api.domain.srm.SRMRepository">
+    <!-- RESULT MAP -->
+    <resultMap id="ContractCarInfo" type="com.hdel.miri.api.domain.contract.Contract$ContractCarInfo">
+        <result column="PORTFOLIO_CONTRACT_MAPPING_ID" property="portfolioContractMappingId" />
+        <result column="CAR_NO" property="carNo" />
+        <result column="MODEL" property="model" />
+    </resultMap>
+    <resultMap id="ContractCarInfoPRJNO" type="com.hdel.miri.api.domain.contract.Contract$ContractCarPRJNOInfo">
+        <id column="INTG_PRJ_TRLINE_CD_CODE" property="intgPrjTrlineCdCode" />
+        <result column="CAR_NO" property="carNo" />
+        <result column="MODEL" property="model" />
+    </resultMap>
+    <resultMap id="ContractContactInfo" type="com.hdel.miri.api.domain.contract.Contract$ContractContactInfo">
+        <result column="NM" property="nm"/>
+        <result column="DEPT_NM" property="deptNm" />
+        <result column="DISP_STR" property="dispStr" />
+        <result column="MOB" property="mob" />
+    </resultMap>
+    <resultMap id="getContractAPI" type="com.hdel.miri.api.domain.contract.Contract$ContractAPI">
+        <result column="INTG_PRJ_NO"            property="intgPrjNo" />
+        <result column="TRLINE_CD"            property="trlineCd" />
+        <result column="MODEL"            property="model" />
+        <result column="SITENM"                 property="siteNm" />
+        <result column="ADDR"            property="addr" />
+    </resultMap>
+    <resultMap id="getContractEmployeeAPI" type="com.hdel.miri.api.domain.contract.Contract$ContractEmployeeAPI">
+        <result column="INTG_PRJ_NO"            property="intgPrjNo" />
+        <result column="TRLINE_CD"            property="trlineCd" />
+    </resultMap>
+    <resultMap id="SCRMUnitPurchaseMSTResponse" type="com.hdel.miri.api.domain.scrm.SCRM$SCRMUnitPurchaseMSTResponse">
+        <result column="INTG_PRJ_TRLINE_CD_CODE"            property="intgPrjTrlineCdCode" />
+        <result column="WBS_NO"            property="wbsNo" />
+        <result column="MATER_CONT"            property="materCont" />
+        <result column="CHNG_DT"            property="chngDt" />
+        <result column="ELEVATOR_NO"            property="elevatorNo" />
+        <result column="FRST_INSTALLATION_DE"   property="frstInstallationDe" />
+        <result column="INSTALLATION_DE"        property="installationDe" />
+        <result column="INSTALLATION_PLACE"        property="installationPlace" />
+        <result column="APPLC_EN_DT"            property="applcEnDt" />
+    </resultMap>
+    <resultMap id="SCRMCurrentWBSNoResponse" type="com.hdel.miri.api.domain.scrm.SCRM$SCRMCurrentWBSNoResponse">
+        <result column="MATER_NO" property="materNo"></result>
+        <result column="MATER_CONT" property="materCont"></result>
+        <result column="MATER_VOL" property="materVol"></result>
+        <result column="MATER_SIZE" property="materSize"></result>
+        <result column="MATER_UNIT" property="materUnit"></result>
+        <result column="MATER_TYPE" property="materType"></result>
+    </resultMap>
+    <!-- <resultMap id="getContractDetails" type="com.hdel.miri.api.domain.contract.Contract$ContractJoinDetail">
+        <id column="PORTFOLIO_CONTRACT_MAPPING_ID"            property="portfolioContractMappingId" />
+        <result column="CONTRACT_CODE"            property="contractCode" />
+        <result column ="INTG_PRJ_TRLINE_CD_CODE" property="intgPrjTrlineCdCode"/>
+        <result column ="INTG_PRJ_NO" property="intgPrjNo"/>
+        <result column ="TRLINE_CD" property="trlineCd"/>
+        <result column ="PRJ_NO" property="prjNo"/>
+        <result column ="BGN_DT" property="bgnDt"/>
+        <result column ="XPIR_DT" property="xpirDt"/>
+        <result column ="CUST_NM" property="custNm"/>
+        <result column ="SITENM" property="sitenm"/>
+        <collection property="carList" resultMap="ContractCarInfo"  >
+            <id column="PORTFOLIO_CONTRACT_MAPPING_ID"            property="portfolioContractMappingId" />
+            <result column="CAR_NO" property="carNo" />
+            <result column="MODEL" property="model" />
+        </collection>
+    </resultMap> -->
+
+   <!-- 조재현 -->
+    <resultMap id="getContractDetails" type="com.hdel.miri.api.domain.contract.Contract$ContractDetail">
+        <id column="USER_PORTFOLIO_MAPPING_ID" property="userPortfolioMappingId" />
+        <collection property="contractList" resultMap="ContractInfo" >
+            <id column="CONTRACT_CODE" property="contractCode" />
+        </collection>
+    </resultMap>
+
+    <resultMap id="ContractInfo" type="com.hdel.miri.api.domain.contract.Contract$ContractInfo">
+        <id column="CONTRACT_CODE"                property="contractCode" />
+        <result column="PORTFOLIO_CONTRACT_MAPPING_ID" property="portfolioContractMappingId" />
+        <result column ="INTG_PRJ_TRLINE_CD_CODE"       property="intgPrjTrlineCdCode"/>
+        <result column ="INTG_PRJ_NO" property="intgPrjNo"/>
+        <result column ="TRLINE_CD" property="trlineCd"/>
+        <result column ="BGN_DT" property="bgnDt"/>
+        <result column ="XPIR_DT" property="xpirDt"/>
+        <result column ="CUST_NM" property="custNm"/>
+        <result column ="SITENM" property="siteNm"/>
+        <result column ="BUILD_NM" property="buildNm"/>
+        <result column ="OFFICE_NM" property="officeNm"/>
+        <result column ="SALES_EMPL_NM" property="salesEmplNm"/>
+        <result column ="EL_NO" property="elevatorNo"/>
+        <result column ="MIRI_YN" property="miriYn"/>
+        <result column ="MIRICALL_YN" property="miriCallYn"/>
+        <result column ="MIRIVIEW_YN" property="miriViewYn"/>
+        <result column ="MIRIROBOT_YN" property="miriRobotYn"/>
+        <collection property="projectList" resultMap="ProjectInfo" >
+            <id column="PRJ_NO" property="prjNo" />
+        </collection>
+    </resultMap>
+
+    <resultMap id="ProjectInfo" type="com.hdel.miri.api.domain.contract.Contract$ProjectInfo">
+        <id column="PRJ_NO"                             property="prjNo" />
+        <result column="PORTFOLIO_CONTRACT_MAPPING_ID"  property="portfolioContractMappingId" />
+        <result column="CONTRACT_CODE"                  property="contractCode" />
+        <result column ="CUST_NM"                       property="custNm"/>
+        <result column ="SITENM"                        property="siteNm"/>
+        <result column ="INTG_PRJ_TRLINE_CD_CODE"       property="intgPrjTrlineCdCode"/>
+        <result column ="INTG_PRJ_NO"                   property="intgPrjNo" />
+        <result column ="TRLINE_CD"                     property="trlineCd" />
+        <result column ="BUILD_NM"                      property="buildNm"/>
+        <collection property="carList" resultMap="CarInfo">
+            <id column="CAR_NO"     property="hoNo" />
+        </collection>
+    </resultMap>
+
+    <resultMap id="CarInfo" type="com.hdel.miri.api.domain.contract.Contract$CarInfo">
+        <id column="CAR_NO"                         property="hoNo" />
+        <result column="PORTFOLIO_CONTRACT_MAPPING_ID" property="portfolioContractMappingId" />
+        <result column="CONTRACT_CODE"                property="contractCode" />
+        <result column ="INTG_PRJ_TRLINE_CD_CODE"       property="intgPrjTrlineCdCode"/>
+        <result column ="INTG_PRJ_NO"                   property="intgPrjNo" />
+        <result column ="TRLINE_CD"                     property="trlineCd" />
+        <result column ="PRJ_NO"                    property="prjNo"/>
+        <result column ="CAR_TYPE"                    property="carType"/>
+        <result column ="INSTALLATION_PLACE"             property="installationPlace"/>
+    </resultMap>
+<!-- 조재현 -->
+
+
+    <resultMap id="getContractDetailsDistinct" type="com.hdel.miri.api.domain.contract.Contract$ContractJoinDetailPRJNOInfo">
+        <id column ="INTG_PRJ_TRLINE_CD_CODE" property="intgPrjTrlineCdCode"/>
+        <result column="CONTRACT_CODE"            property="contractCode" />
+        <result column ="INTG_PRJ_NO" property="intgPrjNo"/>
+        <result column ="TRLINE_CD" property="trlineCd"/>
+        <result column ="PRJ_NO" property="prjNo"/>
+        <result column ="MODEL" property="model"/>
+        <result column ="BGN_DT" property="bgnDt"/>
+        <result column ="XPIR_DT" property="xpirDt"/>
+        <result column ="CUST_NM" property="custNm"/>
+        <result column ="SITENM" property="siteNm"/>
+        <collection property="carList" resultMap="ContractCarInfoPRJNO" >
+            <id column="INTG_PRJ_TRLINE_CD_CODE" property="intgPrjTrlineCdCode" />
+            <result column="CAR_NO" property="carNo" />
+            <result column ="MODEL" property="model"/>
+        </collection>
+    </resultMap>
+    <resultMap id="getContractSummary" type="com.hdel.miri.api.domain.contract.Contract$ContractJoinSummary">
+        <id column="PORTFOLIO_CONTRACT_MAPPING_ID"            property="portfolioContractMappingId" />
+        <result column="CONTRACT_CODE"            property="contractCode" />
+        <result column ="INTG_PRJ_TRLINE_CD_CODE" property="intgPrjTrlineCdCode"/>
+        <result column ="INTG_PRJ_NO" property="intgPrjNo"/>
+        <result column ="TRLINE_CD" property="trlineCd"/>
+        <result column ="MODEL" property="model"/>
+        <result column ="BGN_DT" property="bgnDt"/>
+        <result column ="XPIR_DT" property="xpirDt"/>
+        <result column ="CUST_NM" property="custNm"/>
+        <result column ="SITENM" property="siteNm"/>
+        <result column ="MODEL" property="model"/>
+    </resultMap>
+    <!-- RESULT MAP -->
+    <!-- SELECT -->
+    <select id="selectAnonymous" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractSearchAnonymous"
+            resultMap="getContractAPI"
+    >
+        SELECT
+            DISTINCT
+            C.CS126_UPN AS INTG_PRJ_NO
+                , C.CS126_CST AS TRLINE_CD
+                <!-- , C.CS126_TYP AS MODEL -->
+                ,'' AS MODEL
+                , B.CS121_SPT AS SITENM
+                , B.CS121_P1B||B.CS121_P2B AS ADDR
+        FROM
+            (
+                SELECT A.MANDT
+                     , A.KUNNR
+                FROM SAPHSP.ZCST003 A
+                WHERE A.MANDT = '100'
+                  AND A.STCD2 = REPLACE(#{searchId},'-','')
+            ) A
+                INNER JOIN SAPHSP.ZCST121 B
+                           ON A.MANDT = B.MANDT
+                               AND A.KUNNR = B.KUNNR
+                INNER JOIN SAPHSP.ZCST126 C
+                           ON B.MANDT     = C.MANDT
+                               AND B.CS121_UPN = C.CS126_UPN
+                               AND B.CS121_CST = C.CS126_CST
+                               AND (C.CS126_HYN = 'Y' OR ( C.CS126_MOYN2 ='Y' AND C.CS126_HYN = 'N' ) )
+                               AND C.CS126_DDT = ''
+                               AND C.CS126_GND = 'D'
+                               AND C.CS126_PST = 'A6'
+                               AND C.VKBUR     = 'H100'
+                               AND TO_CHAR ( SYSDATE, 'YYYYMMDD' ) BETWEEN C.CS126_UGS AND REPLACE(CHAR(DATE(C.CS126_UMR)+40),'-','')
+        UNION ALL
+        SELECT
+            DISTINCT
+            C.CS126_UPN AS INTG_PRJ_NO
+                   , C.CS126_CST AS TRLINE_CD
+                   <!-- , C.CS126_TYP AS MODEL -->
+                   ,'' AS MODEL
+                   , B.CS121_SPT AS SITENM
+                   , B.CS121_P1B||B.CS121_P2B AS ADDR
+        FROM
+            (
+                SELECT MANDT, PJT, HNO, SID FROM SAPHSP.ZCST111 WHERE MANDT = '100' AND SID = REPLACE(#{searchId},'-','')
+            ) A
+                INNER JOIN SAPHSP.ZCST126 C
+                           ON A.MANDT     = C.MANDT
+                               AND A.PJT = C.CS126_PJT
+                               AND A.HNO = C.CS126_HNO
+                               AND (C.CS126_HYN = 'Y' OR ( C.CS126_MOYN2 ='Y' AND C.CS126_HYN = 'N' ) )
+                               AND C.CS126_DDT = ''
+                               AND C.CS126_GND = 'D'
+                               AND C.CS126_PST = 'A6'
+                               AND C.VKBUR     = 'H100'
+                               AND TO_CHAR ( SYSDATE, 'YYYYMMDD' ) BETWEEN C.CS126_UGS AND REPLACE(CHAR(DATE(C.CS126_UMR)+40),'-','')
+                INNER JOIN SAPHSP.ZCST121 B
+                           ON B.MANDT = C.MANDT
+                               AND B.CS121_UPN  = C.CS126_UPN
+                               AND B.CS121_CST = C.CS126_CST
+            FOR READ ONLY WITH UR
+    </select>
+    <select id="selectEmployee" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractSearchEmployee"
+            resultMap="getContractEmployeeAPI">
+        <!-- SELECT
+            INTG_PRJ_NO
+            , TRLINE_CD
+            , MODEL
+            , SITENM
+            , ADDR
+            , ACCOUNT_NO
+            , ACCOUNT_NM
+            , COUNT(*) OVER(PARTITION BY ACCOUNT_NO) ACCOUNT_COUNT
+        , ENGINEER_NO
+            , ENGINEER_NM
+            , COUNT(*) OVER(PARTITION BY ENGINEER_NO) ENGINEER_COUNT
+    FROM (
+                SELECT
+                    C.CS126_UPN AS INTG_PRJ_NO
+                    , C.CS126_CST AS TRLINE_CD
+                    , C.CS126_TYP AS MODEL
+                    , B.CS121_SPT AS SITENM
+                    , B.CS121_P1B||B.CS121_P2B AS ADDR
+                    , C.CS126_SID ACCOUNT_NO
+                    ,  EM.IRUM ACCOUNT_NM
+                    , C.CS126_JUJ ENGINEER_NO
+                    , PM.CCSB1EPN ENGINEER_NM
+                FROM (
+                        SELECT
+                            MANDT
+                            , CS126_UPN
+                            , CS126_CST
+                            , CS126_TYP
+                            , CS126_SID
+                            , CS126_JUJ
+                        FROM SAPHSP.ZCST126
+                        WHERE MANDT = '100'
+                        AND CS126_HYN = 'Y'
+                        AND CS126_DDT = ''
+                        AND CS126_GND = 'D'
+                        AND CS126_PST = 'A6'
+                        AND VKBUR     = 'H100'
+                        AND TO_CHAR ( SYSDATE, 'YYYYMMDD' ) BETWEEN CS126_UGS AND CS126_UMR
+                        AND (CS126_SID  = #{empId} OR CS126_JUJ = #{empId})
+                        GROUP BY MANDT, CS126_UPN, CS126_CST, CS126_TYP,CS126_SID,CS126_JUJ
+                    ) C
+                        INNER JOIN SAPHSP.ZCST121 B
+                                    ON B.MANDT = C.MANDT
+                                        AND B.CS121_UPN  = C.CS126_UPN
+                                        AND B.CS121_CST = C.CS126_CST
+                        LEFT JOIN SAPHSP.ZHRT001 EM
+                                ON B.MANDT = EM.MANDT
+                                    AND 'H'||C.CS126_SID = EM.PSNO
+                        LEFT JOIN SAPHSP.ZTBCSB1 PM
+                                ON B.MANDT = PM.MANDT
+                                    AND C.CS126_JUJ = PM.CCSB1EMP ) AA
+    GROUP BY INTG_PRJ_NO
+            , TRLINE_CD
+            , MODEL
+            , SITENM
+            , ADDR
+            , ACCOUNT_NO
+            , ACCOUNT_NM
+            , ENGINEER_NO
+            , ENGINEER_NM -->
+        SELECT
+            CS126_UPN AS INTG_PRJ_NO
+            ,CS126_CST AS TRLINE_CD
+        FROM SAPHSP.ZCST126
+        WHERE MANDT = '100'
+        AND (CS126_HYN = 'Y' OR ( CS126_MOYN2 ='Y' AND CS126_HYN = 'N' ) )
+        AND CS126_DDT = ''
+        AND CS126_GND = 'D'
+        AND CS126_PST = 'A6'
+        AND VKBUR     = 'H100'
+        AND TO_CHAR ( SYSDATE, 'YYYYMMDD' ) BETWEEN CS126_UGS AND REPLACE(CHAR(DATE(CS126_UMR)+40),'-','')
+        AND (CS126_JUJ  = #{empId}  OR CS126_BUJ = #{empId} )
+        GROUP BY CS126_UPN, CS126_CST
+        FOR READ ONLY WITH UR
+    </select>
+    <select id="selectByContract"
+            parameterType="com.hdel.miri.api.domain.contract.Contract$ContractJoin"
+            resultMap="getContractDetails">
+        SELECT
+            DISTINCT
+            CAST( #{portfolioContractMappingId} as VARCHAR(36) ) AS PORTFOLIO_CONTRACT_MAPPING_ID
+            , C.CS126_GNO CONTRACT_CODE
+            , CS126_UPN||CS126_CST AS INTG_PRJ_TRLINE_CD_CODE
+            , C.CS126_UPN INTG_PRJ_NO
+            , C.CS126_CST TRLINE_CD
+            , C.CS126_PJT PRJ_NO
+            , C.CS126_HNO CAR_NO
+            , C.CS126_UGS BGN_DT
+            , C.CS126_UMR XPIR_DT
+            , B.CS121_NAM CUST_NM
+            , B.CS121_SPT SITENM
+            , CASE WHEN substr(NVL(C.CS126_TYP,'--'),1,2) IN ('WB','GT') THEN 'WB/GT'
+            ELSE 'ST7'
+            END CAR_TYPE
+        FROM
+            (SELECT
+                 MANDT
+                , CS126_UPN
+                , CS126_CST
+                , CS126_HNO
+                , CS126_PJT
+                , CS126_TYP
+                , CS126_GNO
+                , TO_CHAR(CS126_UGS) CS126_UGS
+                , TO_CHAR(CS126_UMR) CS126_UMR
+             FROM SAPHSP.ZCST126
+             WHERE MANDT = '100'
+               AND (CS126_HYN = 'Y' OR ( CS126_MOYN2 ='Y' AND CS126_HYN = 'N' ) )
+               AND CS126_DDT = ''
+               AND CS126_GND = 'D'
+               AND CS126_PST = 'A6'
+               AND VKBUR     = 'H100'
+               AND TO_CHAR ( SYSDATE, 'YYYYMMDD' ) BETWEEN CS126_UGS AND REPLACE(CHAR(DATE(CS126_UMR)+40),'-','')
+               AND CS126_UPN = #{intgPrjNo}
+               AND CS126_CST = #{trlineCd}
+                ) C
+                INNER JOIN SAPHSP.ZCST121 B
+                           ON C.MANDT = B.MANDT
+                               AND C.CS126_UPN = B.CS121_UPN
+                               AND C.CS126_CST = B.CS121_CST
+        FOR READ ONLY WITH UR
+    </select>
+
+    <select id="GetContractFromPrjNos"
+            parameterType="com.hdel.miri.api.domain.contract.Contract$ContractSearchPortfolio"
+            resultMap="getContractDetails">
+        SELECT DISTINCT
+               CAST( #{userPortfolioMappingId} as VARCHAR(36) ) as USER_PORTFOLIO_MAPPING_ID
+             , PORTFOLIO_CONTRACT_MAPPING_ID
+             , C.CS126_GNO CONTRACT_CODE
+             , CS126_UPN||CS126_CST AS INTG_PRJ_TRLINE_CD_CODE
+             , C.CS126_UPN INTG_PRJ_NO
+             , C.CS126_CST TRLINE_CD
+             , C.CS126_PJT PRJ_NO
+             , C.CS126_HNO CAR_NO
+             , C.CS126_UGS BGN_DT
+             , C.CS126_UMR XPIR_DT
+             , B.CS121_NAM CUST_NM
+             , B.CS121_SPT SITENM
+             , CASE WHEN substr(NVL(C.CS126_TYP,'--'),1,2) IN ('WB','GT') THEN 'WB/GT'
+                    ELSE 'ST7'
+                END CAR_TYPE
+             , INSTALLATION_PLACE
+             , C.BUILD_NM
+             , C.OFFICE_NM
+             , C.SALES_EMPL_NM
+             , C.EL_NO
+             , C.CS126_MYN   AS MIRI_YN
+             , C.CS126_MOYN1 AS MIRICALL_YN
+             , C.CS126_MOYN2 AS MIRIVIEW_YN
+             , C.CS126_MOYN3 AS MIRIROBOT_YN
+          FROM
+            (
+                SELECT IB.*
+                     , IA.INSTALLATION_PLACE
+                     , IA.PORTFOLIO_CONTRACT_MAPPING_ID
+                     , IA.BUILD_NM
+                     , IA.OFFICE_NM
+                     , IA.EL_NO
+                     , IA.SALES_EMPL_NM
+                  FROM (
+                    <foreach collection="joinList" item="item" separator=" UNION ALL ">
+                        SELECT CAST(#{item.prjNo} AS VARCHAR(10))                       AS PRJ_NO
+                             , CAST(#{item.hoNo} AS VARCHAR(10))                        AS CAR_NO
+                             , CAST(#{item.installationPlace} AS VARCHAR(100))          AS INSTALLATION_PLACE
+                             , CAST(#{item.portfolioContractMappingId} AS VARCHAR(100)) AS PORTFOLIO_CONTRACT_MAPPING_ID
+                             , CAST(#{item.buildNm} AS VARCHAR(150))                    AS BUILD_NM
+                             , CAST(#{item.officeNm} AS VARCHAR(100))                   AS OFFICE_NM
+                             , CAST(#{item.elevatorNo} AS VARCHAR(7))                   AS EL_NO
+                             , CAST(#{item.salesEmplNm} AS VARCHAR(40))                 AS SALES_EMPL_NM
+                          FROM SYSIBM.SYSDUMMY1
+                    </foreach>
+                        ) IA, (
+                        SELECT
+                            MANDT
+                            , CS126_UPN
+                            , CS126_CST
+                            , CS126_HNO
+                            , CS126_PJT
+                            , CS126_TYP
+                            , CS126_GNO
+                            , TO_CHAR(CS126_UGS) CS126_UGS
+                            , TO_CHAR(CS126_UMR) CS126_UMR
+                            , DECODE(TRIM(CS126_MOYN1), '', 'N', CS126_MOYN1) AS CS126_MOYN1
+                            , DECODE(TRIM(CS126_MOYN2), '', 'N', CS126_MOYN2) AS CS126_MOYN2
+                            , DECODE(TRIM(CS126_MOYN3), '', 'N', CS126_MOYN3) AS CS126_MOYN3
+                            , DECODE(TRIM(CS126_MYN), '', 'N', CS126_MYN)     AS CS126_MYN
+                        FROM SAPHSP.ZCST126
+                        WHERE MANDT = '100'
+                        AND (CS126_HYN = 'Y' OR ( CS126_MOYN2 ='Y' AND CS126_HYN = 'N' ) )
+                        AND CS126_DDT = ''
+                        AND CS126_GND = 'D'
+                        AND CS126_PST = 'A6'
+                        AND VKBUR     = 'H100'
+                        AND TO_CHAR(SYSDATE, 'YYYYMMDD' ) BETWEEN CS126_UGS AND REPLACE(CHAR(DATE(CS126_UMR)+40),'-','')
+                        <if test=" keyword != null and keyword != '' ">
+                        AND CS126_GNO like '%'||#{keyword}||'%'
+                        </if>
+                        <foreach collection="joinList" open="AND (" item="item" separator=" OR " close=")">
+                            ( CS126_UPN = #{item.intgPrjNo} AND CS126_CST = #{item.trlineCd} )
+                        </foreach>
+                        ) IB
+                WHERE IA.PRJ_NO = IB.CS126_PJT
+                AND   IA.CAR_NO = IB.CS126_HNO
+                ) C
+                INNER JOIN SAPHSP.ZCST121 B
+                        ON 1 = 1
+                    <if test="fieldName != null and fieldName != ''">
+                       AND B.CS121_SPT LIKE '%'||#{fieldName}||'%'
+                    </if>
+                    <if test="clientName != null and clientName != ''">
+                       AND B.CS121_NAM LIKE '%'||#{clientName}||'%'
+                    </if>
+                       AND C.MANDT = B.MANDT
+                       AND C.CS126_UPN = B.CS121_UPN
+                       AND C.CS126_CST = B.CS121_CST
+        FOR READ ONLY WITH UR
+    </select>
+
+
+    <select id="selectByContractDistinct"
+            parameterType="com.hdel.miri.api.domain.contract.Contract$ContractJoinDistinct"
+            resultMap="getContractDetailsDistinct">
+        SELECT
+            DISTINCT
+                    C.CS126_GNO CONTRACT_CODE
+                   , CAST(#{intgPrjTrlineCdCode} AS VARCHAR(20)) AS INTG_PRJ_TRLINE_CD_CODE
+                   , C.CS126_UPN INTG_PRJ_NO
+                   , C.CS126_CST TRLINE_CD
+                   , C.CS126_UGS BGN_DT
+                   , C.CS126_UMR XPIR_DT
+                   , B.CS121_NAM CUST_NM
+                   , B.CS121_SPT SITENM
+                   , CASE WHEN substr(NVL(C.CS126_TYP,'--'),1,2) IN ('WB','GT') THEN 'WB/GT'
+                          ELSE 'ST7'
+            END MODEL
+        FROM
+            (SELECT
+                 MANDT
+                  , CS126_UPN
+                  , CS126_CST
+                  , CS126_TYP
+                  , CS126_GNO
+                  , TO_CHAR(CS126_UGS) CS126_UGS
+                  , TO_CHAR(CS126_UMR) CS126_UMR
+             FROM SAPHSP.ZCST126
+             WHERE MANDT = '100'
+               AND (CS126_HYN = 'Y' OR ( CS126_MOYN2 ='Y' AND CS126_HYN = 'N' ) )
+               AND CS126_DDT = ''
+               AND CS126_GND = 'D'
+               AND CS126_PST = 'A6'
+               AND VKBUR     = 'H100'
+               AND TO_CHAR ( SYSDATE, 'YYYYMMDD' ) BETWEEN CS126_UGS AND REPLACE(CHAR(DATE(CS126_UMR)+40),'-','')
+               AND CS126_UPN = #{intgPrjNo}
+               AND CS126_CST = #{trlineCd}
+            ) C
+                INNER JOIN SAPHSP.ZCST121 B
+                           ON C.MANDT = B.MANDT
+                               AND C.CS126_UPN = B.CS121_UPN
+                               AND C.CS126_CST = B.CS121_CST
+            FOR READ ONLY WITH UR
+    </select>
+    <select id="selectByContractSummary"
+            parameterType="com.hdel.miri.api.domain.contract.Contract$ContractJoin"
+            resultMap="getContractSummary">
+        SELECT
+            DISTINCT
+            CAST(#{portfolioContractMappingId} AS VARCHAR(20)) AS PORTFOLIO_CONTRACT_MAPPING_ID
+                   , C.CS126_GNO CONTRACT_CODE
+                   , CAST(#{intgPrjTrlineCdCode} AS VARCHAR(20)) AS INTG_PRJ_TRLINE_CD_CODE
+                   , C.CS126_UPN INTG_PRJ_NO
+                   , C.CS126_CST TRLINE_CD
+                   , C.CS126_UGS BGN_DT
+                   , C.CS126_UMR XPIR_DT
+                   , B.CS121_NAM CUST_NM
+                   , B.CS121_SPT SITENM
+                   , CASE WHEN substr(NVL(CS126_TYP,'--'),1,2) IN ('WB','GT') THEN 'WB/GT'
+                   ELSE 'ST7'
+                   END MODEL
+        FROM
+            (SELECT
+                 MANDT
+                  , CS126_UPN
+                  , CS126_CST
+                  , CS126_GNO
+                  , TO_CHAR(CS126_UGS) CS126_UGS
+                  , TO_CHAR(CS126_UMR) CS126_UMR
+                  , CS126_TYP
+             FROM SAPHSP.ZCST126
+             WHERE MANDT = '100'
+               AND (CS126_HYN = 'Y' OR ( CS126_MOYN2 ='Y' AND CS126_HYN = 'N' ) )
+               AND CS126_DDT = ''
+               AND CS126_GND = 'D'
+               AND CS126_PST = 'A6'
+               AND VKBUR     = 'H100'
+               AND TO_CHAR ( SYSDATE, 'YYYYMMDD' ) BETWEEN CS126_UGS AND REPLACE(CHAR(DATE(CS126_UMR)+40),'-','')
+               AND CS126_UPN = #{intgPrjNo}
+               AND CS126_CST = #{trlineCd}
+            ) C
+                INNER JOIN SAPHSP.ZCST121 B
+                           ON C.MANDT = B.MANDT
+                               AND C.CS126_UPN = B.CS121_UPN
+                               AND C.CS126_CST = B.CS121_CST
+            FOR READ ONLY WITH UR
+    </select>
+    <select id="selectContactByContract"
+            parameterType="list"
+            resultMap="ContractContactInfo"
+    >
+
+        SELECT
+            DISTINCT
+                EM.IRUM NM
+               , EM.DPT1_N DEPT_NM
+               , EM.TELH MOB
+        FROM (
+                 SELECT
+                     MANDT
+                      , CS126_UPN
+                      , CS126_CST
+                      , CS126_TYP
+                      , CS126_SID
+                 FROM SAPHSP.ZCST126
+                 WHERE MANDT = '100'
+                   AND (CS126_HYN = 'Y' OR ( CS126_MOYN2 ='Y' AND CS126_HYN = 'N' ) )
+                   AND CS126_DDT = ''
+                   AND CS126_GND = 'D'
+                   AND CS126_PST = 'A6'
+                   AND VKBUR     = 'H100'
+                   AND TO_CHAR ( SYSDATE, 'YYYYMMDD' ) BETWEEN CS126_UGS AND REPLACE(CHAR(DATE(CS126_UMR)+40),'-','')
+                    AND CS126_UPN||CS126_CST IN
+                    <foreach collection="list" item="item" open="(" close=")" separator=",">
+                        #{item.intgPrjNo}||#{item.trlineCd}
+                    </foreach>
+                GROUP BY MANDT, CS126_UPN, CS126_CST, CS126_TYP,CS126_SID ) C
+        LEFT JOIN SAPHSP.ZHRT001 EM
+        ON C.MANDT = EM.MANDT
+       AND 'H'||C.CS126_SID = EM.PSNO
+       FOR READ ONLY WITH UR
+    </select>
+    <!-- test -->
+    <select id="selectContactByContractDistinct2"
+            parameterType="list"
+            resultMap="ContractContactInfo"
+    >
+    SELECT
+    *
+    FROM
+    (
+        SELECT
+        DISTINCT
+        EM.IRUM NM
+        ,EM.DPT1_N DEPT_NM
+        ,B.CS121_SPT||'-'||C.CS126_UPN||C.CS126_CST AS DISP_STR
+        ,EM.TELH MOB
+        FROM (
+            SELECT
+            MANDT
+            , CS126_UPN
+            , CS126_CST
+            , CS126_TYP
+            , CS126_SID
+            FROM SAPHSP.ZCST126
+            WHERE MANDT = '100'
+            AND (CS126_HYN = 'Y' OR ( CS126_MOYN2 ='Y' AND CS126_HYN = 'N' ) )
+            AND CS126_DDT = ''
+            AND CS126_GND = 'D'
+            AND CS126_PST = 'A6'
+            AND VKBUR     = 'H100'
+            AND TO_CHAR ( SYSDATE, 'YYYYMMDD' ) BETWEEN CS126_UGS AND REPLACE(CHAR(DATE(CS126_UMR)+40),'-','')
+        <if test="list == null or list.size == 0">
+        AND CS126_UPN||CS126_CST = ''
+        </if>
+        <if test="list != null and list.size > 0">
+        AND CS126_UPN||CS126_CST IN
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item.intgPrjNo}||#{item.trlineCd}
+        </foreach>
+        </if>
+        GROUP BY MANDT, CS126_UPN, CS126_CST, CS126_TYP,CS126_SID ) C
+        LEFT JOIN SAPHSP.ZHRT001 EM
+            ON C.MANDT = EM.MANDT
+            AND 'H'||C.CS126_SID = EM.PSNO
+        LEFT JOIN SAPHSP.ZCST121 B
+            ON C.MANDT = B.MANDT
+                AND C.CS126_UPN = B.CS121_UPN
+                AND C.CS126_CST = B.CS121_CST
+    )
+    WHERE NM IS NOT NULL
+    FOR READ ONLY WITH UR
+    </select>
+    <select id="selectContactByContractDistinct"
+            parameterType="list"
+            resultMap="ContractContactInfo"
+    >
+    SELECT
+    *
+    FROM
+    (
+        SELECT
+        DISTINCT
+        EM.IRUM NM
+        ,EM.DPT1_N DEPT_NM
+        ,EM.TELH MOB
+        FROM (
+        SELECT
+        MANDT
+        , CS126_UPN
+        , CS126_CST
+        , CS126_TYP
+        , CS126_SID
+        FROM SAPHSP.ZCST126
+        WHERE MANDT = '100'
+        AND (CS126_HYN = 'Y' OR ( CS126_MOYN2 ='Y' AND CS126_HYN = 'N' ) )
+        AND CS126_DDT = ''
+        AND CS126_GND = 'D'
+        AND CS126_PST = 'A6'
+        AND VKBUR     = 'H100'
+        AND TO_CHAR ( SYSDATE, 'YYYYMMDD' ) BETWEEN CS126_UGS AND REPLACE(CHAR(DATE(CS126_UMR)+40),'-','')
+        <if test="list == null or list.size == 0">
+        AND CS126_UPN||CS126_CST = ''
+        </if>
+        <if test="list != null and list.size > 0">
+        AND CS126_UPN||CS126_CST IN
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item.intgPrjNo}||#{item.trlineCd}
+        </foreach>
+        </if>
+        GROUP BY MANDT, CS126_UPN, CS126_CST, CS126_TYP,CS126_SID ) C
+        LEFT JOIN SAPHSP.ZHRT001 EM
+        ON C.MANDT = EM.MANDT
+        AND 'H'||C.CS126_SID = EM.PSNO
+    )
+    WHERE NM IS NOT NULL
+    FOR READ ONLY WITH UR
+    </select>
+    <select id="selectContactByContractEngineer"
+            parameterType="list"
+            resultMap="ContractContactInfo"
+    >
+    SELECT
+    *
+    FROM
+    (
+        SELECT
+        DISTINCT
+        PM.CCSB1EPN NM
+        , CAST('Engineer' AS VARCHAR(20)) DEPT_NM
+        , PM.CCSB1TEL MOB
+        FROM (
+        SELECT
+        MANDT
+        , CS126_UPN
+        , CS126_CST
+        , CS126_TYP
+        , CS126_SID
+        , CS126_JUJ
+        , CS126_BUJ
+        FROM SAPHSP.ZCST126
+        WHERE MANDT = '100'
+        AND (CS126_HYN = 'Y' OR ( CS126_MOYN2 ='Y' AND CS126_HYN = 'N' ) )
+        AND CS126_DDT = ''
+        AND CS126_GND = 'D'
+        AND CS126_PST = 'A6'
+        AND VKBUR     = 'H100'
+        AND TO_CHAR ( SYSDATE, 'YYYYMMDD' ) BETWEEN CS126_UGS AND REPLACE(CHAR(DATE(CS126_UMR)+40),'-','')
+        BETWEEN CS126_UGS AND CS126_UMR
+        AND CS126_UPN||CS126_CST IN
+        <if test="list != null and !list.isEmpty">
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item.intgPrjNo}||#{item.trlineCd}
+        </foreach>
+        </if>
+        <if test="list == null or list.isEmpty">
+        AND 1=2
+        </if>
+        GROUP BY MANDT, CS126_UPN, CS126_CST, CS126_TYP,CS126_SID,CS126_JUJ, CS126_BUJ ) C
+        LEFT JOIN SAPHSP.ZTBCSB1 PM  ON C.MANDT = PM.MANDT AND (PM.CCSB1EMP = C.CS126_JUJ OR PM.CCSB1EMP = C.CS126_BUJ)
+    )
+    WHERE NM IS NOT NULL
+    FOR READ ONLY WITH UR
+    </select>
+    <select id="selectContactByContractEngineerDistinct"
+            parameterType="list"
+            resultMap="ContractContactInfo"
+    >
+        SELECT
+        DISTINCT
+        PM.CCSB1EPN NM
+        , CAST('Engineer' AS VARCHAR(20)) DEPT_NM
+        , CS121_SPT||'-'||CS126_UPN||CS126_CST AS DISP_STR
+        , PM.CCSB1CPN MOB
+        FROM (
+        SELECT
+        MANDT
+        , CS126_UPN
+        , CS126_CST
+        , CS126_TYP
+        , CS126_SID
+        , CS126_JUJ
+        , CS126_BUJ
+        FROM SAPHSP.ZCST126
+        WHERE MANDT = '100'
+        AND (CS126_HYN = 'Y' OR ( CS126_MOYN2 ='Y' AND CS126_HYN = 'N' ) )
+        AND CS126_DDT = ''
+        AND CS126_GND = 'D'
+        AND CS126_PST = 'A6'
+        AND VKBUR     = 'H100'
+        AND TO_CHAR ( SYSDATE, 'YYYYMMDD' ) BETWEEN CS126_UGS AND REPLACE(CHAR(DATE(CS126_UMR)+40),'-','')
+        BETWEEN CS126_UGS AND CS126_UMR
+        <if test="list == null or list.size == 0">
+            AND CS126_UPN||CS126_CST = ''
+        </if>
+        <if test="list != null and list.size > 0">
+            AND (
+            <foreach collection="list" item="item" separator=" OR ">
+                (CS126_UPN = #{item.intgPrjNo} and CS126_CST = #{item.trlineCd})
+            </foreach>
+            )
+        </if>
+        GROUP BY MANDT, CS126_UPN, CS126_CST, CS126_TYP,CS126_SID,CS126_JUJ, CS126_BUJ ) C
+        LEFT JOIN SAPHSP.ZTBCSB1 PM  ON C.MANDT = PM.MANDT AND (PM.CCSB1EMP = C.CS126_JUJ OR PM.CCSB1EMP = C.CS126_BUJ)
+        LEFT JOIN SAPHSP.ZCST121 D
+            ON C.MANDT = D.MANDT
+            AND C.CS126_UPN = D.CS121_UPN
+            AND C.CS126_CST = D.CS121_CST
+        FOR READ ONLY WITH UR
+    </select>
+    <select id="selectByCompanionDays" parameterType="list"
+            resultType="integer">
+        SELECT
+            (DAYS(NOW()) - DAYS(TO_DATE(CS126_UGS||'000000','YYYY-MM-DD HH24:MI:SS'))) COMPANION
+        FROM (
+             SELECT
+                COALESCE(MIN(CS126_UGS),TO_CHAR(NOW(),'YYYYMMDD')) CS126_UGS
+             FROM SAPHSP.ZCST126
+             WHERE MANDT = '100'
+               AND (CS126_HYN = 'Y' OR ( CS126_MOYN2 ='Y' AND CS126_HYN = 'N' ) )
+               AND CS126_DDT = ''
+               AND CS126_GND = 'D'
+               AND CS126_PST = 'A6'
+               AND VKBUR     = 'H100'
+                <if test="list == null or list.size == 0">
+                    AND CS126_UPN||CS126_CST = ''
+                </if>
+                <if test="list != null and list.size > 0">
+                    AND CS126_UPN||CS126_CST IN
+                    <foreach collection="list" item="item" open="(" close=")" separator=",">
+                        #{item.intgPrjNo}||#{item.trlineCd}
+                    </foreach>
+                </if>
+         ) TOT
+         FOR READ ONLY WITH UR
+    </select>
+    <select id="selectByCompanionDaysDistinct" parameterType="list"
+            resultType="integer">
+        SELECT
+        (DAYS(NOW()) - DAYS(TO_DATE(CS126_UGS||'000000','YYYY-MM-DD HH24:MI:SS'))) COMPANION
+        FROM (
+        SELECT
+        COALESCE(MIN(CS126_UGS),TO_CHAR(NOW(),'YYYYMMDD')) CS126_UGS
+        FROM SAPHSP.ZCST126
+        WHERE MANDT = '100'
+        AND (CS126_HYN = 'Y' OR ( CS126_MOYN2 ='Y' AND CS126_HYN = 'N' ) )
+        AND CS126_DDT = ''
+        AND CS126_GND = 'D'
+        AND CS126_PST = 'A6'
+        AND VKBUR     = 'H100'
+        <if test="list == null or list.size == 0">
+            AND CS126_UPN||CS126_CST = ''
+        </if>
+        <if test="list != null and list.size > 0">
+            AND CS126_UPN||CS126_CST IN
+            <foreach collection="list" item="item" open="(" close=")" separator=",">
+                #{item.intgPrjNo}||#{item.trlineCd}
+            </foreach>
+        </if>
+        ) TOT
+        FOR READ ONLY WITH UR
+    </select>
+
+    <select id="selectUnitPurchaseMST"
+            parameterType="com.hdel.miri.api.domain.scrm.SCRM$SCRMCurrentPortfolioRequest"
+            resultMap="SCRMUnitPurchaseMSTResponse"
+    >
+        WITH TEMP AS (
+            <if test="join == null or join.size == 0 ">
+                SELECT NULL CHNG_DT FROM SYSIBM.SYSDUMMY1
+            </if>
+            <if test="join != null and join.size > 0 ">
+                <foreach collection="join" item="item" separator="UNION ALL">
+                SELECT
+                    CAST(#{item.intgPrjTrlineCdCode} as VARCHAR(20)) INTG_PRJ_TRLINE_CD_CODE
+                    , POSID as WBS_NO
+                    , CAST(#{item.buldNm} as VARCHAR(300)) MATER_CONT
+                    , APDAT as CHNG_DT
+                    , CAST(#{item.elevatorNo} as VARCHAR(20))  as ELEVATOR_NO
+                    , CAST(#{item.frstInstallationDe} as VARCHAR(20)) as FRST_INSTALLATION_DE
+                    , CAST(#{item.installationDe} as VARCHAR(20))  as INSTALLATION_DE
+                    , CAST(#{item.installationPlace} as VARCHAR(200))  as INSTALLATION_PLACE
+                    , CAST(#{item.applcEnDt} as VARCHAR(20))  as APPLC_EN_DT
+                FROM SAPHSP.ZMMT031 ML
+                WHERE   ML.MANDT = '100'
+                AND     ML.POSID = CAST(#{item.projNo} as VARCHAR(20))
+                    <if test="startDate != null and startDate != ''">
+                        <if test="endDate != null and endDate != ''">
+                            AND TO_CHAR(ML.APDAT,'YYYYMMDD') BETWEEN CAST(#{startDate} as VARCHAR(8)) AND CAST(#{endDate} as VARCHAR(8))
+                        </if>
+                    </if>
+                </foreach>
+            </if>
+        )
+        SELECT DISTINCT * FROM TEMP
+        <if test="keyword != null and keyword != ''">
+            WHERE WBS_NO = #{keyword}        
+        </if>
+        ORDER BY CHNG_DT DESC
+        FOR READ ONLY WITH UR
+
+    </select>
+    <select id="selectUnitPurchaseDetail"
+        parameterType="com.hdel.miri.api.domain.scrm.SCRM$SCRMCurrentWBSNoRequest"
+            resultMap="SCRMCurrentWBSNoResponse"
+    >
+        SELECT
+            MM.MATNR MATER_NO
+            ,MM.MAKTX MATER_CONT
+            ,MM.VOLUM||MM.VOLEH MATER_VOL
+            ,MM.ZSIZE MATER_SIZE
+            ,MM.MEINS MATER_UNIT
+            ,MM.MTART MATER_TYPE
+        FROM SAPHSP.ZMMT031 ML, SAPHSP.ZMMT011 MM
+        WHERE ML.MANDT = MM.MANDT 
+        AND ML.MATNR = MM.MATNR
+        AND ML.MANDT = '100'
+        AND ML.REQKIND IN ('1','6','7','9','H')
+        AND MM.MATNR NOT IN ('NB-100','NC-100','NS-100')
+        AND ML.POSID = #{wbsNo}
+        AND ML.APDAT = #{chngDt}
+        ORDER BY ML.APDAT DESC
+        FOR READ ONLY WITH UR;
+
+        <!-- SELECT
+            MM.MATER_NO MATER_NO
+            ,MM.MATER_CONT MATER_CONT
+            ,MM.VOLU||MM.VOLU_UNIT MATER_VOL
+            ,MM.SIZE1 MATER_SIZE
+            ,MM.BASE_UNIT MATER_UNIT
+            ,MM.MATER_TYPE MATER_TYPE
+        FROM BSSC.AM_RM_MATER_CHRG_LIST ML
+                INNER JOIN BSSC.AM_MATER_MST MM
+                            ON ML.MANDT = MM.MANDT AND ML.BUKRS = MM.BUKRS AND ML.MATER_NO = MM.MATER_NO
+        WHERE ML.MANDT = '100'
+        AND ML.BUKRS = '1000'
+        AND ML.WBS_NO = #{wbsNo}
+        ORDER BY ML.CHNG_DT DESC
+        FOR READ ONLY WITH UR -->
+        <!-- 날짜 조건 삭제 AND ML.CHNG_DT = #{chngDt} -->
+    </select>
+    <!-- SELECT -->
+    <!-- UPDATE -->
+    <!-- UPDATE -->
+    <!-- INSERT -->
+    <!-- INSERT -->
+    <!-- DELETE -->
+    <!-- DELETE -->
+</mapper>

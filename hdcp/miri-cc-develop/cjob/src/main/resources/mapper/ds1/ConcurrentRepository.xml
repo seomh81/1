@@ -1,0 +1,1629 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.concurrent.domain.dgk.CcRepository">
+        <resultMap id="GetSubscriberListVO"   type="com.hdel.miri.concurrent.domain.message.CcMessageVO$GetSubscriberListVO">
+        <result column="USER_ID"                    property="userId" />
+        <result column="USER_NAME"                  property="userName" />
+        <result column="ALARM_TYPE"                 property="alarmType" />
+        <result column="ALARM_NM"                   property="alarmNm" />
+        <result column="INTG_PRJ_TRLINE_CD_CODE"    property="intgPrjTrlineCdCode" />
+        <result column="FIREBASE_USER_ID"           property="firebaseUserId" />
+        <result column="PHONENUMBER"                property="phonenumber" />
+        <result column="DIV"                        property="div" />
+        <result column="DIV_NM"                     property="divNm" />
+    </resultMap>
+    
+    <resultMap id="MsgTemplateVO" type="com.hdel.miri.concurrent.domain.message.CcMessageVO$MsgTemplateVO">
+        <result column="MSG_TEMPLATE_ID"        property="msgTemplateId"/>
+        <result column="MSG_TEMPLATE_ID"        property="msgTemplateId"/>
+        <result column="MSG_TEMPLATE_NAME"      property="msgTemplateName"/>
+        <result column="MSG_TEMPLATE_NOTE"      property="msgTemplateNote"/>
+        <result column="MSG_TEMPLATE_CONTENTS"  property="msgTemplateContents"/>
+        <result column="REGIST_DT"              property="registDt"/>
+        <result column="UPDATE_DT"              property="updateDt"/>
+    </resultMap>
+
+    <update id="deleteExpiredElevatorInfo" parameterType="String">
+        {
+            Call
+                declare
+                begin
+
+                    DELETE CT_EL_SELF_INSP_HIS
+                    WHERE ELEVATOR_NO IN (
+                        SELECT ELEVATOR_NO FROM CT_EL_INFO
+                        WHERE PRJ_NO IS NULL OR TRLINE_CD IS NULL OR INTG_PRJ_NO IS NULL OR HO_NO IS NULL OR CONTRACT_START_DT IS NULL OR
+                        PRJ_NO = ' ' OR TRLINE_CD = ' ' OR INTG_PRJ_NO = ' ' OR HO_NO = ' ' OR CONTRACT_START_DT = ' ' OR
+                        (TO_CHAR(SYSDATE,'YYYYMMDD') NOT BETWEEN CONTRACT_START_DT AND TO_CHAR(TO_DATE(CONTRACT_END_DT,'YYYYMMDD') + 40,'YYYYMMDD'))
+                    );
+
+                    <!-- DELETE CT_EL_SELF_INSP_HIS
+                    WHERE ELEVATOR_NO IN (
+                        SELECT ELEVATOR_NO FROM CT_EL_SYNC_TARGET
+                        WHERE DEL_YN = 'y'
+                    ); -->
+                    <!-- DELETE CT_EL_SELF_INSP_HIS CESIH
+                    WHERE NOT EXISTS (SELECT CEI.ELEVATOR_NO FROM CT_EL_INFO CEI
+                                      WHERE CEI.ELEVATOR_NO = CESIH.ELEVATOR_NO ); -->
+                
+                    DELETE CT_EL_SAFETY_MGR_INFO
+                    WHERE ELEVATOR_NO IN (
+                        SELECT ELEVATOR_NO FROM CT_EL_INFO
+                        WHERE PRJ_NO IS NULL OR TRLINE_CD IS NULL OR INTG_PRJ_NO IS NULL OR HO_NO IS NULL OR CONTRACT_START_DT IS NULL OR
+                        PRJ_NO = ' ' OR TRLINE_CD = ' ' OR INTG_PRJ_NO = ' ' OR HO_NO = ' ' OR CONTRACT_START_DT = ' ' OR
+                        (TO_CHAR(SYSDATE,'YYYYMMDD') NOT BETWEEN CONTRACT_START_DT AND TO_CHAR(TO_DATE(CONTRACT_END_DT,'YYYYMMDD') + 40,'YYYYMMDD') )
+                    );
+
+                    <!-- DELETE CT_EL_SAFETY_MGR_INFO
+                    WHERE ELEVATOR_NO IN (
+                        SELECT ELEVATOR_NO FROM CT_EL_SYNC_TARGET
+                        WHERE DEL_YN = 'y'
+                    ); -->
+
+                    <!-- DELETE CT_EL_SAFETY_MGR_INFO CESMI
+                    WHERE NOT EXISTS (SELECT CEI.ELEVATOR_NO FROM CT_EL_INFO CEI
+                                      WHERE CEI.ELEVATOR_NO = CESMI.ELEVATOR_NO );  -->
+
+                    DELETE CT_EL_INSSURANCE_INFO
+                    WHERE ELEVATOR_NO IN (
+                        SELECT ELEVATOR_NO FROM CT_EL_INFO
+                        WHERE PRJ_NO IS NULL OR TRLINE_CD IS NULL OR INTG_PRJ_NO IS NULL OR HO_NO IS NULL OR CONTRACT_START_DT IS NULL OR
+                        PRJ_NO = ' ' OR TRLINE_CD = ' ' OR INTG_PRJ_NO = ' ' OR HO_NO = ' ' OR CONTRACT_START_DT = ' ' OR
+                        (TO_CHAR(SYSDATE,'YYYYMMDD') NOT BETWEEN CONTRACT_START_DT AND TO_CHAR(TO_DATE(CONTRACT_END_DT,'YYYYMMDD') + 40,'YYYYMMDD'))
+                    );
+
+                    <!-- DELETE CT_EL_INSSURANCE_INFO
+                    WHERE ELEVATOR_NO IN (
+                        SELECT ELEVATOR_NO FROM CT_EL_SYNC_TARGET
+                        WHERE DEL_YN = 'y'
+                    ); -->
+
+                    <!-- DELETE CT_EL_INSSURANCE_INFO CEII
+                    WHERE NOT EXISTS (SELECT CEI.ELEVATOR_NO FROM CT_EL_INFO CEI
+                                      WHERE CEI.ELEVATOR_NO = CEII.ELEVATOR_NO ); -->
+
+                    DELETE CT_EL_INSP_HIS
+                    WHERE ELEVATOR_NO IN (
+                        SELECT ELEVATOR_NO FROM CT_EL_INFO
+                        WHERE PRJ_NO IS NULL OR TRLINE_CD IS NULL OR INTG_PRJ_NO IS NULL OR HO_NO IS NULL OR CONTRACT_START_DT IS NULL OR
+                        PRJ_NO = ' ' OR TRLINE_CD = ' ' OR INTG_PRJ_NO = ' ' OR HO_NO = ' ' OR CONTRACT_START_DT = ' ' OR
+                        (TO_CHAR(SYSDATE,'YYYYMMDD') NOT BETWEEN CONTRACT_START_DT AND TO_CHAR(TO_DATE(CONTRACT_END_DT,'YYYYMMDD') + 40,'YYYYMMDD'))
+                    );
+
+                    <!-- DELETE CT_EL_INSP_HIS
+                    WHERE ELEVATOR_NO IN (
+                        SELECT ELEVATOR_NO FROM CT_EL_SYNC_TARGET
+                        WHERE DEL_YN = 'y'
+                    ); -->
+
+                    <!-- DELETE CT_EL_INSP_HIS CEIH
+                    WHERE NOT EXISTS (SELECT CEI.ELEVATOR_NO FROM CT_EL_INFO CEI
+                                      WHERE CEI.ELEVATOR_NO = CEIH.ELEVATOR_NO ); -->
+
+                    <!-- 삭제 대상 Portfolio log 남기기: 외부사용자- Portfolio mapping:1 건 대상-->
+                    INSERT INTO TB_ACCOUNT_CH_LOG TACL
+                    SELECT   DISTINCT  '0' PROC_TYPE , TP.USER_ID , TP.USER_PORTFOLIO_MAPPING_ID,TP.PORTFOLIO_NAME,
+                                TPCM.INTG_PRJ_TRLINE_CD_CODE , TPCM.PORTFOLIO_CONTRACT_MAPPING_ID ,'mirisystem', sysdate , ''
+                    FROM TB_PORTFOLIO TP, TB_PORTFOLIO_CONTRACT_MAPPING TPCM , TB_USER TU
+                    WHERE TP.USER_PORTFOLIO_MAPPING_ID = TPCM.USER_PORTFOLIO_MAPPING_ID 
+                    AND   TP.USER_ID = TU.USER_ID
+                    AND   TU.DEL_YN = 'n'
+                    AND   TU.ROLE_TYPE IN ('USER','MANAGER','MAJOR')
+                    AND   EXISTS ( SELECT 'x' FROM CT_EL_INFO CEI
+                                    WHERE TPCM.INTG_PRJ_TRLINE_CD_CODE = CEI.INTG_PRJ_NO||CEI.TRLINE_CD
+                                      AND  (TO_CHAR(SYSDATE,'YYYYMMDD') NOT BETWEEN CONTRACT_START_DT AND TO_CHAR(TO_DATE(CONTRACT_END_DT,'YYYYMMDD') + 40,'YYYYMMDD')))
+                    AND   1 = ( SELECT count(tpcm.PORTFOLIO_CONTRACT_MAPPING_ID) FROM TB_PORTFOLIO_CONTRACT_MAPPING tpcm2
+                                   WHERE  tpcm2.USER_PORTFOLIO_MAPPING_ID  = tp.USER_PORTFOLIO_MAPPING_ID )
+                    ORDER BY 2;  
+
+                    <!--EL_INFO 삭제 --> 
+                    DELETE CT_EL_INFO
+                    WHERE PRJ_NO IS NULL OR TRLINE_CD IS NULL OR INTG_PRJ_NO IS NULL OR HO_NO IS NULL OR CONTRACT_START_DT IS NULL OR
+                        PRJ_NO = ' ' OR TRLINE_CD = ' ' OR INTG_PRJ_NO = ' ' OR HO_NO = ' ' OR CONTRACT_START_DT = ' ' OR
+                        (TO_CHAR(SYSDATE,'YYYYMMDD') NOT BETWEEN CONTRACT_START_DT AND TO_CHAR(TO_DATE(CONTRACT_END_DT,'YYYYMMDD') + 40,'YYYYMMDD'));
+
+                    <!-- DELETE CT_EL_INFO
+                    WHERE ELEVATOR_NO IN (
+                        SELECT ELEVATOR_NO FROM CT_EL_SYNC_TARGET
+                        WHERE DEL_YN = 'y'
+                    ); -->
+                    commit;
+                end
+        }
+    </update>
+
+    <update id="deleteAccountChange" statementType="CALLABLE">
+        {
+             Call SP_ACCOUNT_CHANGE()
+        }
+    </update>
+
+    <!--2023-10-30 추가-->
+    <update id="updateIntgPrjNoTrlineCd" statementType="CALLABLE">
+        {
+             Call SP_INTG_PRJ_CHANGE()
+        }
+    </update>
+
+    <update id="deleteElevatorInfo" parameterType="String">
+        {
+            Call
+                declare
+                begin
+
+                    DELETE CT_CONCURRENT_LOG
+                    WHERE ELEVATOR_NO = #{elevator_no};
+
+                    DELETE CT_EL_SELF_INSP_HIS
+                    WHERE ELEVATOR_NO = #{elevator_no};
+
+                    DELETE CT_EL_SAFETY_MGR_INFO
+                    WHERE ELEVATOR_NO  = #{elevator_no};
+
+                    DELETE CT_EL_INSSURANCE_INFO
+                    WHERE ELEVATOR_NO = #{elevator_no};
+
+                    DELETE CT_EL_INSP_HIS
+                    WHERE ELEVATOR_NO = #{elevator_no};
+
+                    DELETE CT_EL_INFO
+                    WHERE ELEVATOR_NO = #{elevator_no};
+
+                    commit;
+                end
+        }
+    </update>
+
+    <!--20230617 gmw-->
+    <update id="deleteCcTargetElList" parameterType="String">
+        DELETE FROM CT_EL_SYNC_TARGET
+        WHERE DB_TYPE = #{db_type}
+    </update>
+
+    <update id="insertCcTargetElList" parameterType="java.util.List">
+        {
+            Call
+                declare
+                begin
+                    <foreach collection="list" item="item" separator=" " index="idx">
+                        INSERT INTO CT_EL_SYNC_TARGET(ELEVATOR_NO, DB_TYPE, DEL_YN , CHANGE_DT, INTG_PRJ_NO, TRLINE_CD)
+                        VALUES (#{item.elevator_no}, #{item.db_type}, #{item.del_yn}, #{item.change_dt}, #{item.intgPrjNo}, #{item.trlineCd});
+                        <if test="idx % 1000 == 0">commit;</if>
+                    </foreach>
+                    commit;
+                end
+        }
+    </update>
+
+    <update id="insertCcTargetNoElList" parameterType="java.util.List">
+        MERGE INTO CT_EL_SYNC_NO_TARGET R1
+        USING
+        (
+            <foreach collection="list" item="item" separator="UNION">
+                SELECT
+                     #{item.db_type} as dbType
+                    ,#{item.elevator_no} as elevatorNo
+                    ,#{item.pjt} as pjt
+                    ,#{item.hno} as hno
+                    ,#{item.upn} as upn
+                    ,#{item.cst} as cst
+                    ,#{item.gno} as gno
+                    ,#{item.cont_start} as contStart
+                    ,#{item.cont_end} as contEnd
+                    ,#{item.change_dt} as changeDt
+                    ,#{item.miricall_yn} as miricallYn
+                    ,#{item.miriview_yn} as miriviewYn
+                    ,#{item.mirirobot_yn} as mirirobotYn
+                    ,#{item.miri_yn} as miriYn
+                    ,#{item.site_nm} as siteNm
+                    ,#{item.cust_nm} as custNm
+                    ,#{item.sales_empl} as salesEmpl
+                    ,#{item.sales_empl_nm} as salesEmplNm
+                    ,#{item.sales_gcdnm} as salesGcdnm
+                    ,#{item.hrtsYn} as hrtsYn
+                FROM DUAL
+            </foreach>
+        ) T1
+        ON (R1.DB_TYPE = T1.dbType and R1.PRJ_NO = T1.pjt and R1.HO_NO = T1.hno
+            and R1.CONTRACT_START_DT = T1.contStart and R1.CONTRACT_END_DT = T1.contEnd)
+        WHEN MATCHED THEN
+        UPDATE
+            SET
+                ELEVATOR_NO              = T1.elevatorNo
+                ,INTG_PRJ_NO             = T1.upn
+                ,TRLINE_CD               = T1.cst
+                ,COMPS_CNTR_NO           = T1.gno
+                ,LASTCHANGED_DT          = T1.changeDt
+                ,LASTUPDATE_USER         = 'mirisystem'
+                ,LASTUPDATE_DT           = sysdate
+                ,MIRICALL_YN             = T1.miricallYn
+                ,MIRIVIEW_YN             = T1.miriviewYn
+                ,MIRIROBOT_YN            = T1.mirirobotYn
+                ,MIRI_YN                 = T1.miriYn
+                ,SITE_NM                 = T1.siteNm
+                ,CUST_NM                 = T1.custNm
+                ,SALES_EMPL              = T1.salesEmpl
+                ,SALES_EMPL_NM           = T1.salesEmplNm
+                ,SALES_GCDNM             = T1.salesGcdnm
+                ,HRTS_YN                 = T1.hrtsYn
+        WHEN NOT MATCHED THEN
+        INSERT (
+            DB_TYPE
+            ,ELEVATOR_NO
+            ,PRJ_NO
+            ,HO_NO
+            ,INTG_PRJ_NO
+            ,TRLINE_CD
+            ,COMPS_CNTR_NO
+            ,CONTRACT_START_DT
+            ,CONTRACT_END_DT
+            ,LASTCHANGED_DT
+            ,CREATION_USER
+            ,MIRICALL_YN
+            ,MIRIVIEW_YN
+            ,MIRIROBOT_YN
+            ,MIRI_YN
+            ,SITE_NM
+            ,CUST_NM
+            ,SALES_EMPL
+            ,SALES_EMPL_NM
+            ,SALES_GCDNM
+            ,HRTS_YN
+        )
+        VALUES (
+            T1.dbType
+            ,T1.elevatorNo
+            ,T1.pjt
+            ,T1.hno
+            ,T1.upn
+            ,T1.cst
+            ,T1.gno
+            ,T1.contStart
+            ,T1.contEnd
+            ,T1.changeDt
+            ,'mirisystem'
+            ,T1.miricallYn
+            ,T1.miriviewYn
+            ,T1.mirirobotYn
+            ,T1.miriYn
+            ,T1.siteNm
+            ,T1.custNm
+            ,T1.salesEmpl
+            ,T1.salesEmplNm
+            ,T1.salesGcdnm
+            ,T1.hrtsYn
+        )
+    </update>
+
+    <select id="getTargetElList" parameterType="String" resultType="String">
+        SELECT  ELEVATOR_NO FROM CT_EL_SYNC_TARGET
+        WHERE DB_TYPE = #{db_type}
+        AND DEL_YN = 'n'
+    </select>
+
+    <select id="getTargetElListNew" parameterType="String" resultType="com.hdel.miri.concurrent.domain.dgk.vo.ReqVO$ElVO">
+        SELECT XX.ELEVATOR_NO, XX.DB_TYPE, XX.DEL_YN  ,XX.CHANGE_DT
+        FROM (
+                SELECT ELEVATOR_NO, DB_TYPE, DEL_YN ,CHANGE_DT FROM CT_EL_SYNC_TARGET K
+                MINUS
+                SELECT CEST2.ELEVATOR_NO, CEST2.DB_TYPE, CEST2.DEL_YN ,CEST2.CHANGE_DT
+                FROM CT_EL_SYNC_TARGET CEST2 , (SELECT ELEVATOR_NO, COUNT(*) FROM CT_EL_SYNC_TARGET CEST
+                                                GROUP BY ELEVATOR_NO
+                                                <![CDATA[ HAVING COUNT(*) > 1  ]]> ) T
+                WHERE  CEST2.ELEVATOR_NO = T.ELEVATOR_NO
+                AND    DB_TYPE ='SRM' ) XX
+        WHERE  NOT EXISTS (SELECT 'x' FROM CT_EL_INFO CEI
+                        WHERE  xx.ELEVATOR_NO  = cei.ELEVATOR_NO
+                        AND   xx.db_type = cei.CREATION_USER
+                        <!-- AND    to_char(cei.LASTUPDATE_DT,'yyyymmdd hh24:mi') <![CDATA[ >=  ]]>'20230728 09:15' )        -->
+                        AND    to_char(cei.LASTUPDATE_DT,'yyyymmdd') <![CDATA[ >=  ]]> TO_CHAR(sysdate,'yyyymmdd') )
+        AND (xx.DEL_YN = 'n' OR (xx.DEL_YN = 'y' AND  EXISTS (SELECT 'x' FROM CT_EL_INFO CEI2
+                                                      WHERE xx.elevator_no = cei2.ELEVATOR_NO)))
+        ORDER BY 1,XX.CHANGE_DT
+    </select>
+
+    <select id="getElInfoBySrc" parameterType="String" resultType="String">
+        SELECT ELEVATOR_NO FROM CT_EL_INFO
+        WHERE CREATION_USER = #{db_type}
+        <!-- AND <![CDATA[ ROWNUM < 10 ]]> -->
+    </select>
+
+    <select id="getAllElInfo" resultType="String">
+        SELECT  ELEVATOR_NO FROM CT_EL_INFO
+    </select>
+
+    <select id="getInssuranceTargetElInfo" resultType="String">
+        SELECT DISTINCT A.ELEVATOR_NO FROM CT_EL_INFO A, CT_EL_INSSURANCE_INFO B
+        WHERE A.ELEVATOR_NO = B.ELEVATOR_NO
+        AND <![CDATA[ B.CONT_EN_DE < TO_CHAR(SYSDATE, 'YYYYMMDD') ]]>
+        UNION
+        SELECT C.ELEVATOR_NO FROM CT_EL_INFO C
+        WHERE  NOT EXISTS (SELECT 'x' FROM CT_EL_INSSURANCE_INFO D
+                           WHERE c.ELEVATOR_NO = D.ELEVATOR_NO)
+    </select>
+
+    <select id="getSafetyMgrElInfo" resultType="String">
+        SELECT DISTINCT A.ELEVATOR_NO FROM CT_EL_INFO A, CT_EL_SAFETY_MGR_INFO B
+        WHERE A.ELEVATOR_NO = B.ELEVATOR_NO
+        AND <![CDATA[ B.VALD_END_DT < TO_CHAR(SYSDATE, 'YYYY-MM-DD') ]]>
+        UNION
+        SELECT C.ELEVATOR_NO FROM CT_EL_INFO C
+        WHERE  NOT EXISTS (SELECT 'x' FROM CT_EL_SAFETY_MGR_INFO D
+                           WHERE c.ELEVATOR_NO = D.ELEVATOR_NO)
+    </select>
+
+    <select id="getAllElInfoForSAP" resultType="com.hdel.miri.concurrent.domain.dgk.vo.CcElevatorVO$CcElevatorInfoForSAP" parameterType="java.util.List">
+        SELECT INTG_PRJ_NO as intgPrjNo, TRLINE_CD as trlineCd FROM CT_EL_INFO
+        WHERE INTG_PRJ_NO is not null
+        AND   LENGTH(INTG_PRJ_NO) = 6
+        <if test="!list.isEmpty()">
+            AND
+            <foreach collection="list" item="item" separator="OR">
+                ELEVATOR_NO IN
+                <foreach collection="item" item="part" separator="," open="(" close=")">
+                    #{part}
+                </foreach>
+            </foreach>
+        </if>
+        <if test="list.isEmpty()">
+            AND 1=2
+        </if>
+        GROUP BY INTG_PRJ_NO, TRLINE_CD
+    </select>
+
+    <select id="getInspHistTargetList" resultType="String">
+        SELECT  ELEVATOR_NO
+        FROM CT_EL_INFO
+        WHERE ELEVATOR_NO NOT IN (SELECT ELEVATOR_NO FROM CT_EL_INSP_HIS
+                                  WHERE TO_CHAR(SYSDATE,'YYYY') = SUBSTR(LAST_CHIEF_APPR_DT,1,4)
+                                  AND  DISP_WORDS IN ('합격','차기안전검사','조건후합격','현장시정조치','보완후합격'))
+    </select>
+
+    <select id="getConcurrentErrors" resultType="com.hdel.miri.concurrent.domain.dgk.vo.RespVO$ConcurrentLogVO">
+        SELECT
+            CONCURRENT_ERR_ID
+            , JOB_NM
+            , ELEVATOR_NO
+            , IN_PARAMS
+            , CREATION_USER
+        FROM CT_CONCURRENT_LOG
+        WHERE (ERRORS NOT LIKE '%NORMAL SERVICE%' OR ERRORS IS NULL)
+        AND CREATION_USER = #{param1}
+        AND JOB_NM = #{param2}
+        <!-- AND <![CDATA[ ROWNUM < 100 ]]>  -->
+    </select>
+
+    <select id="getElevatorErrors" resultType="com.hdel.miri.concurrent.domain.dgk.vo.ReqVO$ElVO">
+        SELECT  DISTINCT
+                A.ELEVATOR_NO,
+                CCL.CONCURRENT_ERR_ID,
+                CCL.JOB_NM,
+                A.DB_TYPE,
+                A.DEL_YN ,
+                A.CHANGE_DT
+        FROM  CT_CONCURRENT_LOG CCL ,CT_EL_SYNC_TARGET A
+        WHERE CCL.ELEVATOR_NO = A.ELEVATOR_NO
+        AND   CCL.JOB_NM = '건물별엘리베이터'
+        AND   (ERRORS NOT LIKE '%NORMAL SERVICE%' OR ERRORS IS NULL)
+        ORDER BY 1, CHANGE_DT , DB_TYPE DESC
+    </select>
+
+    <delete id="deleteErrorLogs">
+        DELETE CT_CONCURRENT_LOG
+        WHERE 1=1
+        AND CONCURRENT_ERR_ID IN
+        <foreach collection="list" item="item" index="idx" open="(" separator=",">
+            <if test="idx != 0 and (idx%900) == 0"> <![CDATA[ 0 ) ]]> OR CONCURRENT_ERR_ID IN <![CDATA[ ( ]]> </if>
+            #{item.concurrent_err_id}
+            <if test="idx == list.size()-1">
+                <![CDATA[ ) ]]>
+                AND JOB_NM = #{item.job_nm}
+            </if>
+        </foreach>
+    </delete>
+
+    <delete id="deleteErrorLogsNew">
+        DELETE CT_CONCURRENT_LOG
+        WHERE 1=1
+        AND CONCURRENT_ERR_ID IN
+        <foreach collection="list" item="item" index="idx" open="(" separator=",">
+            <if test="idx != 0 and (idx%900) == 0"> <![CDATA[ 0 ) ]]> OR CONCURRENT_ERR_ID IN <![CDATA[ ( ]]> </if>
+            #{item.concurrent_err_id}
+            <if test="idx == list.size()-1">
+                <![CDATA[ ) ]]>
+                AND JOB_NM = #{item.job_nm}
+            </if>
+        </foreach>
+    </delete>
+
+    <insert id="insertStartLog" useGeneratedKeys="true" keyColumn="CONCURRENT_ERR_ID" keyProperty="concurrentErrId">
+        INSERT INTO CT_CONCURRENT_LOG(JOB_NM, ELEVATOR_NO, ERROR_YN, IN_PARAMS, ERRORS, CREATION_USER, LASTUPDATE_USER)
+        VALUES(#{jobNm}, #{elNo},#{errorYn}, #{inParams}, substr(#{errors},0,2000), #{creationUser}, #{creationUser})
+    </insert>
+
+    <insert id="insertStartLogInspInfo" useGeneratedKeys="true" keyColumn="CONCURRENT_ERR_ID" keyProperty="concurrentErrId">
+        INSERT INTO CT_CONCURRENT_LOG_INSP(JOB_NM, ELEVATOR_NO, ERROR_YN, IN_PARAMS, ERRORS, CREATION_USER, LASTUPDATE_USER)
+        VALUES(#{jobNm}, #{elNo},#{errorYn}, #{inParams}, substr(#{errors},0,2000), #{creationUser}, #{creationUser})
+    </insert>
+
+    <update id="updateEndLog">
+        UPDATE CT_CONCURRENT_LOG
+        SET ERROR_YN = #{errorYn}
+            ,ERRORS = substr(#{errors},0,2000)
+            ,LASTUPDATE_USER = #{currentUser}
+        WHERE CONCURRENT_ERR_ID = #{concurrentErrId}
+    </update>
+
+    <update id="insertElInfoOld" parameterType="java.util.List">
+        MERGE INTO CT_EL_INFO R1
+        USING
+        (
+            select
+                elevatorNo as elevatorNo
+                ,max(salesEmpl) as salesEmpl
+                ,max(salesEmplNm) as salesEmplNm
+
+                ,max(mgtComTel) as mgtComTel
+                ,max(mgtComHp) as mgtComHp
+                ,max(mgtComNm) as mgtComNm
+                ,max(contractStartDt) as contractStartDt
+                ,max(contractEndDt) as contractEndDt
+
+                ,max(compsCntrNo) as compsCntrNo
+                ,max(address1) as address1
+                ,max(address2) as address2
+                ,max(applcBeDt) as applcBeDt
+                ,max(applcEnDt) as applcEnDt
+                ,max(resultNm) as resultNm
+                ,max(areaNm) as areaNm
+                ,max(sigunguNm) as sigunguNm
+                ,max(buldMgtNo1) as buldMgtNo1
+                ,max(buldMgtNo2) as buldMgtNo2
+                ,max(buldNm) as buldNm
+                ,max(elvtrDivNm) as elvtrDivNm
+                ,max(elvtrForm) as elvtrForm
+                ,max(elvtrDetailForm) as elvtrDetailForm
+                ,max(elvtrKindNm) as elvtrKindNm
+                ,max(elvtrSttsNm) as elvtrSttsNm
+                ,max(frstInstallationDe) as frstInstallationDe
+                ,max(installationDe) as installationDe
+                ,max(installationPlace) as installationPlace
+                ,max(liveLoad) as liveLoad
+                ,max(ratedCap) as ratedCap
+                ,max(shuttleSection) as shuttleSection
+                ,max(shuttleFloorCnt) as shuttleFloorCnt
+                ,max(groundFloorCnt) as groundFloorCnt
+                ,max(undgrndFloorCnt) as undgrndFloorCnt
+                ,max(prjNo) as prjNo
+                ,max(hoNo) as hoNo
+                ,max(intgPrjNo) as intgPrjNo
+                ,max(trlineCd) as trlineCd
+                ,max(wgsLon) as wgsLon
+                ,max(wgsLat) as wgsLat
+                ,max(NVL(miricallYn,'N')) as miricallYn
+                ,max(NVL(miriviewYn,'N')) as miriviewYn
+                ,max(NVL(mirirobotYn,'N')) as mirirobotYn
+                ,max(NVL(miriYn,'N')) as miriYn
+                ,max(creationUser) as creationUser
+            from (
+            <foreach collection="list" item="item" separator="UNION">
+                SELECT
+                    #{item.elevatorNo}          as elevatorNo
+                    ,#{item.salesEmpl}          as salesEmpl
+                    ,#{item.salesEmplNm}        as salesEmplNm
+
+                    ,#{item.mgtComTel}          as mgtComTel
+                    ,#{item.mgtComHp}           as mgtComHp
+                    ,#{item.mgtComNm}           as mgtComNm
+                    ,#{item.contractStartDt}    as contractStartDt
+                    ,#{item.contractEndDt}      as contractEndDt
+
+                    ,#{item.compsCntrNo}        as compsCntrNo
+                    ,#{item.address1}           as address1
+                    ,#{item.address2}           as address2
+                    ,#{item.applcBeDt}          as applcBeDt
+                    ,#{item.applcEnDt}          as applcEnDt
+                    ,#{item.resultNm}           as resultNm
+                    ,#{item.areaNm}             as areaNm
+                    ,#{item.sigunguNm}          as sigunguNm
+                    ,#{item.buldMgtNo1}         as buldMgtNo1
+                    ,#{item.buldMgtNo2}         as buldMgtNo2
+                    ,#{item.buldNm}             as buldNm
+                    ,#{item.elvtrDivNm}         as elvtrDivNm
+                    ,#{item.elvtrForm}          as elvtrForm
+                    ,#{item.elvtrDetailForm}    as elvtrDetailForm
+                    ,#{item.elvtrKindNm}        as elvtrKindNm
+                    ,#{item.elvtrSttsNm}        as elvtrSttsNm
+                    ,#{item.frstInstallationDe} as frstInstallationDe
+                    ,#{item.installationDe}     as installationDe
+                    ,#{item.installationPlace}  as installationPlace
+                    ,#{item.liveLoad}           as liveLoad
+                    ,#{item.ratedCap}           as ratedCap
+                    ,#{item.shuttleSection}     as shuttleSection
+                    ,#{item.shuttleFloorCnt}    as shuttleFloorCnt
+                    ,#{item.groundFloorCnt}     as groundFloorCnt
+                    ,#{item.undgrndFloorCnt}    as undgrndFloorCnt
+                    ,#{item.prjNo}              as prjNo
+                    ,#{item.hoNo}               as hoNo
+                    ,#{item.intgPrjNo}          as intgPrjNo
+                    ,#{item.trlineCd}           as trlineCd
+                    ,#{item.wgsLon}             as wgsLon
+                    ,#{item.wgsLat}             as wgsLat
+                    ,#{item.miricallYn}         as miricallYn
+                    ,#{item.miriviewYn}         as miriviewYn
+                    ,#{item.mirirobotYn}        as mirirobotYn
+                    ,#{item.miriYn}             as miriYn
+                    ,#{item.creationUser}       as creationUser
+
+                FROM DUAL
+            </foreach>
+            ) group by elevatorNo
+        ) T1
+        ON (R1.ELEVATOR_NO = T1.elevatorNo)
+        WHEN MATCHED THEN
+        UPDATE
+            SET
+                SALES_EMPL              = T1.salesEmpl
+                ,SALES_EMPL_NM          = T1.salesEmplNm
+                ,MGT_COM_TEL            = T1.mgtComTel
+                ,MGT_COM_HP             = T1.mgtComHp
+                ,MGT_COM_NM             = T1.mgtComNm
+                ,CONTRACT_START_DT      = T1.contractStartDt
+                ,CONTRACT_END_DT        = T1.contractEndDt
+                ,COMPS_CNTR_NO          = T1.compsCntrNo
+                ,ADDRESS1               = T1.address1
+                ,ADDRESS2               = T1.address2
+                ,APPLC_BE_DT            = T1.applcBeDt
+                ,APPLC_EN_DT            = T1.applcEnDt
+                ,RESULT_NM              = T1.ResultNm
+                ,AREANM                 = T1.areaNm
+                ,SIGUNGUNM              = T1.sigunguNm
+                ,BULD_MGT_NO1           = T1.buldMgtNo1
+                ,BULD_MGT_NO2           = T1.buldMgtNo2
+                ,BULD_NM                = T1.buldNm
+                ,ELVTR_DIV_NM           = T1.elvtrDivNm
+                ,ELVTR_FORM             = T1.elvtrForm
+                ,ELVTR_DETAIL_FORM      = T1.elvtrDetailForm
+                ,ELVTR_KIND_NM          = T1.elvtrKindNm
+                ,ELVTR_STTS_NM          = T1.elvtrSttsNm
+                ,FRST_INSTALLATION_DE   = T1.frstInstallationDe
+                ,INSTALLATION_DE        = T1.installationDe
+                ,INSTALLATION_PLACE     = T1.installationPlace
+                ,LIVE_LOAD              = T1.liveLoad
+                ,RATED_CAP              = T1.ratedCap
+                ,SHUTTLE_SECTION        = T1.shuttleSection
+                ,SHUTTLE_FLOOR_CNT      = T1.shuttleFloorCnt
+                ,GROUND_FLOOR_CNT       = T1.groundFloorCnt
+                ,PRJ_NO                 = T1.prjNo
+                ,HO_NO                  = T1.hoNo
+                ,INTG_PRJ_NO            = T1.intgPrjNo
+                ,TRLINE_CD              = T1.trlineCd
+                ,WGSLON                 = T1.wgsLon
+                ,WGSLAT                 = T1.wgsLat
+                ,MIRICALL_YN            = T1.miricallYn
+                ,MIRIVIEW_YN            = T1.miriviewYn
+                ,MIRIROBOT_YN           = T1.mirirobotYn
+                ,MIRI_YN                = T1.miriYn
+                ,CREATION_USER          = T1.creationUser
+                ,LASTUPDATE_DT          = sysdate
+
+        WHEN NOT MATCHED THEN
+        INSERT (
+            ELEVATOR_NO
+            ,SALES_EMPL
+            ,SALES_EMPL_NM
+            ,MGT_COM_TEL
+            ,MGT_COM_HP
+            ,MGT_COM_NM
+            ,CONTRACT_START_DT
+            ,CONTRACT_END_DT
+            ,COMPS_CNTR_NO
+            ,ADDRESS1
+            ,ADDRESS2
+            ,APPLC_BE_DT
+            ,APPLC_EN_DT
+            ,RESULT_NM
+            ,AREANM
+            ,SIGUNGUNM
+            ,BULD_MGT_NO1
+            ,BULD_MGT_NO2
+            ,BULD_NM
+            ,ELVTR_DIV_NM
+            ,ELVTR_FORM
+            ,ELVTR_DETAIL_FORM
+            ,ELVTR_KIND_NM
+            ,ELVTR_STTS_NM
+            ,FRST_INSTALLATION_DE
+            ,INSTALLATION_DE
+            ,INSTALLATION_PLACE
+            ,LIVE_LOAD
+            ,RATED_CAP
+            ,SHUTTLE_SECTION
+            ,SHUTTLE_FLOOR_CNT
+            ,GROUND_FLOOR_CNT
+            ,UNDGRND_FLOOR_CNT
+            ,PRJ_NO
+            ,HO_NO
+            ,INTG_PRJ_NO
+            ,TRLINE_CD
+            ,WGSLON
+            ,WGSLAT
+            ,MIRICALL_YN
+            ,MIRIVIEW_YN
+            ,MIRIROBOT_YN
+            ,MIRI_YN
+            ,CREATION_USER
+        )
+        VALUES (
+            T1.elevatorNo
+            ,T1.salesEmpl
+            ,T1.salesEmplNm
+            ,T1.mgtComTel
+            ,T1.mgtComHp
+            ,T1.mgtComNm
+            ,T1.contractStartDt
+            ,T1.contractEndDt
+            ,T1.compsCntrNo
+            ,T1.address1
+            ,T1.address2
+            ,T1.applcBeDt
+            ,T1.applcEnDt
+            ,T1.ResultNm
+            ,T1.areaNm
+            ,T1.sigunguNm
+            ,T1.buldMgtNo1
+            ,T1.buldMgtNo2
+            ,T1.buldNm
+            ,T1.elvtrDivNm
+            ,T1.elvtrForm
+            ,T1.elvtrDetailForm
+            ,T1.elvtrKindNm
+            ,T1.elvtrSttsNm
+            ,T1.frstInstallationDe
+            ,T1.installationDe
+            ,T1.installationPlace
+            ,T1.liveLoad
+            ,T1.ratedCap
+            ,T1.shuttleSection
+            ,T1.shuttleFloorCnt
+            ,T1.groundFloorCnt
+            ,T1.undgrndFloorCnt
+            ,T1.prjNo
+            ,T1.hoNo
+            ,T1.intgPrjNo
+            ,T1.trlineCd
+            ,T1.wgsLon
+            ,T1.wgsLat
+            ,T1.miricallYn
+            ,T1.miriviewYn
+            ,T1.mirirobotYn
+            ,T1.miriYn
+            ,T1.creationUser
+        )
+    </update>
+
+    <update id="insertElInfo" parameterType="java.util.List">
+        {
+            Call
+                declare
+                begin
+                    <foreach collection="list" item="item" separator=" " index="idx">
+                        MERGE INTO CT_EL_INFO R1 USING DUAL
+                        ON (R1.ELEVATOR_NO = #{item.elevatorNo})
+                        WHEN MATCHED THEN
+                        UPDATE
+                            SET
+                                SALES_EMPL              = #{item.salesEmpl}
+                                ,SALES_EMPL_NM          = #{item.salesEmplNm}
+                                ,MGT_COM_TEL            = #{item.mgtComTel}
+                                ,MGT_COM_HP             = #{item.mgtComHp}
+                                ,MGT_COM_CD             = #{item.mgtComCd}
+                                ,MGT_COM_NM             = #{item.mgtComNm}
+                                ,CONTRACT_START_DT      = #{item.contractStartDt}
+                                ,CONTRACT_END_DT        = #{item.contractEndDt}
+                                ,COMPS_CNTR_NO          = #{item.compsCntrNo}
+                                ,ADDRESS1               = #{item.address1}
+                                ,ADDRESS2               = #{item.address2}
+                                ,APPLC_BE_DT            = #{item.applcBeDt}
+                                ,APPLC_EN_DT            = #{item.applcEnDt}
+                                ,RESULT_NM              = #{item.resultNm}
+                                ,AREANM                 = #{item.areaNm}
+                                ,SIGUNGUNM              = #{item.sigunguNm}
+                                ,BULD_MGT_NO1           = #{item.buldMgtNo1}
+                                ,BULD_MGT_NO2           = #{item.buldMgtNo2}
+                                ,BULD_NM                = #{item.buldNm}
+                                ,ELVTR_DIV_NM           = #{item.elvtrDivNm}
+                                ,ELVTR_FORM             = #{item.elvtrForm}
+                                ,ELVTR_DETAIL_FORM      = #{item.elvtrDetailForm}
+                                ,ELVTR_KIND_NM          = #{item.elvtrKindNm}
+                                ,ELVTR_STTS_NM          = #{item.elvtrSttsNm}
+                                ,FRST_INSTALLATION_DE   = #{item.frstInstallationDe}
+                                ,INSTALLATION_DE        = #{item.installationDe}
+                                ,INSTALLATION_PLACE     = #{item.installationPlace}
+                                ,LIVE_LOAD              = #{item.liveLoad}
+                                ,RATED_CAP              = #{item.ratedCap}
+                                ,SHUTTLE_SECTION        = #{item.shuttleSection}
+                                ,SHUTTLE_FLOOR_CNT      = #{item.shuttleFloorCnt}
+                                ,GROUND_FLOOR_CNT       = #{item.groundFloorCnt}
+                                ,UNDGRND_FLOOR_CNT      = #{item.undgrndFloorCnt}
+                                ,PRJ_NO                 = #{item.prjNo}
+                                ,HO_NO                  = #{item.hoNo}
+                                ,INTG_PRJ_NO            = #{item.intgPrjNo}
+                                ,TRLINE_CD              = #{item.trlineCd}
+                                ,WGSLON                 = #{item.wgsLon}
+                                ,WGSLAT                 = #{item.wgsLat}
+                                ,MIRICALL_YN            = #{item.miricallYn}
+                                ,MIRIVIEW_YN            = #{item.miriviewYn}
+                                ,MIRIROBOT_YN           = #{item.mirirobotYn}
+                                ,MIRI_YN                = #{item.miriYn}
+                                ,CREATION_USER          = #{item.creationUser}
+                                ,SITE_NM                = #{item.siteNm}
+                                ,CUST_NM                = #{item.custNm}
+                                ,LASTUPDATE_DT          = SYSDATE
+                                ,MODEL                  = #{item.model}
+                                ,HRTS_YN                = #{item.hrtsYn}
+                        WHEN NOT MATCHED THEN
+                        INSERT (
+                            ELEVATOR_NO
+                            ,SALES_EMPL
+                            ,SALES_EMPL_NM
+                            ,MGT_COM_TEL
+                            ,MGT_COM_HP
+                            ,MGT_COM_CD
+                            ,MGT_COM_NM
+                            ,CONTRACT_START_DT
+                            ,CONTRACT_END_DT
+                            ,COMPS_CNTR_NO
+                            ,ADDRESS1
+                            ,ADDRESS2
+                            ,APPLC_BE_DT
+                            ,APPLC_EN_DT
+                            ,RESULT_NM
+                            ,AREANM
+                            ,SIGUNGUNM
+                            ,BULD_MGT_NO1
+                            ,BULD_MGT_NO2
+                            ,BULD_NM
+                            ,ELVTR_DIV_NM
+                            ,ELVTR_FORM
+                            ,ELVTR_DETAIL_FORM
+                            ,ELVTR_KIND_NM
+                            ,ELVTR_STTS_NM
+                            ,FRST_INSTALLATION_DE
+                            ,INSTALLATION_DE
+                            ,INSTALLATION_PLACE
+                            ,LIVE_LOAD
+                            ,RATED_CAP
+                            ,SHUTTLE_SECTION
+                            ,SHUTTLE_FLOOR_CNT
+                            ,GROUND_FLOOR_CNT
+                            ,UNDGRND_FLOOR_CNT
+                            ,PRJ_NO
+                            ,HO_NO
+                            ,INTG_PRJ_NO
+                            ,TRLINE_CD
+                            ,WGSLON
+                            ,WGSLAT
+                            ,MIRICALL_YN
+                            ,MIRIVIEW_YN
+                            ,MIRIROBOT_YN
+                            ,MIRI_YN
+                            ,CREATION_USER
+                            ,SITE_NM
+                            ,CUST_NM
+                            ,MODEL
+                            ,HRTS_YN
+                        )
+                        VALUES (
+                            #{item.elevatorNo}
+                            ,#{item.salesEmpl}
+                            ,#{item.salesEmplNm}
+                            ,#{item.mgtComTel}
+                            ,#{item.mgtComHp}
+                            ,#{item.mgtComCd}
+                            ,#{item.mgtComNm}
+                            ,#{item.contractStartDt}
+                            ,#{item.contractEndDt}
+                            ,#{item.compsCntrNo}
+                            ,#{item.address1}
+                            ,#{item.address2}
+                            ,#{item.applcBeDt}
+                            ,#{item.applcEnDt}
+                            ,#{item.resultNm}
+                            ,#{item.areaNm}
+                            ,#{item.sigunguNm}
+                            ,#{item.buldMgtNo1}
+                            ,#{item.buldMgtNo2}
+                            ,#{item.buldNm}
+                            ,#{item.elvtrDivNm}
+                            ,#{item.elvtrForm}
+                            ,#{item.elvtrDetailForm}
+                            ,#{item.elvtrKindNm}
+                            ,#{item.elvtrSttsNm}
+                            ,#{item.frstInstallationDe}
+                            ,#{item.installationDe}
+                            ,#{item.installationPlace}
+                            ,#{item.liveLoad}
+                            ,#{item.ratedCap}
+                            ,#{item.shuttleSection}
+                            ,#{item.shuttleFloorCnt}
+                            ,#{item.groundFloorCnt}
+                            ,#{item.undgrndFloorCnt}
+                            ,#{item.prjNo}
+                            ,#{item.hoNo}
+                            ,#{item.intgPrjNo}
+                            ,#{item.trlineCd}
+                            ,#{item.wgsLon}
+                            ,#{item.wgsLat}
+                            ,#{item.miricallYn}
+                            ,#{item.miriviewYn}
+                            ,#{item.mirirobotYn}
+                            ,#{item.miriYn}
+                            ,#{item.creationUser}
+                            ,#{item.siteNm}
+                            ,#{item.custNm}
+                            ,#{item.model}
+                            ,#{item.hrtsYn}
+                        );
+                        <if test="idx % 1000 == 0">commit;</if>
+                    </foreach>
+                    commit;
+                end
+        }
+    </update>
+    <!--2023-10-17 add-->
+    <update id="updateElInfo" parameterType="java.util.List">
+        {
+            Call
+                declare
+                begin
+                    <foreach collection="list" item="item" separator=" " index="idx">
+                        MERGE INTO CT_EL_INFO R1 USING DUAL
+                        ON (R1.ELEVATOR_NO = #{item.elevatorNo})
+                        WHEN MATCHED THEN
+                        UPDATE
+                            SET
+                                WGSLON                 = #{item.wgsLon}
+                               ,WGSLAT                 = #{item.wgsLat}
+                               ,LASTUPDATE_DT          = SYSDATE
+                               ,LASTUPDATE_USER        = 'mirisystem';
+                    </foreach>
+                    commit;
+                end
+        }
+    </update>
+
+    <!--2023-10-17 add 위/경도 없는 승강기 조회-->
+    <select id="getUpdateElInfo" resultType="com.hdel.miri.concurrent.domain.scrm.SCRM$VO">
+        SELECT
+                CEI.ELEVATOR_NO as elevatorNo,
+                CEI.PRJ_NO as prjNo,
+                CEI.HO_NO as hoNo
+        FROM  CT_EL_INFO  CEI
+        WHERE 1 =  1
+        AND   CEI.WGSLAT IS NULL OR CEI.WGSLON IS NULL
+    </select>
+
+    <update id="insertInssuranceInfo" parameterType="java.util.List">
+        MERGE INTO CT_EL_INSSURANCE_INFO R1
+        USING
+        (
+            <foreach collection="list" item="item" separator="UNION">
+                SELECT
+                    #{item.companyNm} as companyNm
+                    ,#{item.contEnDe} as contEnDe
+                    ,#{item.contStDe} as contStDe
+                    ,#{item.elevatorNo} as elevatorNo
+                FROM DUAL
+            </foreach>
+        ) T1
+        ON (R1.ELEVATOR_NO = T1.elevatorNo and R1.CONT_ST_DE = T1.contStDe)
+        WHEN MATCHED THEN
+        UPDATE
+            SET
+                COMPANY_NM              = T1.companyNm
+                ,CONT_EN_DE             = T1.contEnDe
+        WHEN NOT MATCHED THEN
+        INSERT (
+            ELEVATOR_NO
+            ,COMPANY_NM
+            ,CONT_ST_DE
+            ,CONT_EN_DE
+        )
+        VALUES (
+            T1.elevatorNo
+            ,T1.companyNm
+            ,T1.contStDe
+            ,T1.contEnDe
+        )
+    </update>
+
+    <update id="insertSafetyMgrInfo" parameterType="java.util.List">
+        MERGE INTO CT_EL_SAFETY_MGR_INFO R1
+        USING
+        (
+            <foreach collection="list" item="item" separator="UNION">
+                SELECT
+                    #{item.appointDt} as appointDt
+                    ,#{item.elevatorNo} as elevatorNo
+                    ,#{item.shuttleMngrNm} as shuttleMngrNm
+                    ,#{item.smEduDt} as smEduDt
+                    ,#{item.valdStrDt} as valdStrDt
+                    ,#{item.valdEndDt} as valdEndDt
+                FROM DUAL
+            </foreach>
+        ) T1
+        ON (R1.ELEVATOR_NO = T1.elevatorNo and R1.APPOINT_DT = T1.appointDt and R1.SM_EDU_DT = T1.smEduDt)
+        WHEN MATCHED THEN
+        UPDATE
+            SET
+                SHUTTLE_MNGR_NM        = T1.shuttleMngrNm
+                ,VALD_STR_DT            = T1.valdStrDt
+                ,VALD_END_DT            = T1.valdEndDt
+        WHEN NOT MATCHED THEN
+        INSERT (
+            ELEVATOR_NO
+            ,APPOINT_DT
+            ,SHUTTLE_MNGR_NM
+            ,SM_EDU_DT
+            ,VALD_STR_DT
+            ,VALD_END_DT
+        )
+        VALUES (
+            T1.elevatorNo
+            ,T1.appointDt
+            ,T1.shuttleMngrNm
+            ,T1.smEduDt
+            ,T1.valdStrDt
+            ,T1.valdEndDt
+        )
+    </update>
+
+    <update id="insertSelfInspHisInfo" parameterType="java.util.List">
+        MERGE INTO CT_EL_SELF_INSP_HIS R1
+        USING
+        (
+            <!-- <foreach collection="list" item="item" separator="UNION"> -->
+                SELECT
+                    #{param1}                     as inspYYYYMM
+                    ,#{param2.elevatorNo}         as elevatorNo
+                    ,#{param2.selchkUsnm}         as selchkUsnm
+                    ,#{param2.subSelchkUsnm}      as subSelchkUsnm
+                    ,#{param2.selchkBeginDate}    as selchkBeginDate
+                    ,#{param2.selChkStDt}         as selChkStDt
+                    ,#{param2.selChkEnDt}         as selChkEnDt
+                    ,#{param2.cnfirmDt}           as cnfirmDt
+                    ,#{param2.companyNm}          as companyNm
+                    ,#{param2.selchkResultNm}     as selchkResultNm
+                    ,#{param2.registDt}           as registDt
+                    ,#{param2.titNo}              as titNo
+                    ,#{param2.selChkItemNm}       as selChkItemNm
+                    ,#{param2.selChkItemDtlNm}    as selChkItemDtlNm
+                    ,#{param2.selChkResult}       as selChkResult
+                FROM DUAL
+            <!-- </foreach> -->
+        ) T1
+        ON (R1.ELEVATOR_NO              = T1.elevatorNo
+            AND R1.INSP_YYYYMM          = T1.inspYYYYMM
+        )
+        WHEN MATCHED THEN
+        UPDATE
+            SET
+                SEL_CHK_BEGIN_DATE      = T1.selchkBeginDate
+                ,SEL_CHK_USNM           = T1.selchkUsnm
+                ,SUB_SELCHK_USNM        = T1.subSelchkUsnm
+                ,SEL_CHK_ITEM_NM        = T1.selChkItemNm
+                ,SEL_CHK_ITEM_DT_NM     = T1.selChkItemDtlNm
+                ,SEL_CHK_RESULT         = T1.selChkResult
+                ,TIT_NO                 = T1.titNo
+                ,SEL_CHK_ST_DT          = T1.selChkStDt
+                ,SEL_CHK_EN_DT          = T1.selChkEnDt
+                ,CNFIRM_DT              = T1.cnfirmDt
+                ,COMPANY_NM             = T1.companyNm
+                ,SELCHK_RESULT_NM       = T1.selchkResultNm
+        WHEN NOT MATCHED THEN
+        INSERT (
+            ELEVATOR_NO
+            ,INSP_YYYYMM
+            ,SEL_CHK_USNM
+            ,SUB_SELCHK_USNM
+            ,SEL_CHK_BEGIN_DATE
+            ,SEL_CHK_ST_DT
+            ,SEL_CHK_EN_DT
+            ,CNFIRM_DT
+            ,COMPANY_NM
+            ,SELCHK_RESULT_NM
+            ,REGIST_DT
+            ,TIT_NO
+            ,SEL_CHK_ITEM_NM
+            ,SEL_CHK_ITEM_DT_NM
+            ,SEL_CHK_RESULT
+        )
+        VALUES (
+            T1.elevatorNo
+            ,T1.inspYYYYMM
+            ,T1.selchkUsnm
+            ,T1.subSelchkUsnm
+            ,T1.selchkBeginDate
+            ,T1.selChkStDt
+            ,T1.selChkEnDt
+            ,T1.cnfirmDt
+            ,T1.companyNm
+            ,T1.selchkResultNm
+            ,T1.registDt
+            ,T1.titNo
+            ,T1.selChkItemNm
+            ,T1.selChkItemDtlNm
+            ,T1.selChkResult
+        )
+    </update>
+
+    <update id="insertInspHisInfo" parameterType="java.util.List">
+        MERGE INTO CT_EL_INSP_HIS R1
+        USING
+        (
+            <foreach collection="list" item="item" separator="UNION">
+                SELECT
+                    #{item.elevatorNo}          as elevatorNo
+                    ,#{item.buldNm}         as buldNm
+                    ,#{item.address1}      as address1
+                    ,#{item.address2}    as address2
+                    ,#{item.sido}         as sido
+                    ,#{item.sigungu}         as sigungu
+                    ,#{item.elvtrAsignNo}           as elvtrAsignNo
+                    ,#{item.elvtrDiv}          as elvtrDiv
+                    ,#{item.elvtrForm}     as elvtrForm
+                    ,#{item.elvtrDetailForm}           as elvtrDetailForm
+                    ,#{item.elvtrKindNm}              as elvtrKindNm
+                    ,#{item.installationPlace}       as installationPlace
+                    ,#{item.shuttleFloorCnt}    as shuttleFloorCnt
+                    ,#{item.ratedSpeed}       as ratedSpeed
+                    ,#{item.liveLoad}       as liveLoad
+                    ,#{item.ratedCap}       as ratedCap
+                    ,#{item.companyNm}       as companyNm
+                    ,#{item.frstInstallationDe}       as frstInstallationDe
+                    ,#{item.installationDe}       as installationDe
+                    ,#{item.inspctDe}       as inspctDe
+                    ,#{item.inspctKindNm}       as inspctKindNm
+                    ,#{item.dispWords} as dispWords
+                    ,#{item.failCd}       as failCd
+                    ,#{item.applcBeDt}       as applcBeDt
+                    ,#{item.applcEnDt}       as applcEnDt
+                    ,#{item.inspctInsttNm}       as inspctInsttNm
+                    ,#{item.lastChiefApprDt}       as lastChiefApprDt
+                FROM DUAL
+            </foreach>
+        ) T1
+        ON (R1.ELEVATOR_NO = T1.elevatorNo and R1.LAST_CHIEF_APPR_DT = T1.lastChiefApprDt)
+        WHEN MATCHED THEN
+        UPDATE
+            SET
+            BULD_NM                 = T1.buldNm
+            ,ADDRESS1               = T1.address1
+            ,ADDRESS2               = T1.address2
+            ,SIDO                   = T1.sido
+            ,SIGUNGU                = T1.sigungu
+            ,ELVTR_ASIGN_NO         = T1.elvtrAsignNo
+            ,ELVTR_DIV              = T1.elvtrDiv
+            ,ELVTR_FORM             = T1.elvtrForm
+            ,ELVTR_DETAIL_FORM      = T1.elvtrDetailForm
+            ,ELVTR_KIND_NM          = T1.elvtrKindNm
+            ,INSTALLATION_PLACE     = T1.installationPlace
+            ,SHUTTLE_FLOOR_CNT      = T1.shuttleFloorCnt
+            ,RATED_SPEED            = T1.ratedSpeed
+            ,LIVE_LOAD              = T1.liveLoad
+            ,RATED_CAP              = T1.ratedCap
+            ,COMPANY_NM             = T1.companyNm
+            ,FRST_INSTALLATION_DE   = T1.frstInstallationDe
+            ,INSTALLATION_DE        = T1.installationDe
+            ,INSPCT_DE              = T1.inspctDe
+            ,INSPCT_KIND_NM         = T1.inspctKindNm
+            ,DISP_WORDS             = T1.dispWords
+            ,FAIL_CD                = T1.failCd
+            ,APPLC_ST_DT            = T1.applcBeDt
+            ,APPLC_EN_DT            = T1.applcEnDt
+            ,INSPCT_INSTT_NM        = T1.inspctInsttNm
+        WHEN NOT MATCHED THEN
+        INSERT (
+            ELEVATOR_NO
+            ,BULD_NM
+            ,ADDRESS1
+            ,ADDRESS2
+            ,SIDO
+            ,SIGUNGU
+            ,ELVTR_ASIGN_NO
+            ,ELVTR_DIV
+            ,ELVTR_FORM
+            ,ELVTR_DETAIL_FORM
+            ,ELVTR_KIND_NM
+            ,INSTALLATION_PLACE
+            ,SHUTTLE_FLOOR_CNT
+            ,RATED_SPEED
+            ,LIVE_LOAD
+            ,RATED_CAP
+            ,COMPANY_NM
+            ,FRST_INSTALLATION_DE
+            ,INSTALLATION_DE
+            ,INSPCT_DE
+            ,INSPCT_KIND_NM
+            ,DISP_WORDS
+            ,FAIL_CD
+            ,APPLC_ST_DT
+            ,APPLC_EN_DT
+            ,INSPCT_INSTT_NM
+            ,LAST_CHIEF_APPR_DT
+            )
+        VALUES (
+            T1.elevatorNo
+            ,T1.buldNm
+            ,T1.address1
+            ,T1.address2
+            ,T1.sido
+            ,T1.sigungu
+            ,T1.elvtrAsignNo
+            ,T1.elvtrDiv
+            ,T1.elvtrForm
+            ,T1.elvtrDetailForm
+            ,T1.elvtrKindNm
+            ,T1.installationPlace
+            ,T1.shuttleFloorCnt
+            ,T1.ratedSpeed
+            ,T1.liveLoad
+            ,T1.ratedCap
+            ,T1.companyNm
+            ,T1.frstInstallationDe
+            ,T1.installationDe
+            ,T1.inspctDe
+            ,T1.inspctKindNm
+            ,T1.dispWords
+            ,T1.failCd
+            ,T1.applcBeDt
+            ,T1.applcEnDt
+            ,T1.inspctInsttNm
+            ,T1.lastChiefApprDt
+        )
+    </update>
+
+    <update id="upsertUnbilledInfo" parameterType="HashMap">
+        MERGE INTO CT_EL_MISU_HIS
+        USING (
+        	SELECT
+                #{RKVBELN} AS RKVBELN
+        	FROM DUAL
+        ) T1
+        ON (INVOICE_REF_NO = #{RKVBELN} AND INTG_PRJ_NO = #{INTG_PRJ_NO} AND TRLINE_CD = #{TRLINE_CD})
+        WHEN MATCHED THEN
+            UPDATE
+            SET
+                SALES_ORDER_NO       = #{VBELN}
+                ,CUSTOMER_NO         = #{KUNNR}
+                ,INVOICE_DT          = #{RKFKDAT}
+                ,COMPS_CNTR_NO       = #{POSID}
+                ,CUSTOMER_NM         = #{KUNNR_NM}
+                ,SITE_NM             = #{BSTKD}
+                ,CONTRACT_AMT        = #{NETWR}
+                ,CONTRACT_DT         = #{BSTDK}
+                ,INVOICE_AMT         = #{RKNETWR}
+                ,BILL_DT             = #{BUDAT}
+                ,BILL_AMT            = #{HWBAS}
+                ,UNBILL_AMT          = #{MISUA}
+                ,CURRENCY            = #{WAERS}
+                ,BILL_TYPE           = #{CPROGN}
+                ,SALES_GP_NM         = #{VKGRP_NM}
+                ,EMPLOYEE_TYPE       = #{ABR_NM}
+                ,BANK_CD_NH          = #{BANKL1}
+                ,VIRTUAL_ACC_NO_NH   = #{BANKVN1}
+                ,BANK_CD_SH          = #{BANKL2}
+                ,VIRTUAL_ACC_NO_SH   = #{BANKVN2}
+                ,CONTR_DA            = #{CONTR_DA}
+                ,BLDAT               = #{BLDAT}
+        WHEN NOT MATCHED THEN
+            INSERT(
+                INVOICE_REF_NO
+                ,SALES_ORDER_NO
+                ,CUSTOMER_NO
+                ,INVOICE_DT
+                ,COMPS_CNTR_NO
+                ,CUSTOMER_NM
+                ,SITE_NM
+                ,CONTRACT_AMT
+                ,CONTRACT_DT
+                ,INVOICE_AMT
+                ,BILL_DT
+                ,BILL_AMT
+                ,UNBILL_AMT
+                ,CURRENCY
+                ,BILL_TYPE
+                ,SALES_GP_NM
+                ,EMPLOYEE_TYPE
+                ,BANK_CD_NH
+                ,VIRTUAL_ACC_NO_NH
+                ,BANK_CD_SH
+                ,VIRTUAL_ACC_NO_SH
+                ,CONTR_DA
+                ,BLDAT
+                ,INTG_PRJ_NO
+                ,TRLINE_CD
+            )
+            VALUES(
+                #{RKVBELN}
+                ,#{VBELN}
+                ,#{KUNNR}
+                ,#{RKFKDAT}
+                ,#{POSID}
+                ,#{KUNNR_NM}
+                ,#{BSTKD}
+                ,#{NETWR}
+                ,#{BSTDK}
+                ,#{RKNETWR}
+                ,#{BUDAT}
+                ,#{HWBAS}
+                ,#{MISUA}
+                ,#{WAERS}
+                ,#{CPROGN}
+                ,#{VKGRP_NM}
+                ,#{ABR_NM}
+                ,#{BANKL1}
+                ,#{BANKVN1}
+                ,#{BANKL2}
+                ,#{BANKVN2}
+                ,#{CONTR_DA}
+                ,#{BLDAT}
+                ,#{INTG_PRJ_NO}
+                ,#{TRLINE_CD}
+            )
+    </update>
+    <delete id="clearUnbilledInfo" parameterType="String">
+        DELETE CT_EL_MISU_HIS
+        WHERE INVOICE_REF_NO LIKE #{param1}||'%'
+    </delete>
+
+    <!-- sample '138083A03' -->
+    <select id="GetSubscriberForAlarm" parameterType="com.hdel.miri.concurrent.domain.message.CcMessageVO$CcSourceVO" resultMap="GetSubscriberListVO">
+        SELECT
+            C.USER_ID
+            , C.USER_NAME
+            , INTG_PRJ_TRLINE_CD_CODE
+            , C.FIREBASE_USER_ID
+            , REPLACE(C.PHONENUMBER,'-','') as PHONENUMBER
+            , D.DIV
+            , CASE 	WHEN SUBSTR(D.DIV,-2) = '01' THEN '접수'
+                    WHEN SUBSTR(D.DIV,-2) = '02' THEN '배치'
+                    WHEN SUBSTR(D.DIV,-2) = '03' THEN '완료'
+            END DIV_NM
+            , SUBSTR(D.ALARM_TYPE,-2) as ALARM_TYPE
+            , CASE 	WHEN SUBSTR(D.ALARM_TYPE,-2) = '01' THEN 'EMAIL'
+                    WHEN SUBSTR(D.ALARM_TYPE,-2) = '02' THEN 'KAKAO'
+                    WHEN SUBSTR(D.ALARM_TYPE,-2) = '03' THEN 'MMS'
+                    WHEN SUBSTR(D.ALARM_TYPE,-2) = '04' THEN 'APP PUSH'
+            END ALARM_NM
+        FROM TB_PORTFOLIO_CONTRACT_MAPPING A, TB_PORTFOLIO B, TB_USER C, TB_ALARM_SETUP D
+        WHERE A.USER_PORTFOLIO_MAPPING_ID = B.USER_PORTFOLIO_MAPPING_ID
+        AND A.INTG_PRJ_TRLINE_CD_CODE =  #{intgPrjNo}||#{trlineCd}
+        AND B.PORTFOLIO_NAME = 'lobby'
+        AND B.USER_ID = C.USER_ID
+        AND C.DEL_YN = 'n'
+        <if test=" privList != null and !privList.isEmpty">
+            AND C.ROLE_TYPE IN
+            <foreach collection="privList" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        <if test=" privList == null or privList.isEmpty">
+            AND C.ROLE_TYPE = 'MANAGER'
+        </if>
+        AND C.ACCOUNT_STATUS = '0040'
+        AND C.USER_ID = D.USER_ID
+        AND D.USE_YN = 'y'
+        AND D.DIV = #{divType}
+        ORDER BY ALARM_TYPE
+    </select>
+
+    <select id="GetMsgTemplate" parameterType="String" resultMap="MsgTemplateVO">
+        SELECT
+            MSG_TEMPLATE_ID
+            ,TO_CHAR(CREATION_DT, 'YYYY-MM-DD HH24:MI:SS') AS REGIST_DT
+            ,TO_CHAR(LASTUPDATE_DT, 'YYYY-MM-DD HH24:MI:SS') AS UPDATE_DT
+            ,AA.MSG_TEMPLATE_NAME
+            ,AA.MSG_TEMPLATE_NOTE
+            ,AA.MSG_TEMPLATE_CONTENTS
+        FROM TB_MSG_TEMPLATE AA
+        WHERE ALARM_TYPE = #{alarmType}
+    </select>
+
+    <select id="GetAlarmYn" resultType="String">
+        SELECT nvl(B.CODE,'n') AS useYn FROM TB_MASTERDATA A, TB_MASTERDATA_DETAIL B
+        WHERE A.MASTERDATA_ID = B.MASTERDATA_ID
+        AND A.MASTERDATA_KEY = 'MESSAGE_ALARM_YN'
+    </select>
+
+    <select id="GetNoticeSourceList" resultType="com.hdel.miri.concurrent.domain.message.CcMessageVO$CcSourceVO">
+        SELECT distinct TITLE, substr(INTG_PROJECT_TRLINE_CD_CODE,0,6) as intgPrjNo, substr(INTG_PROJECT_TRLINE_CD_CODE,-3) as trlineCd, '4001' as divType FROM TB_NOTICE
+        WHERE INTG_PROJECT_TRLINE_CD_CODE IS NOT NULL
+        AND trunc(CREATION_DT) = trunc(sysdate -1)
+    </select>
+
+    <select id="GetExpContractSourceList" resultType="com.hdel.miri.concurrent.domain.message.CcMessageVO$CcSourceVO">
+        SELECT
+            A.INTG_PRJ_NO as intgPrjNo
+            , A.TRLINE_CD as trlineCd
+            , BULD_NM  AS siteNm
+            , MGT_COM_NM AS branchNm
+            , MGT_COM_TEL AS branchTelNo
+            , CONTRACT_END_DT as contractEndDt
+            , '3001' as divType
+            , NVL(B.CUSTOMER_NM, '현대엘리베이터 고객님') AS customerNm
+        FROM CT_EL_INFO A, CT_EL_MISU_HIS B
+        WHERE A.INTG_PRJ_NO = B.INTG_PRJ_NO(+)
+        AND A.TRLINE_CD = B.TRLINE_CD(+)
+        AND TO_CHAR(SYSDATE  - 15, 'YYYYMMDD') = CONTRACT_END_DT
+    </select>
+
+    <select id="GetSelfInspCompleteSourceList" resultType="com.hdel.miri.concurrent.domain.message.CcMessageVO$CcSourceVO">
+        SELECT
+            B.INTG_PRJ_NO as intgPrjNo
+            , B.TRLINE_CD  as trlineCd
+            , A.SEL_CHK_BEGIN_DATE as selChkBeginDate
+            , '2001' as divType
+        FROM CT_EL_SELF_INSP_HIS A, CT_EL_INFO B
+        WHERE A.ELEVATOR_NO = B.ELEVATOR_NO
+        AND A.SEL_CHK_BEGIN_DATE BETWEEN to_char(trunc(sysdate, 'iw')-3,'YYYYMMDD') AND to_char(trunc(sysdate)-1,'YYYYMMDD')
+    </select>
+
+    <insert id="insertAlarmLog" parameterType="HashMap">
+        INSERT INTO TB_ALARM_HIS(ALARM_METHOD, ALARM_TYPE, ALARM_EVENT, CONTENTS, RECEIVER_ID, RECEIVER_PHONE_NO)
+        VALUES(#{param1}, #{param2}, #{param3}, #{param4}, #{param5},#{param6})
+    </insert>
+
+    <update id="insertOrgMstInfoList" parameterType="java.util.List">
+        MERGE INTO TB_ORG_MST R1
+        USING
+        (
+            <foreach collection="list" item="item" separator="UNION">
+                SELECT
+                     #{item.db_type} as dbType
+                    ,#{item.org_cd} as orgCd
+                    ,#{item.org_nm} as orgNm
+                FROM DUAL
+            </foreach>
+        ) T1
+        ON (R1.DB_TYPE = T1.dbType and R1.ORG_CD = T1.orgCd)
+        WHEN MATCHED THEN
+        UPDATE
+            SET
+                ORG_NM              = T1.orgNm
+                ,LASTUPDATE_USER    = 'mirisystem'
+                ,LASTUPDATE_DT      = sysdate
+        WHEN NOT MATCHED THEN
+        INSERT (
+            DB_TYPE
+            ,ORG_CD
+            ,ORG_NM
+            ,CREATION_USER
+            ,ATTRIBUTE1
+            ,ATTRIBUTE2
+            ,ATTRIBUTE3
+        )
+        VALUES (
+            T1.dbType
+            ,T1.orgCd
+            ,T1.orgNm
+            ,'mirisystem'
+            ,''
+            ,''
+            ,''
+        )
+    </update>
+
+    <select id="getSendMailAccountOld" resultType="com.hdel.miri.concurrent.domain.dgk.vo.ReqVO$TargetMailVO">
+        SELECT DISTINCT
+               TT.USER_ID accId, TT.USER_NAME accNm,
+               T.USER_ID mngId , T.USER_NAME mngNm ,
+               T.PHONENUMBER mngPhone,T.COMPS_CNTR_NO compsCntrNo,
+               TO_CHAR(T.CREATION_DT,'YYYY-MM-DD HH24:MI') regDt
+        FROM TB_USER_BACK T , CT_EL_INFO CEI , TB_USER TT
+        WHERE 1 = 1
+        AND T.DEL_YN = 'n'
+        AND T.ROLE_TYPE = 'MANAGER'
+        AND TRUNC(T.LASTUPDATE_DT) BETWEEN TRUNC(sysdate, 'iw') - 7 AND TRUNC(sysdate, 'iw') - 1
+        AND T.COMPS_CNTR_NO = CEI.COMPS_CNTR_NO
+        AND CEI.SALES_EMPL = TT.SALES_EMPL
+        ORDER BY 1, 3
+    </select>
+
+    <select id="getSendMailAccount" resultType="com.hdel.miri.concurrent.domain.dgk.vo.ReqVO$TargetMailVO">
+        SELECT DISTINCT
+               tt.USER_ID accId, tt.USER_NAME accNm,
+               (SELECT msg_template_contents FROM tb_msg_template
+                WHERE alarm_type='9997' AND alarm_event='9997') msgContent
+        <!-- 'manwook.goh@hyundaielevator.com' accId, '고만욱' accNm -->
+        FROM  TB_USER tub, TB_USER TT, TB_PORTFOLIO tp , TB_PORTFOLIO_CONTRACT_MAPPING tpcm , CT_EL_INFO cei
+        WHERE tub.USER_ID = tp.USER_ID
+        AND   tub.DEL_YN = 'n'
+        AND   tub.ROLE_TYPE = 'MANAGER'
+        AND   TRUNC(tub.CREATION_DT) BETWEEN TRUNC(SYSDATE, 'iw') - 7 AND TRUNC(SYSDATE, 'iw') - 1
+        AND   tp.PORTFOLIO_NAME = 'lobby'
+        AND   tp.USER_PORTFOLIO_MAPPING_ID = tpcm.USER_PORTFOLIO_MAPPING_ID
+        AND   CONCAT( cei.INTG_PRJ_NO,cei.TRLINE_CD  ) = tpcm.INTG_PRJ_TRLINE_CD_CODE
+        AND   CEI.SALES_EMPL = TT.SALES_EMPL
+        AND   tt.DEL_YN = 'n'
+    </select>
+
+    <insert id="insertMailLog" useGeneratedKeys="true" parameterType="com.hdel.miri.concurrent.domain.dgk.vo.ReqVO$mailLogVO" keyProperty="emailSeq" keyColumn="EMAIL_SEQ">
+        INSERT
+            INTO TB_EMAIL_LOG
+                   (
+                     FROM_USER
+                   , TO_USER
+                   , SUB_TITLE
+                   , CONTENTS
+                   , CREATION_DT
+                   , CREATION_USER
+                   , LASTUPDATE_DT
+                   , LASTUPDATE_USER
+                   )
+            VALUES (
+                     #{fromAddress}
+                   , <foreach collection="toAddress" item="item" separator="||','||">
+                        #{item}
+                     </foreach>
+                     <if test="ccAddress != null">
+                        <foreach collection="ccAddress" item="item" separator="||','||"  open="||','||">
+                            #{item}
+                        </foreach>
+                     </if>
+                     <if test="bccAddress != null">
+                        <foreach collection="bccAddress" item="item" separator="||','||"  open="||','||">
+                            #{item}
+                        </foreach>
+                     </if>
+                   , #{subject}
+                   , SUBSTR(#{content},1,1000)
+                   , SYSDATE
+                   , #{userId}
+                   , SYSDATE
+                   , #{userId}
+                   )
+    </insert>
+
+    <select id="GetMsgTemplateContents" parameterType="String" resultType="String">
+        SELECT MSG_TEMPLATE_CONTENTS
+        FROM TB_MSG_TEMPLATE
+        WHERE ALARM_TYPE  = #{msgCode}
+        AND ALARM_EVENT = #{msgCode}
+    </select>
+
+    <!--2023-10-04 gmw add-->
+    <select id="getCheckElInfo" resultType="com.hdel.miri.concurrent.domain.dgk.vo.ReqVO$ElInfoVO">
+        WITH TEMP AS
+        ( 
+            SELECT CEI.PRJ_NO || CEI.HO_NO || CEI.INTG_PRJ_NO ||CEI.TRLINE_CD AS CHKITEM, COUNT(*)
+            FROM CT_EL_INFO CEI
+            GROUP BY  CEI.PRJ_NO || CEI.HO_NO || CEI.INTG_PRJ_NO ||CEI.TRLINE_CD
+            HAVING COUNT(*) <![CDATA[ > ]]> 1  
+        )
+        SELECT TEMP.CHKITEM ,CEI.ELEVATOR_NO, CEI.CREATION_USER AS DBTYPE
+        FROM CT_EL_INFO CEI, TEMP
+        WHERE CEI.PRJ_NO||CEI.HO_NO||CEI.INTG_PRJ_NO||CEI.TRLINE_CD = TEMP.CHKITEM
+        ORDER BY 1,CEI.LASTUPDATE_DT DESC
+    </select>
+
+    <!--Manager 자동 등록 2023-10-13 gmw -->
+    <insert id="insertTypeManager" parameterType="com.hdel.miri.concurrent.domain.user.User$DefaultUserCreate">
+        INSERT INTO TB_USER
+            (USER_ID, USER_NAME, PASSWORD, AVATAR, POSTNUMBER, ADDRESS, DETAILADDRESS, PHONENUMBER, NOTE, DEL_YN,
+             CREATION_USER, LASTUPDATE_USER, FIREBASE_USER_ID, ROLE_TYPE)
+        VALUES
+            (#{userId}, #{userName}, #{password} , null, #{postnumber}, #{address}, #{detailaddress}, #{phonenumber}, #{note}, 'n',
+            'miriauto', 'miriauto', #{firebaseUserId}, 'MANAGER')
+    </insert>
+
+    <!--사용자 sendAcceptkey update 2023-10-13 gmw -->
+    <update id="updateSendAcceptKey" parameterType="com.hdel.miri.concurrent.domain.user.User$UpdateAcceptKey">
+        UPDATE TB_USER
+        SET  SEND_ACCEPT_KEY = #{sendAcceptKey}
+            ,LASTUPDATE_USER = 'miriauto'
+        WHERE 1=1
+          AND USER_ID = #{userId}
+    </update>
+
+    <!-- INSERT Service 2023-10-13 gmw-->
+    <insert id="insertDefaultT" parameterType="com.hdel.miri.concurrent.domain.user.User$TermsDefaultCreate">
+        INSERT INTO TB_SERVICE_TERMS
+            (USER_ID, SERVICE_USE_AG, PL_INFO_USING_AG, PL_INFO_STORE_TIME_AG, AD_RECV_AG, CREATION_USER, LASTUPDATE_USER)
+        VALUES
+            (#{userId}, #{serviceUseAg}, #{plInfoUsingAg}, #{plInfoStoreTimeAg}, #{adRecvAg}, 'miriauto', 'miriauto')
+    </insert>
+
+    <!-- INSERT Setup 2023-10-13 gmw-->
+    <insert id="insertDefaultS" parameterType="com.hdel.miri.concurrent.domain.user.User$SetupDefaultCreate">
+        INSERT INTO TB_SETUP
+            (USER_ID, LOCALE, THEME, CREATION_USER, LASTUPDATE_USER, LANDINGPAGE_TYPE)
+        VALUES
+            (#{userId}, #{userLocale}, 'light', 'miriauto', 'miriauto', 'map_page')
+    </insert>
+
+    <!-- INSERT Portfolio 2023-10-13 gmw-->
+    <insert id="insertDefaultP" useGeneratedKeys="true" keyColumn="USER_PORTFOLIO_MAPPING_ID" keyProperty="userPortfolioMappingId"
+        parameterType="com.hdel.miri.concurrent.domain.user.User$PortfolioDefaultCreate">
+        INSERT INTO TB_PORTFOLIO
+            (USER_ID, PORTFOLIO_NAME, PORTFOLIO_IN_CONTRACT_EA, DEFAULT_YN, CREATION_USER, LASTUPDATE_USER)
+        VALUES
+            (#{userId}, #{portfolioName}, 0, #{defaultYn}, 'miriauto', 'miriauto')
+    </insert>
+
+    <!-- INSERT Portfolio Detail 2023-10-13 gmw-->
+    <insert id="insertDefaultC" parameterType="HashMap">
+        INSERT INTO TB_PORTFOLIO_CONTRACT_MAPPING
+            (USER_PORTFOLIO_MAPPING_ID, INTG_PRJ_TRLINE_CD_CODE, CREATION_USER, LASTUPDATE_USER)
+        WITH TEMP AS (
+            SELECT #{param1}, #{param2}, 'miriauto' as creationUser, 'miriauto' as lastupdateUser
+            FROM DUAL
+        ) SELECT * FROM TEMP
+    </insert>
+
+    <!-- Merge lobby 존재 시  2023-10-13 gmw-->
+    <insert id="insertExistPortfolio" parameterType="com.hdel.miri.concurrent.domain.user.User$DefaultUserCreate" >
+        MERGE INTO TB_PORTFOLIO_CONTRACT_MAPPING R1
+        USING
+        (
+            SELECT USER_PORTFOLIO_MAPPING_ID,#{intgPrjTrlineCdCode} intgPrjTrlineCdCode
+            FROM TB_PORTFOLIO
+            WHERE USER_ID = #{userId}
+            AND   PORTFOLIO_NAME = 'lobby'
+        ) R2
+        ON (R1.USER_PORTFOLIO_MAPPING_ID = R2.USER_PORTFOLIO_MAPPING_ID
+            AND R1.INTG_PRJ_TRLINE_CD_CODE = R2.intgPrjTrlineCdCode)
+        WHEN MATCHED THEN
+            UPDATE
+                SET LASTUPDATE_USER = 'miriauto',
+                    LASTUPDATE_DT = sysdate
+        WHEN NOT MATCHED THEN
+            INSERT
+                (USER_PORTFOLIO_MAPPING_ID, INTG_PRJ_TRLINE_CD_CODE, CREATION_USER, LASTUPDATE_USER)
+            VALUES
+                (R2.USER_PORTFOLIO_MAPPING_ID, R2.intgPrjTrlineCdCode, 'miriauto', 'miriauto')
+    </insert>
+
+    <!-- INSERT Role User Mapping 2023-10-13 gmw-->
+    <insert id="insertUserRoleMapping2" parameterType="com.hdel.miri.concurrent.domain.user.User$DefaultUserCreate">
+        INSERT INTO TB_ROLE_USER_MAPPING
+            (USER_ID, ROLE_ID, CREATION_USER, LASTUPDATE_USER)
+        WITH TEMP AS (
+            SELECT #{userId} as USER_ID, ROLE_ID , 'miriauto' as CREATION_USER, 'miriauto' as LASTUPDATE_USER
+            FROM TB_ROLE
+            WHERE PAYLOAD = #{roleType}
+        ) SELECT * FROM TEMP
+    </insert>
+
+    <!-- INSERT Alarm Detail 2023-10-13 gmw-->
+    <insert id="insertDefaultA" parameterType="com.hdel.miri.concurrent.domain.user.User$AlarmDefaultCreate">
+        INSERT INTO TB_ALARM_SETUP
+            (USER_ID, CAT, DIV, ALARM_TYPE, USE_YN, CREATION_USER, LASTUPDATE_USER)
+        WITH TEMP AS (
+            SELECT #{userId}, CAT, DIV, ALARM_TYPE, 'n' AS USE_YN, 'miriauto' as CREATION_USER, 'miriauto' as LASTUPDATE_USER
+            FROM TB_ALARM_SETUP
+            WHERE USER_ID = (SELECT USER_ID  FROM TB_ALARM_SETUP WHERE rownum = 1)
+        ) SELECT * FROM TEMP
+    </insert>
+
+    <!--Select 계약 조회 2023-10-13 gmw add-->
+    <select id="getContractInfo" parameterType="com.hdel.miri.concurrent.domain.user.User$DefaultUserCreate"
+            resultType="com.hdel.miri.concurrent.domain.user.User$ContractAPI">
+        SELECT DISTINCT
+               INTG_PRJ_NO as intgPrjNo, TRLINE_CD as trlineCd
+        FROM CT_EL_INFO
+        WHERE  1 = 1
+        AND INTG_PRJ_NO||TRLINE_CD = #{intgPrjTrlineCdCode}
+    </select>
+
+    <!--Select 사용자 존재 2023-10-13 gmw add-->
+    <select id="getUserExist" parameterType="com.hdel.miri.concurrent.domain.user.User$DefaultUserCreate"
+            resultType="com.hdel.miri.concurrent.domain.user.User$DefaultUserCreate" >
+        SELECT USER_ID userId, USER_NAME userName
+        FROM TB_USER
+        WHERE  1 = 1
+        AND  USER_ID = #{userId}
+        <!-- AND  USER_NAME = #{userName} -->
+    </select>
+</mapper>

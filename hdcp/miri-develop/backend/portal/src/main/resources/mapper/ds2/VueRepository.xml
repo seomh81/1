@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.api.domain.privilege.vue.VueRepository">
+    <!-- RESULT MAP -->
+    <resultMap id="getVue" type="com.hdel.miri.api.domain.privilege.vue.Vue$VueFile">
+        <result column="VUE_FILE_ID"            property="vueFileId" />
+        <result column="VUE_NAME"                 property="vueName" />
+        <result column="VUE_FILE_URL"            property="vueFileUrl" />
+        <result column="TYPE"            property="type" />
+        <result column="NOTE"            property="note" />
+        <result column="CREATION_DT"       property="creationDt" />
+    </resultMap>
+    <!-- RESULT MAP -->
+
+    <!-- SELECT -->
+    <select id="selectList" parameterType="com.hdel.miri.api.domain.privilege.vue.Vue$VueSearch"
+            resultMap="getVue">
+        SELECT
+        VUE_FILE_ID
+        ,VUE_NAME
+        ,TYPE
+        ,VUE_FILE_URL
+        ,NOTE
+        ,TO_CHAR(CREATION_DT, 'YYYY-MM-DD HH24:MI:SS') AS CREATION_DT
+        FROM TB_VUE_FILE
+        WHERE 1=1
+        <if test="searchKeyword != null and searchKeyword != '' ">AND (VUE_NAME LIKE '%'||#{searchKeyword}||'%' OR VUE_FILE_URL LIKE '%'||#{searchKeyword}||'%') </if>
+        ORDER BY LASTUPDATE_DT DESC
+    </select>
+    <!-- SELECT -->
+
+
+    <!-- INSERT -->
+    <insert id="insert"
+            parameterType="com.hdel.miri.api.domain.privilege.vue.Vue$VueCreate">
+        INSERT INTO TB_VUE_FILE(VUE_NAME, VUE_FILE_URL, TYPE, NOTE, CREATION_USER, LASTUPDATE_USER)
+        VALUES(#{vueName}
+              ,#{vueFileUrl}
+              ,#{type}
+              ,#{note}
+              ,#{currentUser}
+              ,#{currentUser}
+              )
+    </insert>
+    <!-- INSERT -->
+
+    <!-- UPDATE -->
+    <update id="update"
+            parameterType="com.hdel.miri.api.domain.privilege.vue.Vue$VueUpdate">
+        UPDATE TB_VUE_FILE
+        SET VUE_NAME = #{vueName}
+        ,VUE_FILE_URL = #{vueFileUrl}
+        ,TYPE =#{type}
+        ,NOTE = #{note}
+        ,LASTUPDATE_USER = #{currentUser}
+        WHERE 1=1
+        <if test="vueFileId !=null and vueFileId != '' ">AND VUE_FILE_ID = #{vueFileId}</if>
+    </update>
+    <!-- UPDATE -->
+
+    <!-- DELETE -->
+    <delete id="delete" parameterType="com.hdel.miri.api.domain.privilege.vue.Vue$VueDelete">
+        DELETE FROM TB_VUE_FILE
+        WHERE   1=1
+        AND     VUE_FILE_ID IN
+        <foreach collection="vueFileIds" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+    <!-- DELETE -->
+</mapper>

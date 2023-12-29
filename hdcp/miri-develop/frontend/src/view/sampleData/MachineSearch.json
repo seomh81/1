@@ -1,0 +1,17 @@
+[
+  {
+    "contractNumber": 344334343,
+
+    "type": "type",
+    "expirationNumber": 1,
+    "status": 1,
+    "installDate": "2022-02-12",
+    "Validity": "2023-02-12",
+    "maintenanceCompany": "테스트업체",
+    "maintenanceyNumber": "010-2322-2333",
+    "insuranceCompany": "테스트보험",
+    "insuranceDate": "2022-02-12 - 2025-02-12",
+    "SafetyManager": "홍길동",
+    "SafetyManagerNumber": "010-2322-2222"
+  }
+]

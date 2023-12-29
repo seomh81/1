@@ -1,0 +1,27 @@
+[
+  {
+    "title": "날씨",
+    "component": "WIDGET_WEATHER",
+    "width": 25,
+    "expend": true,
+    "sort": 5
+  },
+  {
+    "title": "정기 검사",
+    "component": "WIDGET_Insp",
+    "width": 25,
+    "sort": 1
+  },
+  {
+    "title": "정기 점검",
+    "component": "WIDGET_SelfInsp",
+    "width": 25,
+    "sort": 3
+  },
+  {
+    "title": "MIRI AI 진단",
+    "component": "WIDGET_WarningParts",
+    "width": 25,
+    "sort": 7
+  }
+]

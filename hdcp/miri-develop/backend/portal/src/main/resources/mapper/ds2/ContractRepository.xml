@@ -1,0 +1,561 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.api.domain.contract.ContractRepository">
+    <!-- RESULT MAP -->
+    <resultMap id="ContractMIRIStatus" type="com.hdel.miri.api.domain.contract.Contract$ContractMIRIStatus">
+        <result column="IS_AVAILABLE" property="isAvailable" />
+    </resultMap>
+    <resultMap id="ContractJoin" type="com.hdel.miri.api.domain.contract.Contract$ContractJoin">
+        <result column="PORTFOLIO_CONTRACT_MAPPING_ID" property="portfolioContractMappingId" />
+        <result column="INTG_PRJ_TRLINE_CD_CODE" property="intgPrjTrlineCdCode" />
+        <result column="INTG_PRJ_NO" property="intgPrjNo" />
+        <result column="TRLINE_CD" property="trlineCd" />
+    </resultMap>
+    <resultMap id="ContractJoinDistinct" type="com.hdel.miri.api.domain.contract.Contract$ContractJoinDistinct">
+        <result column="INTG_PRJ_TRLINE_CD_CODE" property="intgPrjTrlineCdCode" />
+        <result column="INTG_PRJ_NO" property="intgPrjNo" />
+        <result column="TRLINE_CD" property="trlineCd" />
+    </resultMap>
+
+        <resultMap id="ContractJoin2" type="com.hdel.miri.api.domain.contract.Contract$ContractJoin2">
+        <result column="PORTFOLIO_CONTRACT_MAPPING_ID" property="portfolioContractMappingId" />
+        <result column="INTG_PRJ_TRLINE_CD_CODE" property="intgPrjTrlineCdCode" />
+        <result column="INTG_PRJ_NO" property="intgPrjNo" />
+        <result column="TRLINE_CD" property="trlineCd" />
+        <result column="PRJ_NO" property="prjNo" />
+        <result column="HO_NO" property="hoNo" />
+        <result column="ELEVATOR_NO" property="elevatorNo" />
+        <result column="INSTALLATION_PLACE" property="installationPlace" />
+        <result column="BUILD_NM" property="buildNm" />
+        <result column="OFFICE_NM" property="officeNm" />
+        <result column="SALES_EMPL_NM" property="salesEmplNm" />
+    </resultMap>
+
+    <resultMap id="getContractDetails" type="com.hdel.miri.api.domain.contract.Contract$ContractDetail">
+        <id column="USER_PORTFOLIO_MAPPING_ID" property="userPortfolioMappingId" />
+        <collection property="contractList" resultMap="ContractInfo" >
+            <id column="CONTRACT_CODE" property="contractCode" />
+        </collection>
+    </resultMap>
+
+    <resultMap id="ContractInfo" type="com.hdel.miri.api.domain.contract.Contract$ContractInfo">
+        <id column="CONTRACT_CODE"                property="contractCode" />
+        <result column="PORTFOLIO_CONTRACT_MAPPING_ID" property="portfolioContractMappingId" />
+        <result column ="INTG_PRJ_TRLINE_CD_CODE"      property="intgPrjTrlineCdCode"/>
+        <result column ="INTG_PRJ_NO"                  property="intgPrjNo"/>
+        <result column ="TRLINE_CD"                    property="trlineCd"/>
+        <result column ="BGN_DT"                       property="bgnDt"/>
+        <result column ="XPIR_DT"                      property="xpirDt"/>
+        <result column ="CUST_NM"                      property="custNm"/>
+        <result column ="SITENM"                        property="siteNm"/>
+        <result column ="BUILD_NM"                      property="buildNm"/>
+        <result column ="OFFICE_NM"                     property="officeNm"/>
+        <result column ="SALES_EMPL_NM"                 property="salesEmplNm"/>
+        <result column ="EL_NO"                         property="elevatorNo"/>
+        <result column ="MIRI_YN"                       property="miriYn"/>
+        <result column ="MIRICALL_YN"                   property="miriCallYn"/>
+        <result column ="MIRIVIEW_YN"                   property="miriViewYn"/>
+        <result column ="MIRIROBOT_YN"                  property="miriRobotYn"/>
+        <collection property="projectList" resultMap="ProjectInfo" >
+            <id column="PRJ_NO" property="prjNo" />
+        </collection>
+    </resultMap>
+    <resultMap id="ProjectInfo" type="com.hdel.miri.api.domain.contract.Contract$ProjectInfo">
+        <id column="PRJ_NO"                             property="prjNo" />
+        <result column="PORTFOLIO_CONTRACT_MAPPING_ID"  property="portfolioContractMappingId" />
+        <result column="CONTRACT_CODE"                  property="contractCode" />
+        <result column ="INTG_PRJ_TRLINE_CD_CODE"       property="intgPrjTrlineCdCode"/>
+        <result column ="INTG_PRJ_NO"                   property="intgPrjNo" />
+        <result column ="TRLINE_CD"                     property="trlineCd" />
+        <result column ="CUST_NM"                       property="custNm"/>
+        <result column ="SITENM"                        property="siteNm"/>
+        <result column ="BUILD_NM"                      property="buildNm"/>
+        <collection property="carList" resultMap="CarInfo">
+            <id column="CAR_NO"     property="hoNo" />
+        </collection>
+    </resultMap>
+    <resultMap id="CarInfo" type="com.hdel.miri.api.domain.contract.Contract$CarInfo">
+        <id column="CAR_NO"                             property="hoNo" />
+        <result column ="PORTFOLIO_CONTRACT_MAPPING_ID" property="portfolioContractMappingId" />
+        <result column ="CONTRACT_CODE"                 property="contractCode" />
+        <result column ="INTG_PRJ_TRLINE_CD_CODE"       property="intgPrjTrlineCdCode"/>
+        <result column ="INTG_PRJ_NO"                   property="intgPrjNo" />
+        <result column ="TRLINE_CD"                     property="trlineCd" />
+        <result column ="PRJ_NO"                        property="prjNo"/>
+        <result column ="CAR_TYPE"                      property="carType"/>
+        <result column ="INSTALLATION_PLACE"            property="installationPlace"/>
+        <result column ="OFFICE_NM"                     property="officeNm"/>
+        <result column ="SALES_EMPL_NM"                 property="salesEmplNm"/>
+        <result column ="EL_NO"                         property="elevatorNo"/>
+        <result column ="MIRI_YN"                       property="miriYn"/>
+        <result column ="MIRICALL_YN"                   property="miriCallYn"/>
+        <result column ="MIRIVIEW_YN"                   property="miriViewYn"/>
+        <result column ="MIRIROBOT_YN"                  property="miriRobotYn"/>
+    </resultMap>
+
+    <resultMap id="ContractContactInfo" type="com.hdel.miri.api.domain.contract.Contract$ContractContactInfo">
+        <result column ="NM" property="nm"/>
+        <result column="DEPT_NM" property="deptNm" />
+        <result column="DISP_STR" property="dispStr" />
+        <result column="MOB" property="mob" />
+    </resultMap>
+
+    <!-- RESULT MAP -->
+    <!-- SELECT -->
+    <select id="select" parameterType="com.hdel.miri.api.util.request.AbstractRequest" resultType="string">
+        SELECT DISTINCT PCM.INTG_PRJ_TRLINE_CD_CODE AS INTG_PRJ_TRLINE_CD_CODE
+        FROM TB_PORTFOLIO  P
+                INNER JOIN TB_PORTFOLIO_CONTRACT_MAPPING  PCM
+                        ON P.USER_PORTFOLIO_MAPPING_ID  = PCM.USER_PORTFOLIO_MAPPING_ID 
+                        <!-- AND APPROVAL_YN = 'y' -->
+        WHERE USER_ID = #{currentUser}
+    </select>
+    <select id="selectByCurrentUser" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractSearchCurrentUser" resultMap="ContractJoin2">
+       SELECT DISTINCT
+              PORTFOLIO_CONTRACT_MAPPING_ID
+            , NVL(PRJ_NO,'-')                       AS PRJ_NO
+            , NVL(HO_NO,'-')                        AS HO_NO
+            , NVL(C.INSTALLATION_PLACE,'-')         AS INSTALLATION_PLACE
+            , INTG_PRJ_TRLINE_CD_CODE               AS INTG_PRJ_TRLINE_CD_CODE
+            , SUBSTR(INTG_PRJ_TRLINE_CD_CODE,0,6)   AS INTG_PRJ_NO
+            , SUBSTR(INTG_PRJ_TRLINE_CD_CODE,-3)    AS TRLINE_CD
+            , C.BULD_NM                             AS BUILD_NM
+            , C.MGT_COM_NM                          AS OFFICE_NM
+            , C.ELEVATOR_NO
+            , C.SALES_EMPL_NM
+         FROM TB_PORTFOLIO_CONTRACT_MAPPING A
+        INNER JOIN TB_PORTFOLIO B
+           ON B.PORTFOLIO_NAME = 'lobby'
+          AND B.USER_ID = NVL(#{userId}, #{currentUser})
+          AND B.USER_PORTFOLIO_MAPPING_ID = A.USER_PORTFOLIO_MAPPING_ID
+        INNER JOIN CT_EL_INFO C
+           ON C.INTG_PRJ_NO||C.TRLINE_CD = A.INTG_PRJ_TRLINE_CD_CODE
+        <!-- AND APPROVAL_YN = 'y' -->
+    </select>
+    <select id="selectByCurrentUserWithCondition" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractSearchCurrentUser" resultMap="getContractDetails">
+       SELECT DISTINCT
+              #{userPortfolioMappingId}             AS USER_PORTFOLIO_MAPPING_ID
+            , A.PORTFOLIO_CONTRACT_MAPPING_ID
+            , C.COMPS_CNTR_NO                       AS CONTRACT_CODE
+            , A.INTG_PRJ_TRLINE_CD_CODE             AS INTG_PRJ_TRLINE_CD_CODE
+            , C.INTG_PRJ_NO
+            , C.TRLINE_CD
+            , NVL(C.PRJ_NO,'-')                     AS PRJ_NO
+            , NVL(C.HO_NO,'-')                      AS CAR_NO
+            , C.CONTRACT_START_DT                   AS BGN_DT
+            , C.CONTRACT_END_DT                     AS XPIR_DT
+            , C.CUST_NM
+            , C.SITE_NM                             AS SITENM
+            , NVL(C.ELVTR_DETAIL_FORM, '--')        AS CAR_TYPE
+            , NVL(C.INSTALLATION_PLACE,'-')         AS INSTALLATION_PLACE
+            , C.BULD_NM                             AS BUILD_NM
+            , C.MGT_COM_NM                          AS OFFICE_NM
+            , C.SALES_EMPL_NM
+            , C.ELEVATOR_NO                         AS EL_NO
+            , C.MIRI_YN
+            , C.MIRICALL_YN
+            , C.MIRIVIEW_YN
+            , C.MIRIROBOT_YN
+         FROM TB_PORTFOLIO_CONTRACT_MAPPING A
+        INNER JOIN TB_PORTFOLIO B
+           ON B.PORTFOLIO_NAME = 'lobby'
+          AND B.USER_ID = NVL(#{userId}, #{currentUser})
+          AND B.USER_PORTFOLIO_MAPPING_ID = A.USER_PORTFOLIO_MAPPING_ID
+        INNER JOIN CT_EL_INFO C
+           ON 1 = 1
+        <if test="keyword != null and keyword != ''">
+          AND UPPER(C.COMPS_CNTR_NO) LIKE '%'||UPPER(#{keyword})||'%'
+        </if>
+        <if test="accountName != null and accountName != ''">
+          AND C.SALES_EMPL_NM LIKE '%'||#{accountName}||'%'
+        </if>
+        <if test="elevatorNo != null and elevatorNo != ''">
+          AND C.ELEVATOR_NO LIKE '%'||#{elevatorNo}||'%'
+        </if>
+        <if test="officeName != 'ALL' and officeName != null ">
+          AND C.MGT_COM_NM = #{officeName}
+        </if>
+        <if test="fieldName != null and fieldName != ''">
+          AND C.SITE_NM LIKE '%'||#{fieldName}||'%'
+        </if>
+        <if test="clientName != null and clientName != ''">
+          AND C.CUST_NM LIKE '%'||#{clientName}||'%'
+        </if>
+        <if test="miriYn != 'ALL' and officeName != null">
+          AND C.MIRI_YN = #{miriYn}
+        </if>
+        <if test="miriCallYn != 'ALL' and miriCallYn != null">
+          AND C.MIRICALL_YN = #{miriCallYn}
+        </if>
+        <if test="miriViewYn != 'ALL' and miriViewYn != null">
+          AND C.MIRIVIEW_YN = #{miriViewYn}
+        </if>
+        <if test="miriRobotYn != 'ALL' and miriRobotYn != null">
+          AND C.MIRIROBOT_YN = #{miriRobotYn}
+        </if>
+          AND C.INTG_PRJ_NO||C.TRLINE_CD = A.INTG_PRJ_TRLINE_CD_CODE
+        <!-- AND APPROVAL_YN = 'y' -->
+    </select>
+    <select id="selectByPortfolio" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractSearchPortfolio" resultMap="ContractJoin">
+        SELECT
+            DISTINCT
+            PORTFOLIO_CONTRACT_MAPPING_ID
+            ,INTG_PRJ_TRLINE_CD_CODE AS INTG_PRJ_TRLINE_CD_CODE
+            ,SUBSTR(A.INTG_PRJ_TRLINE_CD_CODE,0,6) AS INTG_PRJ_NO
+            ,SUBSTR(A.INTG_PRJ_TRLINE_CD_CODE,-3) AS TRLINE_CD
+        FROM TB_PORTFOLIO_CONTRACT_MAPPING A, CT_EL_INFO B
+        WHERE USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+        AND A.INTG_PRJ_TRLINE_CD_CODE = B.INTG_PRJ_NO || B.TRLINE_CD
+        <!-- AND APPROVAL_YN = 'y' -->
+    </select>
+
+        <select id="selectByPortfolio2" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractSearchPortfolio" resultMap="ContractJoin">
+        SELECT
+            DISTINCT
+            PORTFOLIO_CONTRACT_MAPPING_ID
+            ,INTG_PRJ_TRLINE_CD_CODE AS INTG_PRJ_TRLINE_CD_CODE
+            ,SUBSTR(INTG_PRJ_TRLINE_CD_CODE,0,6) AS INTG_PRJ_NO
+            ,SUBSTR(INTG_PRJ_TRLINE_CD_CODE,-3) AS TRLINE_CD
+        FROM TB_PORTFOLIO_CONTRACT_MAPPING A, CT_EL_INFO B
+        WHERE USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+        AND A.INTG_PRJ_TRLINE_CD_CODE = B.INTG_PRJ_NO || B.TRLINE_CD
+        <!-- AND APPROVAL_YN = 'y' -->
+    </select>
+
+    <select id="selectByPortfolio3" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractSearchPortfolio" resultMap="ContractJoin2">
+        SELECT DISTINCT
+               PORTFOLIO_CONTRACT_MAPPING_ID
+             , INTG_PRJ_TRLINE_CD_CODE             AS INTG_PRJ_TRLINE_CD_CODE
+             , SUBSTR(INTG_PRJ_TRLINE_CD_CODE,0,6) AS INTG_PRJ_NO
+             , SUBSTR(INTG_PRJ_TRLINE_CD_CODE,-3)  AS TRLINE_CD
+             , B.PRJ_NO
+			 , B.HO_NO
+			 , B.ELEVATOR_NO
+			 , B.INSTALLATION_PLACE
+             , B.BULD_NM                           AS BUILD_NM
+             , B.MGT_COM_NM                        AS OFFICE_NM
+             , B.ELEVATOR_NO
+             , B.SALES_EMPL_NM
+          FROM TB_PORTFOLIO_CONTRACT_MAPPING A
+         INNER JOIN CT_EL_INFO B
+            ON B.INTG_PRJ_NO = SUBSTR(A.INTG_PRJ_TRLINE_CD_CODE,0,6)
+           AND B.TRLINE_CD   = SUBSTR(INTG_PRJ_TRLINE_CD_CODE,-3)
+         WHERE A.USER_PORTFOLIO_MAPPING_ID =  #{userPortfolioMappingId} 
+        <!-- AND APPROVAL_YN = 'y' -->
+    </select>
+
+    <select id="selectByPortfolio4" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractSearchPortfolio" resultMap="getContractDetails">
+        SELECT DISTINCT
+               A.USER_PORTFOLIO_MAPPING_ID
+             , A.PORTFOLIO_CONTRACT_MAPPING_ID
+             , B.COMPS_CNTR_NO                       AS CONTRACT_CODE
+             , A.INTG_PRJ_TRLINE_CD_CODE             AS INTG_PRJ_TRLINE_CD_CODE
+             , B.INTG_PRJ_NO
+             , B.TRLINE_CD
+             , NVL(B.PRJ_NO,'-')                     AS PRJ_NO
+             , NVL(B.HO_NO,'-')                      AS CAR_NO
+             , B.CONTRACT_START_DT                   AS BGN_DT
+             , B.CONTRACT_END_DT                     AS XPIR_DT
+             , B.CUST_NM
+             , B.SITE_NM                             AS SITENM
+             , NVL(B.ELVTR_DETAIL_FORM, '--')        AS CAR_TYPE
+             , NVL(B.INSTALLATION_PLACE,'-')         AS INSTALLATION_PLACE
+             , B.BULD_NM                             AS BUILD_NM
+             , B.MGT_COM_NM                          AS OFFICE_NM
+             , B.SALES_EMPL_NM
+             , B.ELEVATOR_NO                         AS EL_NO
+             , B.MIRI_YN
+             , B.MIRICALL_YN
+             , B.MIRIVIEW_YN
+             , B.MIRIROBOT_YN
+          FROM TB_PORTFOLIO_CONTRACT_MAPPING A
+         INNER JOIN CT_EL_INFO B
+            ON B.INTG_PRJ_NO = SUBSTR(A.INTG_PRJ_TRLINE_CD_CODE,0,6)
+           AND B.TRLINE_CD   = SUBSTR(INTG_PRJ_TRLINE_CD_CODE,-3)
+         WHERE A.USER_PORTFOLIO_MAPPING_ID =  #{userPortfolioMappingId} 
+        <!-- AND APPROVAL_YN = 'y' -->
+    </select>
+
+    <select id="selectContractInfoList" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractSearchPortfolio" resultMap="ContractContactInfo">
+        SELECT  
+            B.CREATION_USER
+            ,MIN(TMD.value_1) DEPT_NM
+            ,MIN(TMD.VALUE_5) MOB
+        FROM TB_PORTFOLIO_CONTRACT_MAPPING A, CT_EL_INFO B
+            ,TB_MASTERDATA_DETAIL TMD
+        WHERE SUBSTR(INTG_PRJ_TRLINE_CD_CODE,0,6) = B.INTG_PRJ_NO
+        AND SUBSTR(INTG_PRJ_TRLINE_CD_CODE,-3) = B.TRLINE_CD
+        AND  USER_PORTFOLIO_MAPPING_ID =  #{userPortfolioMappingId}
+        AND  TMD.MASTERDATA_ID = '161'
+        AND  B.MGT_COM_NM = TMD.VALUE_1
+        GROUP BY B.CREATION_USER
+    </select>
+
+    <select id="isAvailableMiricall" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractMiriServiceAPI" resultMap="ContractMIRIStatus">
+            SELECT NVL(max(MIRICALL_YN),'N') AS IS_AVAILABLE
+            FROM 	CT_EL_INFO A, TB_PORTFOLIO_CONTRACT_MAPPING B
+            WHERE 	A.INTG_PRJ_NO 	= substr(B.INTG_PRJ_TRLINE_CD_CODE,1,6)
+            AND   	A.TRLINE_CD 	= substr(B.INTG_PRJ_TRLINE_CD_CODE,-3)
+            AND   	B.USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+    </select>
+
+    <select id="isAvailableMiriview" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractMiriServiceAPI" resultMap="ContractMIRIStatus">
+        SELECT NVL(max(MIRIVIEW_YN),'N') AS IS_AVAILABLE
+        FROM 	CT_EL_INFO A, TB_PORTFOLIO_CONTRACT_MAPPING B
+        WHERE 	A.INTG_PRJ_NO 	= substr(B.INTG_PRJ_TRLINE_CD_CODE,1,6)
+        AND   	A.TRLINE_CD 	= substr(B.INTG_PRJ_TRLINE_CD_CODE,-3)
+        AND   	B.USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+    </select>
+
+    <select id="isAvailableMiricall2" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractMiriServiceAPI2" resultMap="ContractMIRIStatus">
+        SELECT NVL(max(MIRICALL_YN),'N') AS IS_AVAILABLE
+        FROM 	CT_EL_INFO
+        WHERE   ELEVATOR_NO = #{elevatorNo}
+    </select>
+
+    <select id="isAvailableMiriview2" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractMiriServiceAPI2" resultMap="ContractMIRIStatus">
+        SELECT NVL(max(MIRIVIEW_YN),'N') AS IS_AVAILABLE
+        FROM 	CT_EL_INFO
+        WHERE   ELEVATOR_NO = #{elevatorNo}
+    </select>
+
+    <!-- SELECT -->
+    <!-- UPDATE -->
+    <!-- UPDATE -->
+    <!-- INSERT -->
+    <sql id="insertQuery">
+        INSERT INTO TB_PORTFOLIO_CONTRACT_MAPPING (USER_PORTFOLIO_MAPPING_ID, INTG_PRJ_TRLINE_CD_CODE, CREATION_USER, LASTUPDATE_USER)
+    </sql>
+    <insert id="insertDefault"
+        parameterType="HashMap">
+        <include refid="insertQuery" /> 
+        WITH TEMP AS (
+        <foreach collection="param3" item="item" separator="UNION ALL">
+            SELECT #{param1}, #{item.intgPrjNo}||#{item.trlineCd}, #{param2}, #{param2} FROM DUAL
+        </foreach>
+        ) SELECT * FROM TEMP
+    </insert>
+
+    <!-- 대량 사용자 등록 Query -->
+    <insert id="insertUserFromManager" 
+        parameterType="HashMap">
+        <include refid="insertQuery" /> 
+        SELECT DISTINCT #{param1}, B.INTG_PRJ_TRLINE_CD_CODE, #{param2}, #{param2}  FROM TB_PORTFOLIO A, TB_PORTFOLIO_CONTRACT_MAPPING B
+        WHERE A.USER_PORTFOLIO_MAPPING_ID = B.USER_PORTFOLIO_MAPPING_ID 
+        AND USER_ID = #{param3.iUserId}
+        AND PORTFOLIO_NAME = 'lobby'
+    </insert>
+
+    <insert id="insertAccountFromSystem" 
+        parameterType="HashMap">
+        <include refid="insertQuery" /> 
+        SELECT DISTINCT #{param1}, INTG_PRJ_NO||TRLINE_CD, #{param2}, #{param2}  FROM CT_EL_INFO 
+        WHERE SALES_EMPL =  #{param3.empId}
+    </insert>
+
+    <insert id="insertAccountFromLobby" 
+        parameterType="HashMap">
+        <include refid="insertQuery" /> 
+        SELECT #{param1}
+             , B.INTG_PRJ_TRLINE_CD_CODE
+             , #{param2}
+             , #{param2}
+          FROM TB_PORTFOLIO A
+         INNER JOIN TB_PORTFOLIO_CONTRACT_MAPPING B
+            ON B.USER_PORTFOLIO_MAPPING_ID = A.USER_PORTFOLIO_MAPPING_ID
+         WHERE A.USER_ID        = #{param2}
+           AND A.PORTFOLIO_NAME = 'lobby'
+           AND ROWNUM = 1
+    </insert>
+
+
+    <insert id="insertEnginerrFromSystem" 
+        parameterType="HashMap">
+        <include refid="insertQuery" /> 
+        WITH TEMP AS (
+        <foreach collection="param3" item="item" separator="UNION ALL">
+            SELECT #{param1}, #{item.intgPrjNo}||#{item.trlineCd}, #{param2}, #{param2} FROM DUAL
+        </foreach>
+        ) SELECT * FROM TEMP
+    </insert>
+
+    <insert id="insertContractCopy" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractCopyVO">
+        INSERT
+          INTO TB_PORTFOLIO_CONTRACT_MAPPING
+               (
+                  USER_PORTFOLIO_MAPPING_ID
+                , INTG_PRJ_TRLINE_CD_CODE
+                , APPROVAL_YN
+                , CREATION_DT
+                , CREATION_USER
+                , LASTUPDATE_DT
+                , LASTUPDATE_USER
+               )
+        SELECT A.USER_PORTFOLIO_MAPPING_ID
+             , B.INTG_PRJ_TRLINE_CD_CODE
+             , 'n'
+             , SYSDATE
+             , #{currentUserId}
+             , SYSDATE
+             , #{currentUserId}
+          FROM TB_PORTFOLIO A
+          LEFT OUTER JOIN (
+                            SELECT INTG_PRJ_TRLINE_CD_CODE
+                              FROM TB_PORTFOLIO B
+                             INNER JOIN TB_PORTFOLIO_CONTRACT_MAPPING C
+                                ON C.USER_PORTFOLIO_MAPPING_ID = B.USER_PORTFOLIO_MAPPING_ID
+                             WHERE B.USER_ID = #{fromUserId}
+                               AND B.PORTFOLIO_NAME = 'lobby'
+                          ) B
+            ON 1 = 1
+         WHERE A.USER_ID = #{toUserId}
+           AND A.PORTFOLIO_NAME = 'lobby'
+    </insert>
+    <insert id="insertContractCopyLogMaster" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractCopyVO">
+        <selectKey keyProperty="copyLogNo" resultType="java.lang.String" order="BEFORE">
+            SELECT NVL(MAX(COPY_LOG_NO) + 1, 1)
+              FROM TB_COPY_LOG_MASTER
+        </selectKey>
+        INSERT
+          INTO TB_COPY_LOG_MASTER
+               (
+                 COPY_LOG_NO
+               , FROM_USER_ID
+               , TO_USER_ID
+               , CREATION_DT
+               , CREATION_USER
+               )
+        VALUES (
+                 #{copyLogNo}
+               , #{fromUserId}
+               , #{toUserId}
+               , SYSDATE
+               , #{currentUserId}
+               ) 
+    </insert>
+    <insert id="insertContractCopyLogDetail" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractCopyVO">
+        INSERT
+          INTO TB_COPY_LOG_DETAIL
+               (
+                 REQ_NO
+               , COPY_LOG_NO
+               , TARGET_TYPE
+               , INTG_PRJ_TRLINE_CD_CODE
+               , CREATION_DT
+               , CREATION_USER
+               )
+        SELECT (SELECT NVL(MAX(REQ_NO), 0) FROM TB_COPY_LOG_DETAIL) + ROWNUM
+             , #{copyLogNo}
+             , TARGET_TYPE
+             , INTG_PRJ_TRLINE_CD_CODE
+             , SYSDATE
+             , #{currentUserId}
+          FROM (
+                 SELECT 'TOBE' AS TARGET_TYPE
+                      , INTG_PRJ_TRLINE_CD_CODE
+                   FROM TB_PORTFOLIO_CONTRACT_MAPPING A
+                  INNER JOIN TB_PORTFOLIO B
+                     ON B.USER_ID = #{fromUserId}
+                    AND B.PORTFOLIO_NAME = 'lobby'
+                    AND B.USER_PORTFOLIO_MAPPING_ID = A.USER_PORTFOLIO_MAPPING_ID
+                  UNION ALL
+                 SELECT 'ASIS' AS TARGET_TYPE
+                      , INTG_PRJ_TRLINE_CD_CODE
+                   FROM TB_PORTFOLIO_CONTRACT_MAPPING A
+                  INNER JOIN TB_PORTFOLIO B
+                     ON B.USER_ID = #{toUserId}
+                    AND B.PORTFOLIO_NAME = 'lobby'
+                    AND B.USER_PORTFOLIO_MAPPING_ID = A.USER_PORTFOLIO_MAPPING_ID
+               ) A
+    </insert>
+
+    <!-- INSERT -->
+    <!-- DELETE -->
+    <delete id="delete" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractDelete">
+        DELETE FROM TB_PORTFOLIO_CONTRACT_MAPPING WHERE PORTFOLIO_CONTRACT_MAPPING_ID IN
+        <foreach collection="portfolioContractMappingIds" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+    <delete id="deleteFromLobby" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractDelete">
+        DELETE FROM TB_PORTFOLIO_CONTRACT_MAPPING WHERE PORTFOLIO_CONTRACT_MAPPING_ID IN
+        (
+            WITH TEMP AS (
+                SELECT USER_ID, B.INTG_PRJ_TRLINE_CD_CODE  FROM TB_PORTFOLIO A, TB_PORTFOLIO_CONTRACT_MAPPING B
+                WHERE A.USER_PORTFOLIO_MAPPING_ID = B.USER_PORTFOLIO_MAPPING_ID
+                AND B.PORTFOLIO_CONTRACT_MAPPING_ID IN
+                <foreach collection="portfolioContractMappingIds" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            ) 
+            SELECT PORTFOLIO_CONTRACT_MAPPING_ID FROM TB_PORTFOLIO RA, TB_PORTFOLIO_CONTRACT_MAPPING RB, TEMP RC
+            WHERE RA.USER_PORTFOLIO_MAPPING_ID = RB.USER_PORTFOLIO_MAPPING_ID 
+            AND RB.INTG_PRJ_TRLINE_CD_CODE = RC.INTG_PRJ_TRLINE_CD_CODE
+            AND RA.USER_ID = RC.USER_ID
+        )
+    </delete>
+    <delete id="deleteByPortfolio" parameterType="com.hdel.miri.api.domain.portfolio.Portfolio$PortfolioDelete">
+        DELETE FROM TB_PORTFOLIO_CONTRACT_MAPPING WHERE USER_PORTFOLIO_MAPPING_ID = #{userPortfolioMappingId}
+    </delete>
+    <delete id="deleteClearToLobby" parameterType="String">
+        DELETE
+          FROM TB_PORTFOLIO_CONTRACT_MAPPING A
+         WHERE EXISTS (
+                        SELECT 1
+                          FROM TB_PORTFOLIO B
+                         WHERE B.USER_ID = #{toUserId}
+                           AND B.PORTFOLIO_NAME = 'lobby'
+                           AND B.USER_PORTFOLIO_MAPPING_ID = A.USER_PORTFOLIO_MAPPING_ID
+                      )
+    </delete>
+    <delete id="deletePortfolioNotInLobby" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractCopyVO">
+        DELETE
+          FROM TB_PORTFOLIO_CONTRACT_MAPPING A
+         WHERE EXISTS (
+                        SELECT 1
+                          FROM TB_PORTFOLIO B
+                         WHERE B.USER_ID = #{toUserId}
+                           AND B.PORTFOLIO_NAME != 'lobby'
+                           AND B.USER_PORTFOLIO_MAPPING_ID = A.USER_PORTFOLIO_MAPPING_ID
+                      )
+           AND NOT EXISTS (
+                            SELECT 1
+                              FROM TB_PORTFOLIO C
+                             INNER JOIN TB_PORTFOLIO_CONTRACT_MAPPING D
+                                ON D.USER_PORTFOLIO_MAPPING_ID = C.USER_PORTFOLIO_MAPPING_ID
+                               AND D.INTG_PRJ_TRLINE_CD_CODE = A.INTG_PRJ_TRLINE_CD_CODE
+                             WHERE C.USER_ID = #{toUserId}
+                               AND C.PORTFOLIO_NAME = 'lobby'
+                          )
+    </delete>
+    <!-- DELETE -->
+
+    <insert id="NewContractInsert" parameterType="com.hdel.miri.api.domain.contract.Contract$NewContractInsert">
+        MERGE INTO TB_PORTFOLIO_CONTRACT_MAPPING R1
+        USING
+        (
+            WITH TEMP AS (
+                SELECT AA.USER_ID, INTG_PRJ_TRLINE_CD_CODE, USER_PORTFOLIO_MAPPING_ID FROM (
+                <foreach collection="lobby" item="item" separator="UNION ALL">
+                    SELECT #{userId} as USER_ID, #{item.intgPrjNo}||#{item.trlineCd} as INTG_PRJ_TRLINE_CD_CODE FROM DUAL
+                </foreach>
+                ) AA, (         
+                    SELECT DISTINCT USER_ID, USER_PORTFOLIO_MAPPING_ID FROM TB_PORTFOLIO
+                    WHERE USER_ID = #{userId}
+                    AND PORTFOLIO_NAME = 'lobby'
+                ) BB
+                WHERE AA.USER_ID = BB.USER_ID
+            ) SELECT * FROM TEMP
+        ) T1
+        ON (R1.USER_PORTFOLIO_MAPPING_ID = T1.USER_PORTFOLIO_MAPPING_ID AND R1.INTG_PRJ_TRLINE_CD_CODE = T1.INTG_PRJ_TRLINE_CD_CODE)
+        WHEN NOT MATCHED THEN
+            INSERT (USER_PORTFOLIO_MAPPING_ID, INTG_PRJ_TRLINE_CD_CODE, APPROVAL_YN, CREATION_USER, LASTUPDATE_USER)
+            VALUES(
+                    T1.USER_PORTFOLIO_MAPPING_ID
+                    ,T1.INTG_PRJ_TRLINE_CD_CODE
+                    ,'y'
+                    ,#{currentUser}
+                    ,#{currentUser}
+            )
+    </insert>
+</mapper>

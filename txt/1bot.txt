@@ -74,3 +74,5 @@ nohup python3 ~/1/1.py &
 nohup python3 ~/1/2.py &
 tail -f ~/nohup.out
 rm -rf ~/nohup.out
+
+#깃푸시왜안됌

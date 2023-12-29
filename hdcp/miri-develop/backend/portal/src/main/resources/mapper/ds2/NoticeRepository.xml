@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.api.domain.notice.NoticeRepository">
+    <!-- RESULT MAP -->
+    <resultMap id="getNotice" type="com.hdel.miri.api.domain.notice.Notice$NoticeVO">
+        <result column="NOTICE_ID"            property="noticeId" />
+        <result column="TITLE"                 property="title" />
+        <result column="CONTENTS"            property="contents" />
+        <result column="INTG_PROJECT_TRLINE_CD_CODE"            property="intgProjectTrlineCdCode" />
+        <result column="DEL_YN"            property="delYn" />
+        <result column="CREATION_DT"       property="creationDt" />
+        <result column="LASTUPDATE_DT"       property="lastupdateDt" />
+        <result column="LASTUPDATE_USER"       property="lastupdateUser" />
+    </resultMap>
+    <!-- RESULT MAP -->
+    <!-- SELECT -->
+    <select id="selectList"
+            parameterType="com.hdel.miri.api.domain.notice.Notice$NoticeSearch"
+            resultMap="getNotice">
+        SELECT *
+        FROM (
+        SELECT
+        ROWNUM RN
+        , NOTICE_ID
+        , TITLE
+        , CONTENTS
+        , INTG_PROJECT_TRLINE_CD_CODE
+        , DEL_YN
+        , CREATION_DT
+        , LASTUPDATE_DT
+        , LASTUPDATE_USER
+        FROM (
+        SELECT
+        N.NOTICE_ID NOTICE_ID
+        ,N.TITLE TITLE
+        ,N.CONTENTS CONTENTS
+        ,N.INTG_PROJECT_TRLINE_CD_CODE INTG_PROJECT_TRLINE_CD_CODE
+        ,N.DEL_YN DEL_YN
+        ,TO_CHAR(N.CREATION_DT, 'YYYY-MM-DD HH24:MI:SS') as CREATION_DT
+        ,TO_CHAR(N.LASTUPDATE_DT, 'YYYY-MM-DD HH24:MI:SS') as LASTUPDATE_DT
+        ,N.LASTUPDATE_USER LASTUPDATE_USER
+        FROM
+        (	SELECT USER_PORTFOLIO_MAPPING_ID
+        FROM TB_PORTFOLIO
+        WHERE USER_ID = #{currentUser}
+        AND PORTFOLIO_NAME = 'lobby' 
+        ) P
+        INNER JOIN TB_PORTFOLIO_CONTRACT_MAPPING CM
+        ON P.USER_PORTFOLIO_MAPPING_ID = CM.USER_PORTFOLIO_MAPPING_ID 
+        <!-- AND APPROVAL_YN ='y' -->
+        INNER JOIN TB_NOTICE N ON CM.INTG_PRJ_TRLINE_CD_CODE = N.INTG_PROJECT_TRLINE_CD_CODE AND DEL_YN = 'n'
+        WHERE 1=1
+        <if test="searchKeyword != null and searchKeyword != '' ">AND ( N.TITLE LIKE '%'||#{searchKeyword}||'%' OR N.CONTENTS LIKE '%'||#{searchKeyword}||'%' )</if>
+        UNION
+        SELECT
+        SAN.NOTICE_ID NOTICE_ID
+        ,SAN.TITLE TITLE
+        ,SAN.CONTENTS CONTENTS
+        ,SAN.INTG_PROJECT_TRLINE_CD_CODE INTG_PROJECT_TRLINE_CD_CODE
+        ,SAN.DEL_YN DEL_YN
+        ,TO_CHAR(SAN.CREATION_DT, 'YYYY-MM-DD HH24:MI:SS') as CREATION_DT
+        ,TO_CHAR(SAN.LASTUPDATE_DT, 'YYYY-MM-DD HH24:MI:SS') as LASTUPDATE_DT
+        ,SAN.LASTUPDATE_USER LASTUPDATE_USER
+        FROM TB_NOTICE SAN
+        WHERE DEL_YN = 'n' AND SAN.CREATION_USER IN (SELECT USER_ID FROM TB_USER WHERE ROLE_TYPE ='SYSTEM')
+        <if test="searchKeyword != null and searchKeyword != '' ">AND ( SAN.TITLE LIKE '%'||#{searchKeyword}||'%' OR SAN.CONTENTS LIKE '%'||#{searchKeyword}||'%' )</if>
+        ) NI
+        ORDER BY NI.CREATION_DT DESC ) TNI
+        <where>
+            <if test="mobile == true"><![CDATA[ TNI.RN <= 3 ]]></if>
+        </where>
+    </select>
+    <!-- SELECT -->
+
+    <!-- UPDATE -->
+    <update id="update" parameterType="com.hdel.miri.api.domain.notice.Notice$NoticeUpdate">
+        UPDATE TB_NOTICE
+        SET TITLE   = NVL(#{title},TITLE)
+        ,CONTENTS   = NVL(#{contents},CONTENTS)
+        ,INTG_PROJECT_TRLINE_CD_CODE = NVL(#{intgProjectTrlineCdCode},INTG_PROJECT_TRLINE_CD_CODE)
+        ,LASTUPDATE_USER = #{currentUser}
+        WHERE 1=1
+        <if test="noticeId != null">AND NOTICE_ID = #{noticeId}</if>
+    </update>
+    <update id="remove" parameterType="com.hdel.miri.api.domain.notice.Notice$NoticeRemove">
+        UPDATE TB_NOTICE
+        SET DEL_YN = 'y'
+        ,LASTUPDATE_USER = #{currentUser}
+        WHERE 1=1
+        AND NOTICE_ID IN
+        <foreach collection="noticeIds" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+    <!-- UPDATE -->
+    <!-- INSERT -->
+    <insert id="insert" parameterType="com.hdel.miri.api.domain.notice.Notice$NoticeCreate">
+        INSERT INTO TB_NOTICE(TITLE, CONTENTS, INTG_PROJECT_TRLINE_CD_CODE, CREATION_USER, LASTUPDATE_USER)
+        VALUES(#{title}
+              ,#{contents}
+              ,#{intgProjectTrlineCdCode}
+              ,#{currentUser}
+              ,#{currentUser}
+              )
+    </insert>
+    <!-- INSERT -->
+    <!-- DELETE -->
+    <!-- DELETE -->
+</mapper>

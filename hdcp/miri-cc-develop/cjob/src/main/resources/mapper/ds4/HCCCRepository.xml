@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.concurrent.domain.hccc.HCCCRepository">
+    <!-- RESULT MAP -->
+    <resultMap id="GISInfoMap" type="com.hdel.miri.concurrent.domain.scrm.SCRM$VO">
+        <result column="prjNo" property="prjNo"></result>
+        <result column="hoNo" property="hoNo"></result>
+        <result column="intgPrjNo" property="intgPrjNo"></result>
+        <result column="trlineCd" property="trlineCd"></result>
+        <result column="salesEmpl" property="salesEmpl"></result>
+        <result column="salesEmplNm" property="salesEmplNm"></result>
+        <result column="mgtComTel" property="mgtComTel"></result>
+        <result column="mgtComHp" property="mgtComHp"></result>
+        <result column="mgtComCd" property="mgtComCd"></result>
+        <result column="mgtComNm" property="mgtComNm"></result>
+        <result column="contractStartDt" property="contractStartDt"></result>
+        <result column="contractEndDt" property="contractEndDt"></result>
+
+        <result column="compsCntrNo" property="compsCntrNo"></result>
+        <result column="elevatorNo" property="elevatorNo"></result>
+        <result column="address1" property="address1"></result>
+        <result column="address2" property="address2"></result>
+        <result column="applcBeDt" property="applcBeDt"></result>
+        <result column="applcEnDt" property="applcEnDt"></result>
+        <result column="resultNm" property="resultNm"></result>
+        <result column="areaNm" property="areaNm"></result>
+        <result column="sigunguNm" property="sigunguNm"></result>
+        <result column="buldMgtNo1" property="buldMgtNo1"></result>
+        <result column="buldMgtNo2" property="buldMgtNo2"></result>
+        <result column="buldNm" property="buldNm"></result>
+        <result column="elvtrDivNm" property="elvtrDivNm"></result>
+        <result column="elvtrForm" property="elvtrForm"></result>
+        <result column="elvtrDetailForm" property="elvtrDetailForm"></result>
+        <result column="elvtrKindNm" property="elvtrKindNm"></result>
+        <result column="elvtrSttsNm" property="elvtrSttsNm"></result>
+        <result column="frstInstallationDe" property="frstInstallationDe"></result>
+        <result column="installationDe" property="installationDe"></result>
+        <result column="installationPlace" property="installationPlace"></result>
+        <result column="liveLoad" property="liveLoad"></result>
+        <result column="ratedCap" property="ratedCap"></result>
+        <result column="shuttleSection" property="shuttleSection"></result>
+        <result column="shuttleFloorCnt" property="shuttleFloorCnt"></result>
+        <result column="groundFloorCnt" property="groundFloorCnt"></result>
+        <result column="undgrndFloorCnt" property="undgrndFloorCnt"></result>
+
+        <result column="WGSLON" property="wgsLon"></result>
+        <result column="WGSLAT" property="wgsLat"></result>
+        <result column="miricallYn" property="miricallYn"></result>
+        <result column="miriviewYn" property="miriviewYn"></result>
+        <result column="mirirobotYn" property="mirirobotYn"></result>
+        <result column="miriYn" property="miriYn"></result>
+        <result column="creationUser" property="creationUser"></result>
+        <result column="changeDt" property="changeDt"></result>
+        <result column="siteNm" property="siteNm"></result>
+        <result column="custNm" property="custNm"></result>      
+        <result column="model" property="model"></result>     
+        <result column="hrtsYn" property="hrtsYn"></result>   
+    </resultMap>
+    <!-- RESULT MAP -->
+    <select id="getGisFromHccc" parameterType="java.util.List" resultMap="GISInfoMap">
+        SELECT 
+            T1.*
+            ,WGSLON
+            ,WGSLAT
+        FROM
+        (
+        <foreach collection="list" item="item" separator="UNION">
+            SELECT
+                #{item.prjNo}               as prjNo
+                ,#{item.hoNo}               as hoNo
+                ,#{item.intgPrjNo}          as intgPrjNo
+                ,#{item.trlineCd}           as trlineCd
+                ,#{item.salesEmpl}          as salesEmpl
+                ,#{item.salesEmplNm}        as salesEmplNm
+                ,#{item.mgtComTel}          as mgtComTel
+                ,#{item.mgtComHp}           as mgtComHp
+                ,#{item.mgtComCd}           as mgtComCd
+                ,#{item.mgtComNm}           as mgtComNm
+                ,#{item.contractStartDt}    as contractStartDt
+                ,#{item.contractEndDt}      as contractEndDt
+
+                ,#{item.compsCntrNo}        as compsCntrNo
+                ,#{item.elevatorNo}         as elevatorNo
+                ,#{item.address1}           as address1
+                ,#{item.address2}           as address2
+                ,#{item.applcBeDt}          as applcBeDt
+                ,#{item.applcEnDt}          as applcEnDt
+                ,#{item.resultNm}           as resultNm
+                ,#{item.areaNm}             as areaNm
+                ,#{item.sigunguNm}          as sigunguNm
+                ,#{item.buldMgtNo1}         as buldMgtNo1
+                ,#{item.buldMgtNo2}         as buldMgtNo2
+                ,#{item.buldNm}             as buldNm
+                ,#{item.elvtrDivNm}         as elvtrDivNm
+                ,#{item.elvtrForm}          as elvtrForm
+                ,#{item.elvtrDetailForm}    as elvtrDetailForm
+                ,#{item.elvtrKindNm}        as elvtrKindNm
+                ,#{item.elvtrSttsNm}        as elvtrSttsNm
+                ,#{item.frstInstallationDe} as frstInstallationDe
+                ,#{item.installationDe}     as installationDe
+                ,#{item.installationPlace}  as installationPlace
+                ,#{item.liveLoad}           as liveLoad
+                ,#{item.ratedCap}           as ratedCap
+                ,#{item.shuttleSection}     as shuttleSection
+                ,#{item.shuttleFloorCnt}    as shuttleFloorCnt
+                ,#{item.groundFloorCnt}     as groundFloorCnt
+                ,#{item.undgrndFloorCnt}    as undgrndFloorCnt
+
+                ,#{item.miricallYn}         as miricallYn
+                ,#{item.miriviewYn}         as miriviewYn
+                ,#{item.mirirobotYn}        as mirirobotYn
+                ,#{item.miriYn}             as miriYn
+                ,#{item.creationUser}       as creationUser
+                ,#{item.changeDt}           as chagneDt
+                ,#{item.siteNm}             as siteNm
+                ,#{item.custNm}             as custNm     
+                ,#{item.model}              as model    
+                ,#{item.hrtsYn}             as hrtsYn       
+            FROM DUAL
+        </foreach>
+        ) T1, ( SELECT CCSGGPJT, CCSGGHNO, WGSLON, WGSLAT  FROM hcsadm.TBCSGGF1 ) R1
+        WHERE T1.prjNo  = R1.CCSGGPJT(+)
+        and   T1.hoNo   = R1.CCSGGHNO(+)
+        order by t1.elevatorNo , t1.chagneDt , t1.contractStartDt  
+    </select>
+
+    <!--2023-10-17 add -->
+    <select id="getGisFromHcccUpdate" parameterType="java.util.List" resultMap="GISInfoMap">
+        SELECT 
+            T1.*
+            ,WGSLON
+            ,WGSLAT
+        FROM
+        (
+        <foreach collection="list" item="item" separator="UNION">
+            SELECT
+                 #{item.elevatorNo}          as elevatorNo
+                ,#{item.prjNo}              as prjNo
+                ,#{item.hoNo}               as hoNo
+            FROM DUAL
+        </foreach>
+        ) T1, ( SELECT CCSGGPJT, CCSGGHNO, WGSLON, WGSLAT  FROM hcsadm.TBCSGGF1 ) R1
+        WHERE T1.prjNo  = R1.CCSGGPJT
+        and   T1.hoNo   = R1.CCSGGHNO
+        and   WGSLON IS NOT NULL and WGSLAT IS NOT NULL
+    </select>
+
+</mapper>

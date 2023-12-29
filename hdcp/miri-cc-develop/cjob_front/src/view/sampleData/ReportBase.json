@@ -1,0 +1,75 @@
+[
+  {
+    "equipmentType": "엘리베이터",
+    "buildingName": "을지로 현대 빌딩",
+    "number": "1002304",
+    "reportType": "정기점검",
+    "inspectionDate": "2022-11-02",
+    "validity": "2023-11-12",
+    "passYn": "합격"
+  },
+  {
+    "equipmentType": "엘리베이터",
+    "buildingName": "을지로 현대 빌딩",
+    "number": "1002304",
+    "reportType": "정기검사",
+    "inspectionDate": "2022-11-02",
+    "validity": "2023-11-12",
+    "passYn": "조건부 합격"
+  },
+  {
+    "equipmentType": "엘리베이터",
+    "buildingName": "을지로 현대 빌딩",
+    "number": "1002304",
+    "reportType": "비정기검사",
+    "inspectionDate": "2022-11-02",
+    "validity": "2023-11-12",
+    "passYn": "합격"
+  },
+  {
+    "equipmentType": "엘리베이터",
+    "buildingName": "을지로 현대 빌딩",
+    "number": "1002304",
+    "reportType": "정기점검",
+    "inspectionDate": "2022-11-02",
+    "validity": "2023-11-12",
+    "passYn": "조건부 합격"
+  },
+  {
+    "equipmentType": "엘리베이터",
+    "buildingName": "을지로 현대 빌딩",
+    "number": "6566304",
+    "reportType": "정기점검",
+    "inspectionDate": "2020-11-02",
+    "validity": "2023-11-12",
+    "passYn": "불합격"
+  },
+  {
+    "equipmentType": "엘리베이터",
+    "buildingName": "을지로 현대 빌딩",
+    "number": "1002304",
+    "reportType": "정기점검",
+    "inspectionDate": "2022-11-02",
+    "validity": "2023-11-12",
+    "passYn": "합격"
+  },
+  {
+    "equipmentType": "엘리베이터",
+    "buildingName": "을지로 현대 빌딩",
+    "number": "1002304",
+    "reportType": "정기점검",
+    "inspectionDate": "2022-11-02",
+    "validity": "2023-11-12",
+    "passYn": "조건부 합격"
+  },
+  {
+    "equipmentType": "엘리베이터",
+    "buildingName": "을지로 현대 빌딩",
+    "number": "1002304",
+    "reportType": "정기점검",
+    "inspectionDate": "2022-11-02",
+    "validity": "2023-11-12",
+    "passYn": "합격"
+  }
+]
+

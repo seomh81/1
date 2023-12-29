@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.api.domain.alarm.AlarmSetupRepository">
+    <!-- RESULT MAP -->
+    <resultMap id="AlarmSetup" type="com.hdel.miri.api.domain.alarm.AlarmSetup$AlarmSetupVO">
+        <result column="ALARM_SETUP_ID" property="alarmSetupId"></result>
+        <result column="CAT_CODE" property="catCode"></result>
+        <result column="CAT_NAME" property="catName"></result>
+        <result column="DIV_CODE" property="divCode"></result>
+        <result column="DIV_NAME" property="divName"></result>
+        <result column="TYPE_CODE" property="typeCode"></result>
+        <result column="TYPE_NAME" property="typeName"></result>
+        <result column="USE_YN" property="useYn"></result>
+    </resultMap>
+
+    <resultMap id="AlarmRule" type="com.hdel.miri.api.domain.alarm.AlarmSetup$AlarmRuleVO">
+        <id column="USER_ID" property="userId"></id>
+        <collection property="alarmRuleList" resultMap="AlarmRuleListVO">
+            <id column="CAT_NO" property="catNo"></id>
+        </collection>
+    </resultMap>
+
+    <resultMap id="AlarmRuleListVO" type="com.hdel.miri.api.domain.alarm.AlarmSetup$AlarmRuleListVO">
+        <id column="CAT_NO" property="catNo"></id>
+        <result column="CAT_NM" property="catNm"></result>
+        <collection property="alarmDivList" resultMap="AlarmDivListVO">
+            <id column="DIV_NO" property="divNo"></id>
+        </collection>
+    </resultMap>
+
+    <resultMap id="AlarmDivListVO" type="com.hdel.miri.api.domain.alarm.AlarmSetup$AlarmDivListVO">
+        <id column="DIV_NO" property="divNo"></id>
+        <result column="DIV_NM" property="divNm"></result>
+        <result column="DIV_YN" property="useYn"></result>
+        <collection property="alarmDetailList" resultMap="AlarmDetailVO">
+            <id column="SEND_METHOD_NO" property="sendMethodNo"></id>
+        </collection>
+    </resultMap>
+
+    <resultMap id="AlarmDetailVO" type="com.hdel.miri.api.domain.alarm.AlarmSetup$AlarmDetailVO">
+        <id column="SEND_METHOD_NO" property="sendMethodNo"></id>
+        <result column="ALARM_SETUP_ID" property="alarmSetupId"></result>
+        <result column="SEND_METHOD_NM" property="sendMethodNm"></result>
+        <result column="SEND_METHOD_YN" property="useYn"></result>
+        <result column="METHOD_YN" property="methodYn"></result>
+        
+    </resultMap>
+    <!-- RESULT MAP -->
+    <!-- SELECT -->
+    <!-- <sql id="selectList">
+        SELECT
+            AL.ALARM_SETUP_ID AS ALARM_SETUP_ID
+             , AL.CAT AS CAT_CODE
+             , (SELECT DISTINCT T2.VALUE_1
+                FROM TB_MASTERDATA T
+                         LEFT JOIN TB_MASTERDATA_DETAIL T2
+                                   ON T.MASTERDATA_ID = T2.MASTERDATA_ID
+                WHERE MASTERDATA_KEY = 'ALARM_TYPE' AND LOCALE = #{userLocale}
+                  AND T2.CODE=AL.CAT) AS CAT_NAME
+             , AL.DIV AS DIV_CODE
+             , (SELECT DISTINCT T2.VALUE_1
+                FROM TB_MASTERDATA T
+                         LEFT JOIN TB_MASTERDATA_DETAIL T2
+                                   ON T.MASTERDATA_ID = T2.MASTERDATA_ID
+                WHERE MASTERDATA_KEY = 'ALARM_TYPE' AND LOCALE = #{userLocale}
+                  AND T2.CODE=AL.DIV) AS DIV_NAME
+             , AL.ALARM_TYPE AS TYPE_CODE
+             , (SELECT DISTINCT T2.VALUE_1
+                FROM TB_MASTERDATA T
+                         LEFT JOIN TB_MASTERDATA_DETAIL T2
+                                   ON T.MASTERDATA_ID = T2.MASTERDATA_ID
+                WHERE MASTERDATA_KEY = 'ALARM_TYPE' AND LOCALE = #{userLocale}
+                  AND T2.CODE=AL.ALARM_TYPE) AS TYPE_NAME
+            ,AL.USE_YN AS USE_YN
+        FROM TB_ALARM_SETUP AL
+        WHERE USER_ID = #{currentUser}
+    </sql> -->
+    <select id="selectListByNotPush" parameterType="com.hdel.miri.api.domain.alarm.AlarmSetup$AlarmSetupCurrent"
+        resultMap="AlarmRule"
+    >
+        SELECT 
+            USER_ID
+            ,ALARM_SETUP_ID
+            ,SUBSTR(CAT_NM, 1, INSTR(CAT_NM, '_') - 1) AS CAT_NO
+            ,SUBSTR(CAT_NM, INSTR(CAT_NM, '_') + 1) AS CAT_NM
+            ,SUBSTR(DIV_NM, 1, INSTR(DIV_NM, '_') - 1) AS DIV_NO
+            ,SUBSTR(DIV_NM, INSTR(DIV_NM, '_') + 1) AS DIV_NM
+            ,CASE WHEN COUNT(CASE WHEN SEND_METHOD_YN = 'y' THEN 1 ELSE NULL END) OVER(PARTITION BY DIV_NM) <![CDATA[ > 0 ]]> THEN 'y' ELSE 'n' END AS DIV_YN
+            ,SUBSTR(SUBSTR(SEND_METHOD, 1, INSTR(SEND_METHOD, '_') - 1),-2) AS SEND_METHOD_NO
+            ,SUBSTR(SEND_METHOD, INSTR(SEND_METHOD, '_') + 1) AS SEND_METHOD_NM
+            ,MAX(SEND_METHOD_YN) OVER(PARTITION BY DIV_NM, SUBSTR(ALARM_TYPE,-2)) AS SEND_METHOD_YN
+            ,MAX(SEND_METHOD_YN) OVER(PARTITION BY CAT_NM, SUBSTR(ALARM_TYPE,-2)) AS METHOD_YN
+        FROM 
+        (
+            SELECT
+                USER_ID
+                ,ALARM_SETUP_ID
+                ,ALARM_TYPE
+                ,(SELECT DISTINCT B.CODE||'_'||B.VALUE_1 FROM TB_MASTERDATA A, TB_MASTERDATA_DETAIL B 
+                    WHERE A.MASTERDATA_ID = B.MASTERDATA_ID AND A.MASTERDATA_KEY = 'ALARM_TYPE' AND LOWER(LOCALE) = LOWER(#{userLocale}) AND B.CODE = A.CAT) AS CAT_NM
+                ,(SELECT DISTINCT B.CODE||'_'||B.VALUE_1 FROM TB_MASTERDATA A, TB_MASTERDATA_DETAIL B 
+                    WHERE A.MASTERDATA_ID = B.MASTERDATA_ID AND A.MASTERDATA_KEY = 'ALARM_TYPE' AND LOWER(LOCALE) = LOWER(#{userLocale}) AND B.CODE  = A.DIV) AS DIV_NM
+                ,CASE 	WHEN SUBSTR(A.ALARM_TYPE, -2) = '01' THEN A.ALARM_TYPE||'_'||'EMAIL'
+                        WHEN SUBSTR(A.ALARM_TYPE, -2) = '02' THEN A.ALARM_TYPE||'_'||'KAKAO'
+                        WHEN SUBSTR(A.ALARM_TYPE, -2) = '03' THEN A.ALARM_TYPE||'_'||'MMS'
+                        WHEN SUBSTR(A.ALARM_TYPE, -2) = '04' THEN A.ALARM_TYPE||'_'||'APP PUSH'
+                END AS SEND_METHOD
+                , USE_YN AS SEND_METHOD_YN
+            FROM TB_ALARM_SETUP A
+            WHERE A.USER_ID = #{currentUser}
+              AND A.DIV NOT IN('1002', '3002')
+        )
+        ORDER BY CAT_NO, DIV_NO, SEND_METHOD_NO
+        
+    </select>
+    <select id="selectListByPush" parameterType="com.hdel.miri.api.domain.alarm.AlarmSetup$AlarmSetupCurrent"
+        resultMap="AlarmSetup"
+    >
+        SELECT * FROM 
+        (
+            SELECT 
+                ALARM_SETUP_ID
+                ,SUBSTR(CAT_NM, 1, INSTR(CAT_NM, '_') - 1) AS CAT_CODE
+                ,SUBSTR(CAT_NM, INSTR(CAT_NM, '_') + 1) AS CAT_NAME
+                ,SUBSTR(DIV_NM, 1, INSTR(DIV_NM, '_') - 1) AS DIV_CODE
+                ,SUBSTR(DIV_NM, INSTR(DIV_NM, '_') + 1) AS DIV_NAME
+                ,SUBSTR(SUBSTR(SEND_METHOD, 1, INSTR(SEND_METHOD, '_') - 1),-2) AS TYPE_CODE
+                ,SUBSTR(SEND_METHOD, INSTR(SEND_METHOD, '_') + 1) AS TYPE_NAME
+                ,MAX(SEND_METHOD_YN) OVER(PARTITION BY DIV_NM, SUBSTR(ALARM_TYPE,-2)) AS USE_YN
+            FROM 
+            (
+                SELECT
+                    USER_ID
+                    ,ALARM_SETUP_ID
+                    ,ALARM_TYPE
+                    ,(SELECT DISTINCT B.CODE||'_'||B.VALUE_1 FROM TB_MASTERDATA A, TB_MASTERDATA_DETAIL B 
+                        WHERE A.MASTERDATA_ID = B.MASTERDATA_ID AND A.MASTERDATA_KEY = 'ALARM_TYPE' AND LOWER(LOCALE) = LOWER('ko_kr') AND B.CODE = A.CAT) AS CAT_NM
+                    ,(SELECT DISTINCT B.CODE||'_'||B.VALUE_1 FROM TB_MASTERDATA A, TB_MASTERDATA_DETAIL B 
+                        WHERE A.MASTERDATA_ID = B.MASTERDATA_ID AND A.MASTERDATA_KEY = 'ALARM_TYPE' AND LOWER(LOCALE) = LOWER('ko_kr') AND B.CODE  = A.DIV) AS DIV_NM
+                    ,CASE 	WHEN SUBSTR(A.ALARM_TYPE, -2) = '01' THEN A.ALARM_TYPE||'_'||'EMAIL'
+                            WHEN SUBSTR(A.ALARM_TYPE, -2) = '02' THEN A.ALARM_TYPE||'_'||'KAKAO'
+                            WHEN SUBSTR(A.ALARM_TYPE, -2) = '03' THEN A.ALARM_TYPE||'_'||'MMS'
+                            WHEN SUBSTR(A.ALARM_TYPE, -2) = '04' THEN A.ALARM_TYPE||'_'||'APP PUSH'
+                    END AS SEND_METHOD
+                    , USE_YN AS SEND_METHOD_YN
+                FROM TB_ALARM_SETUP A
+                WHERE USER_ID = #{currentUser}
+                  AND A.DIV NOT IN('1002', '3002')
+            )
+            ORDER BY CAT_CODE, DIV_CODE, TYPE_CODE
+        )
+        WHERE TYPE_CODE = '04'
+        <!-- <include refid="selectList" />
+        AND SUBSTR(ALARM_TYPE,-2) = '03' -->
+    </select>
+    <!-- SELECT -->
+
+    <!-- INSERT -->
+    <insert id="insertDefault" parameterType="com.hdel.miri.api.domain.alarm.AlarmSetup$AlarmDefaultCreate">
+        INSERT INTO TB_ALARM_SETUP(USER_ID, CAT, DIV, ALARM_TYPE, USE_YN, CREATION_USER, LASTUPDATE_USER)
+        WITH TEMP AS (
+            SELECT #{userId}, CAT, DIV, ALARM_TYPE, CASE WHEN SUBSTR(ALARM_TYPE, -2) = '04' THEN 'y' ELSE 'n' END AS USE_YN, #{userId}, #{userId}  FROM TB_ALARM_SETUP 
+            WHERE USER_ID = (SELECT USER_ID  FROM TB_ALARM_SETUP WHERE rownum = 1)
+        ) SELECT * FROM TEMP
+    </insert>
+    <!-- INSERT -->
+
+    <!-- UPDATE -->
+
+    <update id="update" parameterType="com.hdel.miri.api.domain.alarm.AlarmSetup$AlarmSetupUpdate">
+        MERGE INTO TB_ALARM_SETUP R1
+            USING 
+            (
+                SELECT -1 as alarmSetupId, 'n' as useYn from dual union all
+                <foreach collection="codes" item="item" separator=" UNION ALL ">
+                SELECT #{item.alarmSetupId}, #{item.useYn} as useYn from dual
+                </foreach>
+            ) T1
+            ON ( R1.USER_ID = #{currentUser} AND R1.ALARM_SETUP_ID = T1.alarmSetupId )
+            WHEN MATCHED THEN
+                UPDATE SET USE_YN  = T1.useYn
+                    ,LASTUPDATE_USER = #{currentUser}
+    </update>
+    <!-- UPDATE -->
+
+    <!-- DELETE -->
+    <!-- DELETE -->
+</mapper>

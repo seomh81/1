@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.concurrent.domain.scrm.SCRMRepository">
+    <select id="getCcTargetElList" resultType="com.hdel.miri.concurrent.domain.dgk.vo.ReqVO$ElVO" parameterType="com.hdel.miri.concurrent.domain.dgk.vo.ReqVO$ElevatorTargetSyncVO">
+        SELECT XX.* FROM (
+            SELECT DISTINCT
+                TRIM(REPLACE(EL_NO,'-','')) AS elevator_no
+                , CASE WHEN C.CNTR_DEL_DT = ' ' THEN 'n' else 'y' end as del_yn
+                ,'SCRM' AS db_type
+                , INTG_PRJ_NO as intgPrjNo
+                , TRLINE_CD as trlineCd
+                ,CHAF_DAYTM AS change_dt
+                ,ROW_NUMBER() OVER ( PARTITION BY A.EL_NO ORDER BY C.BGN_DT DESC) ROW_NUM
+            FROM
+                    (
+                        SELECT MANDT, BUKRS, PRJ_NO , CAR_NO, EL_NO, SVC_ADDR_NM  FROM  BSSC.SC_RMTG_CAR_MST WHERE MANDT = '100' AND BUKRS = '1000'
+                    ) A
+            INNER JOIN BSSC.SC_CR_CNTRINFO C
+                    ON A.MANDT          = C.MANDT
+                    AND A.BUKRS         = C.BUKRS
+                    AND A.PRJ_NO        = C.PRJ_NO
+                    AND A.CAR_NO        = C.CAR_NO
+                    AND C.MANDT         = '100'
+                    AND C.BUKRS         = '1000'
+                    AND CNTR_KIND       = 'D'
+                    <!-- AND C.HRTS_YN       = 'Y'  -->
+                    AND ( C.HRTS_YN = 'Y' OR  ( C.HRTS_YN = 'N' and C.MOYN2 ='Y') )
+                    AND C.PROG_STAT     = 'A6'
+                    AND SALES_GCD       != 'H11'
+                    <!-- AND TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN BGN_DT AND XPIR_DT                 -->
+                    AND LENGTH(TRIM(REPLACE(EL_NO,'-',''))) = 7
+                    AND EL_NO != '0000000'
+            <!-- <if test="lastUpdateDt != null and lastUpdateDt != ''"> AND ((<![CDATA[ C.CHAF_DAYTM >= #{lastUpdateDt}]]> and AND TO_CHAR(SYSDATE,'YYYYMMDD') <![CDATA[>]]> BGN_DT ) OR TO_CHAR(SYSDATE,'YYYYMMDD') = BGN_DT)  </if> -->
+                <if test="lastUpdateDt != null and lastUpdateDt != ''">
+                    AND ((DECODE(LENGTH (REPLACE (C.CHAF_DAYTM,' ','')),14,C.CHAF_DAYTM,'00000000') <![CDATA[>=]]> #{lastUpdateDt}
+                        AND TO_CHAR(SYSDATE,'YYYYMMDD') <![CDATA[>]]> BGN_DT )
+                        OR TO_CHAR(SYSDATE,'YYYYMMDD') = BGN_DT )
+                </if>
+        )XX
+        WHERE ROW_NUM = 1
+    </select>
+
+    <select id="getCcTargetNoElList" resultType="com.hdel.miri.concurrent.domain.dgk.vo.ReqVO$NoElVO"
+                                    parameterType="com.hdel.miri.concurrent.domain.dgk.vo.ReqVO$ElevatorTargetSyncVO">
+        SELECT  DISTINCT
+                'SCRM' AS db_type
+                ,TRIM(REPLACE(EL_NO,'-','')) AS elevator_no
+                ,A.PRJ_NO AS pjt
+                ,A.CAR_NO AS hno
+                ,C.INTG_PRJ_NO AS upn
+                ,C.TRLINE_CD AS cst
+                ,COMPS_CNTR_NO AS gno
+                ,BGN_DT AS cont_start
+                ,XPIR_DT AS cont_end
+                ,C.CHAF_DAYTM AS change_dt
+                ,NVL(MOYN1,'N') AS miricall_yn
+                ,NVL(MOYN2,'N') AS miriview_yn
+                ,NVL(MOYN3,'N') AS mirirobot_yn
+                ,NVL(MIRI_YN,'N') AS miri_yn
+                ,E.SITENM AS site_nm
+                ,E.CUST_NM AS cust_nm
+                ,DECODE(C.SALES_ID,' ',C.SALES_EMPL,C.SALES_ID) AS sales_empl
+                ,DECODE(C.SALES_ID,' ',C.SALES_EMPL_NM, G.PORTAL_MEB_NM) AS sales_empl_nm
+                ,F.SALES_GCDNM AS sales_gcdnm
+                ,C.HRTS_YN AS hrtsYn
+        FROM
+                (
+                    SELECT MANDT, BUKRS, PRJ_NO , CAR_NO, EL_NO, SVC_ADDR_NM  FROM  BSSC.SC_RMTG_CAR_MST WHERE MANDT = '100' AND BUKRS = '1000'
+                ) A
+        INNER JOIN BSSC.SC_CR_CNTRINFO C
+                ON A.MANDT          = C.MANDT
+                AND A.BUKRS         = C.BUKRS
+                AND A.PRJ_NO        = C.PRJ_NO
+                AND A.CAR_NO        = C.CAR_NO
+                AND C.MANDT         = '100'
+                AND C.BUKRS         = '1000'
+                AND CNTR_KIND       = 'D'
+                AND C.HRTS_YN       = 'Y'
+                AND C.PROG_STAT     = 'A6'
+                AND SALES_GCD       != 'H11'
+        LEFT OUTER JOIN BSSC.SC_COOPBIZC_REF_INFO F
+                ON 1 = 1
+                AND C.MANDT = F.MANDT
+                AND C.BUKRS = F.BUKRS
+                AND C.RM_COCM = F.SAVE_LOC
+        INNER JOIN BSSC.SC_INTGPRJ_TRLINE_MNG E
+                ON 1 = 1
+                AND C.MANDT = E.MANDT
+                AND C.BUKRS = E.BUKRS
+                AND C.INTG_PRJ_NO = E.INTG_PRJ_NO
+                AND C.TRLINE_CD = E.TRLINE_CD
+                AND ( LENGTH(TRIM(REPLACE(EL_NO,'-',''))) != 7 OR TRIM(REPLACE(EL_NO,'-','')) is NULL OR EL_NO = '0000000'  )
+                AND TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN BGN_DT AND XPIR_DT
+        LEFT OUTER JOIN BSCP.PO_MNG_POT_MEB G
+        ON 1 = 1 AND C.MANDT = G.MANDT AND C.BUKRS = G.BUKRS  
+        AND C.SALES_ID = G.MEB_ID 
+                <!-- AND (DECODE(LENGTH (REPLACE (CHAF_DAYTM,' ','')),14,CHAF_DAYTM,'00000000') >= '20230716' OR TO_CHAR(SYSDATE,'YYYYMMDD') = BGN_DT ) -->
+    </select>
+
+    <!-- RESULT MAP -->
+    <resultMap id="InternalKeysFromSCRM" type="com.hdel.miri.concurrent.domain.scrm.SCRM$VO">
+        <result column="PRJ_NO" property="prjNo"></result>
+        <result column="HO_NO" property="hoNo"></result>
+        <result column="INTG_PRJ_NO" property="intgPrjNo"></result>
+        <result column="TRLINE_CD" property="trlineCd"></result>
+        <result column="SALES_EMPL" property="salesEmpl"></result>
+        <result column="SALES_EMPL_NM" property="salesEmplNm"></result>
+        <result column="MGT_COM_TEL" property="mgtComTel"></result>
+        <result column="MGT_COM_HP" property="mgtComHp"></result>
+        <result column="MGT_COM_CD" property="mgtComCd"></result>
+        <result column="MGT_COM_NM" property="mgtComNm"></result>
+        <result column="CONTRACT_START_DT" property="contractStartDt"></result>
+        <result column="CONTRACT_END_DT" property="contractEndDt"></result>
+        <result column="COMPS_CNTR_NO" property="compsCntrNo"></result>
+        <result column="elevatorNo" property="elevatorNo"></result>
+        <result column="address1" property="address1"></result>
+        <result column="address2" property="address2"></result>
+        <result column="applcBeDt" property="applcBeDt"></result>
+        <result column="applcEnDt" property="applcEnDt"></result>
+        <result column="resultNm" property="resultNm"></result>
+        <result column="areaNm" property="areaNm"></result>
+        <result column="sigunguNm" property="sigunguNm"></result>
+        <result column="buldMgtNo1" property="buldMgtNo1"></result>
+        <result column="buldMgtNo2" property="buldMgtNo2"></result>
+        <result column="buldNm" property="buldNm"></result>
+        <result column="elvtrDivNm" property="elvtrDivNm"></result>
+        <result column="elvtrForm" property="elvtrForm"></result>
+        <result column="elvtrDetailForm" property="elvtrDetailForm"></result>
+        <result column="elvtrKindNm" property="elvtrKindNm"></result>
+        <result column="elvtrSttsNm" property="elvtrSttsNm"></result>
+        <result column="frstInstallationDe" property="frstInstallationDe"></result>
+        <result column="installationDe" property="installationDe"></result>
+        <result column="installationPlace" property="installationPlace"></result>
+        <result column="liveLoad" property="liveLoad"></result>
+        <result column="ratedCap" property="ratedCap"></result>
+        <result column="shuttleSection" property="shuttleSection"></result>
+        <result column="shuttleFloorCnt" property="shuttleFloorCnt"></result>
+        <result column="groundFloorCnt" property="groundFloorCnt"></result>
+        <result column="undgrndFloorCnt" property="undgrndFloorCnt"></result>
+        <result column="wgsLon" property="wgsLon"></result>
+		<result column="wgsLat" property="wgsLat"></result>
+        <result column="MIRICALL_YN" property="miricallYn"></result>
+        <result column="MIRIVIEW_YN" property="miriviewYn"></result>
+        <result column="MIRIROBOT_YN" property="mirirobotYn"></result>
+        <result column="CREATION_USER" property="creationUser"></result>
+        <result column="MIRI_YN" property="miriYn"></result>
+        <result column="changeDt" property="changeDt"></result>
+        <result column="siteNm" property="siteNm"></result>
+        <result column="custNm" property="custNm"></result>
+        <result column="model" property="model"></result>
+        <result column="hrtsYn" property="hrtsYn"></result>
+        <!-- 2023-10-04 add  -->
+        <result column="chkitem" property="chkitem"></result>
+    </resultMap>
+    <!-- RESULT MAP -->
+
+    <select id="getInternalKeysFromSCRM" parameterType="java.util.List" resultMap="InternalKeysFromSCRM">
+        SELECT
+            PRJ_NO as PRJ_NO
+            ,CAR_NO as HO_NO
+            ,INTG_PRJ_NO
+            ,TRLINE_CD
+            ,DECODE(SALES_ID, ' ', SALES_EMPL, SALES_ID) AS SALES_EMPL
+            ,DECODE(SALES_ID, ' ', SALES_EMPL_NM, PORTAL_MEB_NM) AS SALES_EMPL_NM
+            ,CS406_TEL AS MGT_COM_TEL
+            ,CS406_HP AS MGT_COM_HP
+            ,SALES_GCD AS MGT_COM_CD
+            ,SALES_GCDNM AS MGT_COM_NM
+            ,BGN_DT AS CONTRACT_START_DT
+            ,XPIR_DT AS CONTRACT_END_DT
+            ,COMPS_CNTR_NO AS COMPS_CNTR_NO
+            ,NVL(U1.MIRICALL_YN,'N') as MIRICALL_YN
+            ,NVL(U1.MIRIVIEW_YN,'N') as MIRIVIEW_YN
+            ,NVL(U1.MIRIROBOT_YN,'N') as MIRIROBOT_YN
+            ,NVL(U1.MIRI_YN,'N') as MIRI_YN
+            ,'' as wgsLon
+            ,'' as wgsLat
+            ,'SCRM' as CREATION_USER
+            ,T1.*
+            ,U1.elvtrDetailForm
+            ,U1.SITENM as siteNm
+            ,U1.CUST_NM as custNm
+            ,U1.MODEL as model
+            ,U1.HRTS_YN as hrtsYn
+        FROM
+        (
+        <foreach collection="list" item="item" separator="UNION">
+            SELECT
+                #{item.elevatorNo}          as elevatorNo
+                ,#{item.address1}           as address1
+                ,#{item.address2}           as address2
+                ,#{item.applcBeDt}          as applcBeDt
+                ,#{item.applcEnDt}          as applcEnDt
+                ,#{item.resultNm}           as resultNm
+                ,#{item.areaNm}             as areaNm
+                ,#{item.sigunguNm}          as sigunguNm
+                ,#{item.buldMgtNo1}         as buldMgtNo1
+                ,#{item.buldMgtNo2}         as buldMgtNo2
+                ,#{item.buldNm}             as buldNm
+                ,#{item.elvtrDivNm}         as elvtrDivNm
+                ,#{item.elvtrForm}          as elvtrForm
+                ,#{item.elvtrKindNm}        as elvtrKindNm
+                ,#{item.elvtrSttsNm}        as elvtrSttsNm
+                ,#{item.frstInstallationDe} as frstInstallationDe
+                ,#{item.installationDe}     as installationDe
+                ,#{item.installationPlace}  as installationPlace
+                ,#{item.liveLoad}           as liveLoad
+                ,#{item.ratedCap}           as ratedCap
+                ,#{item.shuttleSection}     as shuttleSection
+                ,#{item.shuttleFloorCnt}    as shuttleFloorCnt
+                ,#{item.groundFloorCnt}     as groundFloorCnt
+                ,#{item.undgrndFloorCnt}    as undgrndFloorCnt
+            FROM DUAL
+        </foreach>
+        ) T1
+        LEFT JOIN (
+            SELECT XX.* FROM
+                    (SELECT
+                        EL_NO
+                        ,R1.PRJ_NO
+                        ,R1.CAR_NO
+                        ,SALES_EMPL
+                        ,SALES_EMPL_NM
+                        ,SALES_ID
+                        ,G.PORTAL_MEB_NM
+                        ,COMPS_CNTR_NO
+                        ,CS406_HP
+                        ,CS406_TEL
+                        ,A.SALES_GCD
+                        ,SALES_GCDNM
+                        ,BGN_DT
+                        ,XPIR_DT
+                        ,A.INTG_PRJ_NO
+                        ,A.TRLINE_CD
+                        ,E.SITENM
+                        ,E.CUST_NM
+                        ,A.MODEL
+                        ,NVL(MOYN1,'N') as MIRICALL_YN
+                        ,NVL(MOYN2,'N') as MIRIVIEW_YN
+                        ,NVL(MOYN3,'N') as MIRIROBOT_YN
+                        ,NVL(MIRI_YN,'N') as MIRI_YN
+                        ,CASE WHEN substr(NVL(MODEL,'--'),1,2) IN ('WB','GT') THEN 'WB/GT'
+                        ELSE 'ST7'
+                        END elvtrDetailForm
+                        ,HRTS_YN
+                        ,A.CHAF_DAYTM
+                        ,ROW_NUMBER() OVER ( PARTITION BY R1.EL_NO ORDER BY BGN_DT DESC) ROW_NUM
+                    FROM BSSC.SC_CR_CNTRINFO A
+                    LEFT JOIN (SELECT PRJ_NO, CAR_NO, TRIM(REPLACE(EL_NO,'-','')) as EL_NO, MANDT,BUKRS
+                                FROM BSSC.SC_RMTG_CAR_MST WHERE MANDT = 100 AND BUKRS = 1000 ) R1
+                        ON A.MANDT = R1.MANDT
+                        AND A.BUKRS = R1.BUKRS
+                        AND A.PRJ_NO  = R1.PRJ_NO
+                        AND A.CAR_NO = R1.CAR_NO
+                    LEFT OUTER JOIN BSCP.PO_MNG_POT_MEB B
+                        ON A.MANDT = A.MANDT
+                        AND A.BUKRS = B.BUKRS
+                        AND A.SALES_EMPL = B.MEB_ID
+                    LEFT OUTER JOIN BSSC.SC_COOPBIZC_REF_INFO C
+                        ON A.MANDT = C.MANDT
+                        AND A.BUKRS = C.BUKRS
+                        AND A.RM_COCM = C.SAVE_LOC
+                    LEFT OUTER JOIN BSSC.SC_ZCST406 D
+                        ON A.MANDT = D.MANDT
+                        AND A.BUKRS = D.BUKRS
+                        AND C.ACCT_NO = D.LIFNR
+                    INNER JOIN BSSC.SC_INTGPRJ_TRLINE_MNG E
+                        ON 1 = 1
+                        AND A.MANDT = E.MANDT
+                        AND A.BUKRS = E.BUKRS
+                        AND A.INTG_PRJ_NO = E.INTG_PRJ_NO
+                        AND A.TRLINE_CD = E.TRLINE_CD
+                    LEFT OUTER JOIN BSCP.PO_MNG_POT_MEB G
+                        ON 1 = 1 AND A.MANDT = G.MANDT AND A.BUKRS = G.BUKRS  
+                        AND A.SALES_ID = G.MEB_ID 
+                    WHERE 1 = 1
+                        AND     A.MANDT = '100'
+                        AND     A.BUKRS = '1000'
+                        AND     ( A.HRTS_YN = 'Y' OR  ( A.HRTS_YN = 'N' and A.MOYN2 ='Y') )
+                        AND     A.CNTR_DEL_DT = ' '
+                        AND     A.PROG_STAT = 'A6'
+                        AND     A.SALES_GCD != 'H11'
+                        <!-- AND     A.ITEM_NO != ' ' -->
+                    <!-- AND 	TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN BGN_DT AND XPIR_DT -->
+                    <!-- AND ((DECODE(LENGTH (REPLACE (A.CHAF_DAYTM,' ','')),14,A.CHAF_DAYTM,'00000000') <![CDATA[>=]]> '20230501'
+                        AND TO_CHAR(SYSDATE,'YYYYMMDD') <![CDATA[>]]> BGN_DT )
+                        OR TO_CHAR(SYSDATE,'YYYYMMDD') = BGN_DT )   -->
+                        <!-- AND ((DECODE(LENGTH (REPLACE (A.CHAF_DAYTM,' ','')),14,A.CHAF_DAYTM,'00000000') <![CDATA[>=]]> TO_CHAR (SYSDATE-1, 'YYYYMMDD' )
+                            AND TO_CHAR(SYSDATE,'YYYYMMDD') <![CDATA[>]]> BGN_DT )
+                            OR TO_CHAR(SYSDATE,'YYYYMMDD') = BGN_DT )  -->
+                        AND TO_CHAR(SYSDATE,'YYYYMMDD') <![CDATA[>=]]> BGN_DT
+                    )XX
+                WHERE ROW_NUM = 1
+        ) U1
+        ON T1.elevatorNo = EL_NO
+        ORDER BY T1.elevatorNo, U1.CHAF_DAYTM
+    </select>
+
+    <!--2023-10-13 gmw add-->
+    <insert id="insertSendMMS" parameterType="com.hdel.miri.concurrent.domain.mms.mmsVO$request">
+        INSERT
+            INTO BSSMS.MMS_MSG
+               (
+                 MSGKEY
+               , REQDATE
+               , PHONE
+               , CALLBACK
+               , SUBJECT
+               , MSG
+               , STATUS
+               , ETC1
+               )
+        VALUES (
+                 BSSMS.SEQ_MMS_MSG_MSGKEY.NEXTVAL
+               , SYSDATE
+               , #{receiveNo}
+               , '15770603'
+               , #{title}
+               , #{contents}
+               , '0'
+               , 'MIRI-PORTAL'
+        )
+    </insert>
+
+    <insert id="SendMMS" parameterType="com.hdel.miri.concurrent.domain.message.CcMessageVO$CcMMSVO">
+        INSERT
+            INTO bssms.MMS_MSG (
+                MSGKEY
+                , REQDATE
+                , PHONE
+                , CALLBACK
+                , SUBJECT
+                , MSG
+                , STATUS
+                , ETC1
+                )
+        VALUES (
+                bssms.SEQ_MMS_MSG_MSGKEY.nextval
+                , SYSDATE
+                , #{receiverPhoneNo}
+                , '15770603'
+                , #{title}
+                , #{contents}
+                , '0'
+                , 'MIRI-PORTAL'
+        )
+
+    </insert>
+
+    <insert id="SendKAKAO" parameterType="com.hdel.miri.concurrent.domain.message.CcMessageVO$CcKakaoVO">
+        INSERT
+            INTO BSSMS.KMS_MSG(
+                MSGKEY
+                , TYPE
+                , RESEND
+                , YELLOWID_KEY
+                , TMPL_CD
+                , MSG
+                , LMS_SUBJECT
+                , LMS_MSG
+                , PHONE
+                , CALLBACK
+                , STATUS, REQDATE
+                )
+        VALUES (
+                BSSMS.KMS_MSG_SEQ.nextval
+                , 'KAT'
+                , 'NONE'
+                , #{yellowidKey}
+                , #{tmplCd}
+                , #{msg}
+                , #{lmsSubject}
+                , #{msg}
+                , #{phone}
+                , '15770603'
+                , 0
+                , SYSDATE
+        )
+    </insert>
+
+    <select id="getOrgInfoList" resultType="com.hdel.miri.concurrent.domain.dgk.vo.ReqVO$NoElVO" >
+        SELECT
+            'SCRM' AS db_type
+            , CD_VAL AS org_cd
+            , CD_DESC AS org_nm
+        FROM BSSC.SC_CD_MST
+        WHERE MANDT = '100'
+        AND BUKRS = '1000'
+        AND LANG = 'ko'
+        AND CD_CLASI = 'CS181'
+        AND USE_YN = 'Y' AND SPRECD1 IN ('D200','E100','E200','E300','E400','EI00', 'H100')
+    </select>
+
+    <!--2023-10-04 gmw add-->
+    <select id="getScrmElInfo" parameterType="String" resultMap="InternalKeysFromSCRM">
+        SELECT elevatorNo, chkitem, COMPS_CNTR_NO
+        FROM
+            (SELECT
+                 EL_NO AS elevatorNo,R1.PRJ_NO||R1.CAR_NO||A.INTG_PRJ_NO||A.TRLINE_CD AS chkitem,COMPS_CNTR_NO
+                ,ROW_NUMBER() OVER ( PARTITION BY R1.EL_NO ORDER BY BGN_DT DESC) ROW_NUM
+            FROM BSSC.SC_CR_CNTRINFO A
+            LEFT JOIN (SELECT PRJ_NO, CAR_NO, TRIM(REPLACE(EL_NO,'-','')) as EL_NO,MANDT,BUKRS
+                        FROM BSSC.SC_RMTG_CAR_MST WHERE MANDT = 100 AND BUKRS = 1000 ) R1
+                ON A.MANDT = R1.MANDT AND A.BUKRS = R1.BUKRS AND A.PRJ_NO  = R1.PRJ_NO
+                AND A.CAR_NO = R1.CAR_NO
+            LEFT OUTER JOIN BSCP.PO_MNG_POT_MEB B
+                ON A.MANDT = A.MANDT  AND A.BUKRS = B.BUKRS AND A.SALES_EMPL = B.MEB_ID
+            LEFT OUTER JOIN BSSC.SC_COOPBIZC_REF_INFO C
+                ON A.MANDT = C.MANDT  AND A.BUKRS = C.BUKRS  AND A.RM_COCM = C.SAVE_LOC
+            LEFT OUTER JOIN BSSC.SC_ZCST406 D
+                ON A.MANDT = D.MANDT AND A.BUKRS = D.BUKRS AND C.ACCT_NO = D.LIFNR
+            INNER JOIN BSSC.SC_INTGPRJ_TRLINE_MNG E
+                ON 1 = 1  AND A.MANDT = E.MANDT   AND A.BUKRS = E.BUKRS AND A.INTG_PRJ_NO = E.INTG_PRJ_NO
+                AND A.TRLINE_CD = E.TRLINE_CD
+            WHERE 1 = 1
+                AND     A.MANDT = '100'
+                AND     A.BUKRS = '1000'
+                AND     ( A.HRTS_YN = 'Y' OR  ( A.HRTS_YN = 'N' and A.MOYN2 ='Y') )
+                AND     A.CNTR_DEL_DT = ' '
+                AND     A.PROG_STAT = 'A6'
+                AND     A.SALES_GCD != 'H11'
+                AND TO_CHAR(SYSDATE,'YYYYMMDD') <![CDATA[>=]]> BGN_DT
+            )XX
+        WHERE ROW_NUM = 1
+        AND  elevatorNo = #{elevatorNo}
+    </select>
+
+    <!--2023-10-13 add-->
+    <select id="getAutoRegUserList" resultType="com.hdel.miri.concurrent.domain.user.User$DefaultUserCreate" >
+        SELECT
+            MANDT as mandt,
+            REQ_SEQ as reqSeq,
+            USER_ID as userId,
+            TRIM(USER_NAME) as userName,
+            PHONENUMBER as phonenumber,
+            CONCAT(INTG_PRJ_NO,TRLINE_CD) as intgPrjTrlineCdCode,
+            'y' as termsServiceUseAg,
+            'y' as termsPlInfoUsingAg,
+            'y' as termsPlInfoStoreTimeAg,
+            'n' as termsAdRecvAg,
+            'SCRM' as dbType
+        FROM BSSC.SC_MIRI_USER
+        WHERE REQ_FLAG = 'N'
+        ORDER BY REQ_SEQ
+    </select>
+
+    <!--2023-10-13 add-->
+    <update id="updateAutoUserRegister" parameterType="com.hdel.miri.concurrent.domain.user.User$DefaultUserCreate" >
+        UPDATE BSSC.SC_MIRI_USER
+        SET
+            REQ_FLAG =#{procYn},
+            PROCESS_RESULT =#{procResult},
+            PROCESS_DT = to_char(sysdate,'yyyymmddhh24miss')
+        WHERE 1 = 1 
+          AND   MANDT = #{mandt}
+          AND   REQ_SEQ = #{reqSeq}
+    </update>
+
+</mapper>

@@ -1,0 +1,484 @@
+# 활성화 모드 : 로컬
+spring:
+    config:
+        activate:
+            on-profile: local
+    # DevTool 비활성화
+    devtools:
+        add-properties: false
+    # E-mail 발송 정보
+    mail:
+        host: email-smtp.ap-northeast-2.amazonaws.com
+        password: BGu63M1qaa3QGXz5SIlyZl1N68VSvyMvNQfpbmKUYsKP
+        port: 587
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+        username: AKIAYKFVLAG7FMH6PBWI
+    # i18n 다국어 설정 정보
+    messages:
+        basename: i18n/messages
+        encoding: UTF-8
+        fallback-to-system-locale: false
+        use-code-as-default-message: true
+    # console 색상
+    output:
+        ansi:
+            enabled: always
+    #App 설정 정보
+    app:
+        base-host: http://localhost:8080
+        db:
+            debug: false
+        # 시스템 로케일 정보
+        locale: ko_kr
+        # Input각을 로깅할지 여부, 로깅시 중요정보가 DB에 보일수 있음. EX) password, business contents.
+        log:
+            invalue: false
+        #Jasypt 테스트 코드
+        test:
+            string1: ENC(pR5NZXkNZYf/HaeEmUXhKBDH3EptEG1v)
+        #Cors
+        cors:
+            allowedOrigin: http://localhost:3000,http://127.0.0.1:3000,http://localhost:8080,http://127.0.0.1:8080
+            credential: true
+        #Daia OracleDB
+        ds1:
+            auto-commit: true
+            connection-test-query: SELECT 'DS1-LOCAL' from dual
+            connection-timeout: 100000
+            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+            jdbc-url: jdbc:log4jdbc:oracle:thin:@daialab.co.kr:1523:xe?allowMultiQueries=true
+            maximum-pool-size: 10
+            minimum-idle: 5
+            password: wlakvpdl1
+            #username: c##gimapei
+            username: c##gima
+        # SCRM OracleDB ( Require VPN )
+        ds2:
+            auto-commit: true
+            connection-test-query: SELECT 'SCRM-LOCAL' from dual
+            connection-timeout: 100000
+            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+            jdbc-url: jdbc:log4jdbc:oracle:thin:@nsrmd.sys.hdel.co.kr:1521:ORCL?allowMultiQueries=true
+            maximum-pool-size: 10
+            minimum-idle: 5
+            password: miri1357$
+            username: MIRIUSER
+        # SRM DB2 ( Require VPN )
+        ds3:
+            auto-commit: true
+            connection-test-query: SELECT 'SRM-LOCAL' FROM SYSIBM.SYSDUMMY1
+            connection-timeout: 100000
+            driver-class-name: com.ibm.db2.jcc.DB2Driver
+            jdbc-url: jdbc:db2://10.105.200.142:5912/HSQ
+            maximum-pool-size: 10
+            minimum-idle: 5
+            password: HyundaiMiri2023
+            username: miriuser
+        # HCCC ORACLE ( Require VPN )
+        ds4:
+            auto-commit: true
+            connection-test-query: SELECT 'SCRM-LOCAL' from dual
+            connection-timeout: 100000
+            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+            jdbc-url: jdbc:log4jdbc:oracle:thin:@nhcccd.sys.hdel.co.kr:1521:ucaredb?allowMultiQueries=true
+            maximum-pool-size: 10
+            minimum-idle: 5
+            password: hdel_miri23
+            username: MIRIUSER
+    sap:
+        scrm:
+            ashost: 10.105.106.150
+            mshost: elshprdap.sys.hdel.co.kr
+            msserv: 3600
+            r3name: HSP
+            sysnr: 00
+            client: 100
+            group: ERPPRD
+            user: IF_MIRI_01
+            passwd: HyundaiMiri2023!
+            lang: KO
+        srm:
+            ashost: 10.105.200.143
+            mshost: 10.105.200.143
+            msserv: 3300
+            r3name: HSP
+            sysnr: 00
+            client: 100
+            group: ERPPRD
+            user: IF_MIRI_01
+            passwd: HyundaiMiri2023!
+            lang: KO            
+
+    #Jasypt 설정 정보
+    jasypt:
+        encryptor:
+            bean: jasyptStringEncryptor
+    # 서버 설정 정보
+    server:
+        # 오류 처리
+        error:
+            include-exception: true
+            include-stacktrace: always
+        # 포트 설정
+        port: 8080
+    api:
+        dataGoKr: 8jg9zaWM2xY4jW8lvQIrcEUB4S4%2B0pOqVolH6vbducn3fzcC7aqUidB4dOBlW75ym4aX1BibidM%2FuK0bPIQOIw%3D%3D
+        buildingInfo: http://openapi.elevator.go.kr/openapi/service/BuldElevatorService/getBuldElvtrList
+        inspectHis: http://openapi.elevator.go.kr/openapi/service/ElevatorInspectsafeService/getInspectsafeList
+        inspectErrorHis: http://openapi.elevator.go.kr/openapi/service/ElevatorInspectsafeService/getInspectFailList
+        selfInspectHis: http://openapi.elevator.go.kr/openapi/service/ElevatorSelfCheckService/getSelfCheckList
+        insuranceInfo : http://openapi.elevator.go.kr/openapi/service/ElevatorInsuranceService/getElvtrInsurance
+        safeManager : http://openapi.elevator.go.kr/openapi/service/ElevatorSafeMngrService/getSafeMngrList
+        firebaseUrl : https://fcm.googleapis.com/fcm/send
+        firebaseKey : AAAABCyvVjA:APA91bFSy4XL374mtjpYyjyEUbQDf2Q9xSI50EVTWMA8HXyRnRC0stYOftwVEB6d0m2a0D69cwku6sQi-Xbf9B5NWMZ9uOTlGP8Plxn846PuNoXpGINpGMlI_TseY4jqRq4QHWBrZ7Ye
+        kakaoYelloKey : 06de8062da2ce61478de5e4fefb85bcc08579ef4
+    tomcat:
+        corePoolSize: 3
+        maxPoolSize: 10
+        queueCapacity: 100_000
+springdoc:
+    appVersion: v1.0
+    appTitle: HDEL PORTAL CONCURRENT API
+    appDescription: CONCURRENT JOB API입니다.
+    appContactName: 현대엘리베이터
+    appContactUrl: https://www.hyundaielevator.com/ko/index/
+    appContactEmail: jeansu.byun@hyundaielevator.com
+    #sping doc 설정
+    swagger-ui:
+        path: swagger
+        #"사용해 보기" 섹션이 기본적으로 활성화되어야 하는지 여부를 제어
+        tryItOutEnabled: true
+        # filter 검색
+        filter: true
+        operationsSorter: alpha
+        tagsSorter: alpha
+        displayRequestDuration: true
+        supportedSubmitMethods: get,put,post,delete,options,head,patch,trace
+
+---
+# 활성화 모드 : 개발
+spring:
+    config:
+        activate:
+            on-profile: dev
+    # DevTool 비활성화
+    devtools:
+        add-properties: false
+    # E-mail 발송 정보
+    mail:
+        host: email-smtp.ap-northeast-2.amazonaws.com
+        password: BGu63M1qaa3QGXz5SIlyZl1N68VSvyMvNQfpbmKUYsKP
+        port: 587
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+        username: AKIAYKFVLAG7FMH6PBWI
+    # i18n 다국어 설정 정보
+    messages:
+        basename: i18n/messages
+        encoding: UTF-8
+        fallback-to-system-locale: false
+        use-code-as-default-message: true
+    # console 색상
+    output:
+        ansi:
+            enabled: always
+    #App 설정 정보
+    app:
+        base-host: https://miricp-api-dev.hdel.co.kr
+        db:
+            debug: true
+        # 시스템 로케일 정보
+        locale: ko_kr
+        # Input각을 로깅할지 여부, 로깅시 중요정보가 DB에 보일수 있음. EX) password, business contents.
+        log:
+            invalue: false
+        #Jasypt 테스트 코드
+        test:
+            string1: ENC(pR5NZXkNZYf/HaeEmUXhKBDH3EptEG1v)
+        #Cors
+        cors:
+            allowedOrigin: http://localhost:3000,http://127.0.0.1:3000,http://localhost:8080,http://127.0.0.1:8080,https://miricp-api-dev.hdel.co.kr,http://hecs.hdel.co.kr,http://hcccdev.hdel.co.kr,https://hecs.hdel.co.kr,https://hcccdev.hdel.co.kr,http://mccc.hdel.co.kr,https://mccc.hdel.co.kr
+            credential: true
+        #Daia OracleDB
+        ds1:
+            auto-commit: true
+            connection-test-query: SELECT 'DS1-PROD' from dual
+            connection-timeout: 100000
+            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+            jdbc-url: jdbc:log4jdbc:oracle:thin:@hel-miricp-db-dev.cti520qwxli8.ap-northeast-2.rds.amazonaws.com:1521:ORCL
+            maximum-pool-size: 30
+            minimum-idle: 5
+            password: Hyundai_Miri2023!
+            username: dbadmin
+        # SCRM OracleDB ( Require VPN )
+        ds2:
+            auto-commit: true
+            connection-test-query: SELECT 'SCRM-PROD' from dual
+            connection-timeout: 100000
+            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+            jdbc-url: jdbc:log4jdbc:oracle:thin:@nsrmp.sys.hdel.co.kr:1521:ORCL?allowMultiQueries=true
+            maximum-pool-size: 30
+            minimum-idle: 5
+            password: miri1357$
+            username: MIRIUSER
+        # SRM DB2 ( Require VPN )
+        ds3:
+            auto-commit: true
+            connection-test-query: SELECT 'SRM-PROD' FROM SYSIBM.SYSDUMMY1
+            connection-timeout: 100000
+            driver-class-name: com.ibm.db2.jcc.DB2Driver
+            jdbc-url: jdbc:db2://10.105.200.151:5912/HSP
+            maximum-pool-size: 30
+            minimum-idle: 5
+            password: HyundaiMiri2023
+            username: miriuser
+        # HCCC ORACLE ( Require VPN )
+        ds4:
+            auto-commit: true
+            connection-test-query: SELECT 'HCCC-PROD' from dual
+            connection-timeout: 100000
+            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+            jdbc-url: jdbc:log4jdbc:oracle:thin:@nhcccp.sys.hdel.co.kr:1521:ucaredb?allowMultiQueries=true
+            maximum-pool-size: 30
+            minimum-idle: 5
+            password: hdel_miri23
+            username: MIRIUSER
+    sap:
+        scrm:
+            ashost: 10.105.106.150
+            mshost: elshprdap.sys.hdel.co.kr
+            msserv: 3600
+            r3name: HSP
+            sysnr: 00
+            client: 100
+            group: ERPPRD
+            user: IF_MIRI_01
+            passwd: HyundaiMiri2023!
+            lang: KO
+        srm:
+            ashost: 10.105.200.143
+            mshost: 10.105.200.143
+            msserv: 3300
+            r3name: HSP
+            sysnr: 00
+            client: 100
+            group: ERPPRD
+            user: IF_MIRI_01
+            passwd: HyundaiMiri2023!
+            lang: KO           
+    #Jasypt 설정 정보
+    jasypt:
+        encryptor:
+            bean: jasyptStringEncryptor
+    # 서버 설정 정보
+    server:
+        # 오류 처리
+        error:
+            include-exception: true
+            include-stacktrace: always
+        # 포트 설정
+        port: 8080
+    api:
+        dataGoKr: GiAj%2F6Rr7rffxurP6kidOWfVafSTq5eGCvd2aIjN%2B9u%2F%2FcCeHMtS89DbjtrUMIgLZHUGbaVVKa%2FA%2BA8BfJm9yg%3D%3D
+        buildingInfo: http://openapi.elevator.go.kr/openapi/service/BuldElevatorService/getBuldElvtrList
+        inspectHis: http://openapi.elevator.go.kr/openapi/service/ElevatorInspectsafeService/getInspectsafeList
+        inspectErrorHis: http://openapi.elevator.go.kr/openapi/service/ElevatorInspectsafeService/getInspectFailList
+        selfInspectHis: http://openapi.elevator.go.kr/openapi/service/ElevatorSelfCheckService/getSelfCheckList
+        insuranceInfo : http://openapi.elevator.go.kr/openapi/service/ElevatorInsuranceService/getElvtrInsurance
+        safeManager : http://openapi.elevator.go.kr/openapi/service/ElevatorSafeMngrService/getSafeMngrList
+        firebaseUrl : https://fcm.googleapis.com/fcm/send
+        firebaseKey : AAAABCyvVjA:APA91bFSy4XL374mtjpYyjyEUbQDf2Q9xSI50EVTWMA8HXyRnRC0stYOftwVEB6d0m2a0D69cwku6sQi-Xbf9B5NWMZ9uOTlGP8Plxn846PuNoXpGINpGMlI_TseY4jqRq4QHWBrZ7Ye
+        kakaoYelloKey : 06de8062da2ce61478de5e4fefb85bcc08579ef4
+    tomcat:
+        corePoolSize: 3
+        maxPoolSize: 10
+        queueCapacity: 100_000
+springdoc:
+    appVersion: v1.0
+    appTitle: HDEL PORTAL CONCURRENT API
+    appDescription: CONCURRENT JOB API입니다.
+    appContactName: 현대엘리베이터
+    appContactUrl: https://www.hyundaielevator.com/ko/index/
+    appContactEmail: jeansu.byun@hyundaielevator.com
+    #sping doc 설정
+    swagger-ui:
+        path: swagger
+        #"사용해 보기" 섹션이 기본적으로 활성화되어야 하는지 여부를 제어
+        tryItOutEnabled: true
+        # filter 검색
+        filter: true
+        operationsSorter: alpha
+        tagsSorter: alpha
+        displayRequestDuration: true
+        supportedSubmitMethods: get,put,post,delete,options,head,patch,trace
+---
+# 활성화 모드 : 운영
+spring:
+    config:
+        activate:
+            on-profile: prod
+    # DevTool 비활성화
+    devtools:
+        add-properties: false
+    # E-mail 발송 정보
+    mail:
+        host: email-smtp.ap-northeast-2.amazonaws.com
+        password: BGu63M1qaa3QGXz5SIlyZl1N68VSvyMvNQfpbmKUYsKP
+        port: 587
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+        username: AKIAYKFVLAG7FMH6PBWI
+    # i18n 다국어 설정 정보
+    messages:
+        basename: i18n/messages
+        encoding: UTF-8
+        fallback-to-system-locale: false
+        use-code-as-default-message: true
+    # console 색상
+    output:
+        ansi:
+            enabled: always
+    #App 설정 정보
+    app:
+        base-host: https://miri-api.hdel.co.kr
+        db:
+            debug: false
+        # 시스템 로케일 정보
+        locale: ko_kr
+        # Input각을 로깅할지 여부, 로깅시 중요정보가 DB에 보일수 있음. EX) password, business contents.
+        log:
+            invalue: false
+        #Jasypt 테스트 코드
+        test:
+            string1: ENC(pR5NZXkNZYf/HaeEmUXhKBDH3EptEG1v)
+        #Cors https://miri-api.hdel.co.kr- dev  ,http://hecs.hdel.co.kr, http://hcccdev.hdel.co.kr  2023-07-03 HCCC요청
+        cors:
+            allowedOrigin: http://localhost:3000,http://127.0.0.1:3000,http://localhost:8080,http://127.0.0.1:8080,https://miricp-api-dev.hdel.co.kr,https://miricc-api.hdel.co.kr,http://miricc-api.hdel.co.kr,https://miri-api.hdel.co.kr,http://hecs.hdel.co.kr,http://hcccdev.hdel.co.kr,https://hecs.hdel.co.kr,https://hcccdev.hdel.co.kr,http://mccc.hdel.co.kr,https://mccc.hdel.co.kr
+            credential: true
+        #Daia OracleDB
+        ds1:
+            auto-commit: true
+            connection-test-query: SELECT 'DS1-PROD' from dual
+            connection-timeout: 100000
+            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+            jdbc-url: jdbc:log4jdbc:oracle:thin:@hel-miricp-db-prod.cti520qwxli8.ap-northeast-2.rds.amazonaws.com:1521:ORCL
+            maximum-pool-size: 30
+            minimum-idle: 5
+            password: Hyundai_Miri2023!
+            username: dbadmin
+        # SCRM OracleDB ( Require VPN )
+        ds2:
+            auto-commit: true
+            connection-test-query: SELECT 'SCRM-PROD' from dual
+            connection-timeout: 100000
+            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+            jdbc-url: jdbc:log4jdbc:oracle:thin:@nsrmp.sys.hdel.co.kr:1521:ORCL?allowMultiQueries=true
+            maximum-pool-size: 30
+            minimum-idle: 5
+            password: miri1357$
+            username: MIRIUSER
+        # SRM DB2 ( Require VPN )
+        ds3:
+            auto-commit: true
+            connection-test-query: SELECT 'SRM-PROD' FROM SYSIBM.SYSDUMMY1
+            connection-timeout: 100000
+            driver-class-name: com.ibm.db2.jcc.DB2Driver
+            jdbc-url: jdbc:db2://10.105.200.151:5912/HSP
+            maximum-pool-size: 30
+            minimum-idle: 5
+            password: HyundaiMiri2023
+            username: miriuser
+        # HCCC ORACLE ( Require VPN )
+        ds4:
+            auto-commit: true
+            connection-test-query: SELECT 'HCCC-PROD' from dual
+            connection-timeout: 100000
+            driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
+            jdbc-url: jdbc:log4jdbc:oracle:thin:@nhcccp.sys.hdel.co.kr:1521:ucaredb?allowMultiQueries=true
+            maximum-pool-size: 30
+            minimum-idle: 5
+            password: hdel_miri23
+            username: MIRIUSER
+    sap:
+        scrm:
+            ashost: 10.105.106.150
+            mshost: elshprdap.sys.hdel.co.kr
+            msserv: 3600
+            r3name: HSP
+            sysnr: 00
+            client: 100
+            group: ERPPRD
+            user: IF_MIRI_01
+            passwd: HyundaiMiri2023!
+            lang: ko
+        srm:
+            ashost: 10.105.200.143
+            mshost: 10.105.200.143
+            msserv: 3300
+            r3name: HSP
+            sysnr: 00
+            client: 100
+            group: ERPPRD
+            user: IF_MIRI_01
+            passwd: HyundaiMiri2023!
+            lang: ko            
+
+    #Jasypt 설정 정보
+    jasypt:
+        encryptor:
+            bean: jasyptStringEncryptor
+    # 서버 설정 정보
+    server:
+        # 오류 처리
+        error:
+            include-exception: true
+            include-stacktrace: always
+        # 포트 설정
+        port: 8080
+    api:
+        dataGoKr: GiAj%2F6Rr7rffxurP6kidOWfVafSTq5eGCvd2aIjN%2B9u%2F%2FcCeHMtS89DbjtrUMIgLZHUGbaVVKa%2FA%2BA8BfJm9yg%3D%3D
+        buildingInfo: http://openapi.elevator.go.kr/openapi/service/BuldElevatorService/getBuldElvtrList
+        inspectHis: http://openapi.elevator.go.kr/openapi/service/ElevatorInspectsafeService/getInspectsafeList
+        inspectErrorHis: http://openapi.elevator.go.kr/openapi/service/ElevatorInspectsafeService/getInspectFailList
+        selfInspectHis: http://openapi.elevator.go.kr/openapi/service/ElevatorSelfCheckService/getSelfCheckList
+        insuranceInfo : http://openapi.elevator.go.kr/openapi/service/ElevatorInsuranceService/getElvtrInsurance
+        safeManager : http://openapi.elevator.go.kr/openapi/service/ElevatorSafeMngrService/getSafeMngrList
+        firebaseUrl : https://fcm.googleapis.com/fcm/send
+        firebaseKey : AAAABCyvVjA:APA91bFSy4XL374mtjpYyjyEUbQDf2Q9xSI50EVTWMA8HXyRnRC0stYOftwVEB6d0m2a0D69cwku6sQi-Xbf9B5NWMZ9uOTlGP8Plxn846PuNoXpGINpGMlI_TseY4jqRq4QHWBrZ7Ye
+        kakaoYelloKey : 06de8062da2ce61478de5e4fefb85bcc08579ef4
+    tomcat:
+        corePoolSize: 30
+        maxPoolSize: 1000
+        queueCapacity: 100_000_000
+springdoc:
+    appVersion: v1.0
+    appTitle: HDEL PORTAL CONCURRENT API
+    appDescription: CONCURRENT JOB API입니다.
+    appContactName: 현대엘리베이터
+    appContactUrl: https://www.hyundaielevator.com/ko/index/
+    appContactEmail: MIRIPortaladmin@hyundaielevator.com
+    #sping doc 설정
+    swagger-ui:
+        path: swagger
+        #"사용해 보기" 섹션이 기본적으로 활성화되어야 하는지 여부를 제어
+        tryItOutEnabled: true
+        # filter 검색
+        filter: true
+        operationsSorter: alpha
+        tagsSorter: alpha
+        displayRequestDuration: true
+        supportedSubmitMethods: get,put,post,delete,options,head,patch,trace
+---

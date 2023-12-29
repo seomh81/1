@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.api.domain.privilege.view.ViewRepository">
+    <!-- RESULT MAP -->
+    <resultMap id="getView" type="com.hdel.miri.api.domain.privilege.view.View$ViewVO">
+        <result column="VIEW_ID"            property="viewId" />
+        <result column="VIEW_NAME"                 property="viewName" />
+        <result column="VUE_FILE_URL"            property="vueFileUrl" />
+    </resultMap>
+    <!-- RESULT MAP -->
+
+    <!-- SELECT -->
+    <select id="selectList"
+    parameterType="com.hdel.miri.api.domain.privilege.view.View$ViewSearch"
+    resultMap="getView">
+        SELECT
+        a.VIEW_ID VIEW_ID
+        ,max(VIEW_NAME) AS VIEW_NAME
+        ,max(VUE_FILE_URL) AS VUE_FILE_URL
+        FROM TB_VIEW a
+        LEFT JOIN TB_VIEW_FUNC_MAPPING b ON a.VIEW_ID = b.VIEW_ID
+        WHERE 	VUE_FILE_URL IS NOT NULL
+        <if test=" searchKeyword != null and searchKeyword != '' ">AND VIEW_NAME like '%'||#{searchKeyword}||'%'</if>
+        GROUP BY a.VIEW_ID
+    </select>
+    <!-- SELECT -->
+
+
+    <!-- INSERT -->
+    <insert id="insert" useGeneratedKeys="true" keyColumn="VIEW_ID" keyProperty="viewId"
+            parameterType="com.hdel.miri.api.domain.privilege.view.View$ViewCreate">
+        INSERT INTO TB_VIEW(VIEW_NAME,TYPE,CREATION_USER,LASTUPDATE_USER)
+        VALUES(#{viewName},#{type},#{currentUser},#{currentUser})
+    </insert>
+    <!-- INSERT -->
+
+    <!-- UPDATE -->
+    <update id="update"
+            parameterType="com.hdel.miri.api.domain.privilege.view.View$ViewUpdate">
+        UPDATE TB_VIEW
+        SET     VIEW_NAME = #{viewName}
+          ,TYPE = #{type}
+          ,LASTUPDATE_USER = #{currentUser}
+        WHERE   VIEW_ID = #{viewId}
+    </update>
+    <!-- UPDATE -->
+
+    <!-- DELETE -->
+    <delete id="delete"
+            parameterType="com.hdel.miri.api.domain.privilege.view.View$ViewDelete">
+        {
+            Call
+            declare
+            begin
+            DELETE FROM TB_MENU_VIEW_MAPPING WHERE VIEW_ID = #{viewId};
+            DELETE FROM TB_VIEW_FUNC_MAPPING WHERE VIEW_ID = #{viewId};
+            DELETE FROM TB_VIEW WHERE VIEW_ID = #{viewId};
+            end
+        }
+    </delete>
+    <!-- DELETE -->
+</mapper>

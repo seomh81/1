@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.api.domain.privilege.menu.MenuRepository">
+    <!-- RESULT MAP -->
+    <!-- RESULT MAP -->
+
+    <!-- SELECT -->
+    <!-- SELECT -->
+
+
+    <!-- INSERT -->
+    <insert id="insert" parameterType="com.hdel.miri.api.domain.privilege.menu.Menu$MenuCreate">
+        INSERT INTO TB_MENU(PARENT_MENU_ID,MENU_NAME,TYPE,PAYLOAD,CREATION_USER,LASTUPDATE_USER)
+        VALUES(#{parentMenuId}
+              ,#{menuName}
+              ,#{type}
+              ,#{payload}
+              ,#{currentUser}
+              ,#{currentUser}
+              )
+    </insert>
+    <insert id="copy" parameterType="java.util.HashMap">
+        {
+            CALL
+            DECLARE
+            TYPE T_MENU_ROW IS RECORD(LEVEL NUMBER, MENU_ID NUMBER, PARENT_MENU_ID NUMBER, MENU_NAME VARCHAR2(100), TYPE VARCHAR2(100), PAYLOAD VARCHAR2(4000));
+            TYPE T_MENU_ROW2 IS RECORD(LEVEL NUMBER, OLD_MENU_ID NUMBER, NEW_MENU_ID NUMBER);
+            TYPE T_MENU IS TABLE OF T_MENU_ROW;
+            TYPE T_MENU2 IS TABLE OF T_MENU_ROW2;
+            TYPE T_MENU_ID IS TABLE OF NUMBER INDEX BY VARCHAR2(100);
+
+            C_TB T_MENU;
+            R_TB T_MENU2;
+            R_HASH T_MENU_ID;
+
+            BEGIN
+
+                SELECT
+                LEVEL
+                ,MENU_ID
+                ,PARENT_MENU_ID
+                ,MENU_NAME
+                ,TYPE
+            ,PAYLOAD BULK COLLECT INTO C_TB
+            FROM
+            TB_MENU START WITH MENU_ID = #{srcMenuId}
+            CONNECT BY
+            PRIOR MENU_ID = PARENT_MENU_ID;
+
+            FORALL idx IN C_TB.FIRST..C_TB.LAST
+            INSERT INTO TB_MENU(PARENT_MENU_ID, MENU_NAME, TYPE, PAYLOAD, CREATION_USER, LASTUPDATE_USER)
+            VALUES(DECODE(C_TB(idx).LEVEL, 1, #{tgtMenuId}, C_TB(idx).PARENT_MENU_ID), C_TB(idx).MENU_NAME||'_COPY', C_TB(idx).TYPE, C_TB(idx).PAYLOAD, #{currentUser}, #{currentUser})
+            RETURNING C_TB(idx).LEVEL, C_TB(idx).MENU_ID, MENU_ID BULK COLLECT INTO R_TB;
+
+            FOR idx IN R_TB.FIRST..R_TB.LAST
+            LOOP
+                R_HASH(TO_CHAR(R_TB(idx).OLD_MENU_ID)) := R_TB(idx).NEW_MENU_ID;
+                END LOOP;
+
+
+                FOR idx IN C_TB.FIRST..C_TB.LAST
+                LOOP
+
+                INSERT INTO TB_MENU_VIEW_MAPPING(VIEW_ID, MENU_ID, CREATION_USER, LASTUPDATE_USER)
+            WITH TEMP AS (
+                SELECT VIEW_id, R_HASH(TO_CHAR(C_TB(idx).MENU_ID)) as b, #{currentUser} as c, #{currentUser} as d FROM TB_MENU_VIEW_MAPPING
+                    WHERE MENU_ID = C_TB(idx).MENU_ID
+                ) SELECT * FROM TEMP;
+
+                IF C_TB(idx).LEVEL = 1 THEN CONTINUE;
+                END IF;
+
+                DBMS_OUTPUT.PUT_LINE('신아이디:'||R_HASH(C_TB(idx).PARENT_MENU_ID));
+                UPDATE TB_MENU
+                SET PARENT_MENU_ID = R_HASH(TO_CHAR(C_TB(idx).PARENT_MENU_ID))
+                ,CREATION_USER      = #{currentUser}
+                    ,LASTUPDATE_USER    = #{currentUser}
+            WHERE MENU_ID           = R_HASH(TO_CHAR(C_TB(idx).MENU_ID));
+            END LOOP;
+            END
+            }
+    </insert>
+    <!-- INSERT -->
+
+
+    <!-- UPDATE -->
+    <update id="update" parameterType="com.hdel.miri.api.domain.privilege.menu.Menu$MenuUpdate">
+        UPDATE TB_MENU
+        SET     MENU_NAME = #{menuName}
+          ,TYPE = #{type}
+          ,PAYLOAD = #{payload}
+          ,LASTUPDATE_USER = #{currentUser}
+        WHERE   MENU_ID = #{menuId}
+    </update>
+    <update id="move" parameterType="com.hdel.miri.api.domain.privilege.menu.Menu$MenuMove">
+        UPDATE TB_MENU
+        SET     PARENT_MENU_ID           = #{tgtMenuId}
+        ,LASTUPDATE_USER    = #{currentUser}
+        WHERE 1=1
+        AND     MENU_ID IN
+        <foreach collection="srcMenuIds" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </update>
+    <!-- UPDATE -->
+
+    <!-- DELETE -->
+    <delete id="delete" parameterType="com.hdel.miri.api.domain.privilege.func.FunctionVO$FunctionDelete">
+        {
+            CALL
+            BEGIN
+            DELETE FROM TB_MENU_VIEW_MAPPING
+            WHERE MENU_ID IN ( SELECT MENU_ID FROM TB_MENU START WITH MENU_ID = #{menuId} CONNECT BY PRIOR MENU_ID = PARENT_MENU_ID );
+            DELETE FROM TB_ROLE_MENU_MAPPING
+            WHERE MENU_ID IN ( SELECT MENU_ID FROM TB_MENU START WITH MENU_ID = #{menuId} CONNECT BY PRIOR MENU_ID = PARENT_MENU_ID );
+            DELETE FROM TB_MENU
+            WHERE MENU_ID IN ( SELECT MENU_ID FROM TB_MENU START WITH MENU_ID = #{menuId} CONNECT BY PRIOR MENU_ID = PARENT_MENU_ID );
+            END
+        }
+    </delete>
+    <!-- DELETE -->
+</mapper>

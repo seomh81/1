@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.api.domain.masterdata.MasterDataRepository">
+    <!-- RESULT MAP -->
+    <resultMap id="getHeadView" type="com.hdel.miri.api.domain.masterdata.MasterData$MasterDataHeadVO">
+        <result column="MASTERDATA_ID"            property="masterdataId" />
+        <result column="MASTERDATA_KEY"                 property="masterdataKey" />
+        <result column="MASTERDATA_NAME"            property="masterdataName" />
+        <result column="LOCALE"       property="locale" />
+        <result column="NOTE"       property="note" />
+        <result column="CREATION_DT"       property="creationDt" />
+        <result column="LASTUPDATE_DT"       property="lastupdateDt" />
+    </resultMap>
+    <resultMap id="getDetailView" type="com.hdel.miri.api.domain.masterdata.MasterData$MasterDataDetailVO">
+        <result column="MASTERDATA_ID"            property="masterdataId" />
+        <result column="MASTERDATA_DETAIL_ID"                 property="masterdataDetailId" />
+        <result column="CODE"            property="code" />
+        <result column="VALUE_1"            property="value1" />
+        <result column="VALUE_2"            property="value2" />
+        <result column="VALUE_3"            property="value3" />
+        <result column="VALUE_4"            property="value4" />
+        <result column="VALUE_5"            property="value5" />
+        <result column="SORT_SEQ"       property="sortSeq" />
+        <result column="CREATION_DT"       property="creationDt" />
+        <result column="LASTUPDATE_DT"       property="lastupdateDt" />
+    </resultMap>
+    <resultMap id="getAlarmCode" type="com.hdel.miri.api.domain.masterdata.MasterData$AlarmCode">
+        <result column="CAT_CODE" property="catCode" />
+        <result column="DIV_CODE" property="divCode" />
+        <result column="TYPE_CODE" property="typeCode" />
+    </resultMap>
+    <!-- RESULT MAP -->
+
+    <!-- SELECT -->
+    <select id="selectMasterHeadList"
+            parameterType="com.hdel.miri.api.domain.masterdata.MasterData$MasterDataHeadSearch"
+            resultMap="getHeadView">
+        SELECT
+        MASTERDATA_ID ,MASTERDATA_KEY ,MASTERDATA_NAME ,LOCALE ,NOTE
+        ,TO_CHAR(CREATION_DT, 'YYYY-MM-DD HH24:MI:SS') as CREATION_DT
+        ,TO_CHAR(LASTUPDATE_DT, 'YYYY-MM-DD HH24:MI:SS') as LASTUPDATE_DT
+        FROM TB_MASTERDATA
+        <where>
+            <if test="locale != null and locale != '' ">AND LOCALE = #{locale}</if>
+            <if test="searchKeyword != null and searchKeyword != '' ">AND ( MASTERDATA_NAME LIKE '%'||#{searchKeyword}||'%' OR MASTERDATA_KEY LIKE '%'||#{searchKeyword}||'%' )</if>
+        </where>
+        ORDER BY MASTERDATA_KEY
+    </select>
+
+    <select id="selectMasterDetailList"
+            parameterType="com.hdel.miri.api.domain.masterdata.MasterData$MasterDataDetailSearch"
+            resultMap="getDetailView">
+        SELECT
+        MDD.MASTERDATA_ID AS MASTERDATA_ID
+        ,MDD.MASTERDATA_DETAIL_ID AS MASTERDATA_DETAIL_ID
+        ,MDD.CODE AS CODE
+        ,VALUE_1 ,VALUE_2 ,VALUE_3 ,VALUE_4 ,VALUE_5 ,SORT_SEQ
+        ,TO_CHAR(MDD.CREATION_DT, 'YYYY-MM-DD HH24:MI:SS') as CREATION_DT
+        ,TO_CHAR(MDD.LASTUPDATE_DT, 'YYYY-MM-DD HH24:MI:SS') as LASTUPDATE_DT
+        FROM (SELECT MASTERDATA_ID,MASTERDATA_KEY,LOCALE FROM TB_MASTERDATA
+        WHERE MASTERDATA_ID  = #{masterdataId} ) MD
+        INNER JOIN TB_MASTERDATA_DETAIL MDD ON MD.MASTERDATA_ID = MDD.MASTERDATA_ID
+        ORDER BY MDD.SORT_SEQ
+        <!-- AND LOCALE= #{locale}) MD -->
+    </select>
+
+    <select id="selectCountMasterKey" parameterType="String" resultType="Integer">
+        SELECT count(*) as cnt FROM TB_MASTERDATA
+        WHERE 1=1
+        <if test="masterdataKey != null and masterdataKey != '' ">AND MASTERDATA_KEY = #{masterdataKey}</if>
+        <if test="locale != null and locale != ''">AND LOCALE = #{locale}</if>
+    </select>
+
+    <select id="selectAlarmSetup" resultMap="getAlarmCode">
+        SELECT DISTINCT B.*,MD3.CODE AS TYPE_CODE FROM (
+            SELECT A.* , MD2.CODE AS DIV_CODE FROM (
+                    SELECT MD1.CODE AS CAT_CODE
+                    FROM TB_MASTERDATA M1
+                            LEFT JOIN TB_MASTERDATA_DETAIL MD1 ON M1.MASTERDATA_ID = MD1.MASTERDATA_ID
+                    WHERE M1.MASTERDATA_ID = 1 AND MD1.VALUE_2= '0'
+                ) A LEFT JOIN TB_MASTERDATA_DETAIL MD2 ON A.CAT_CODE = MD2.VALUE_2
+            WHERE  MD2.MASTERDATA_ID = 1 AND MD2.VALUE_3 IS NULL
+        ) B LEFT JOIN TB_MASTERDATA_DETAIL MD3 ON B.DIV_CODE = MD3.VALUE_3
+        ORDER BY CAT_CODE,DIV_CODE,TYPE_CODE
+    </select>
+
+    <select id="selectDetails"
+            parameterType="com.hdel.miri.api.domain.masterdata.MasterData$MasterDataSelect"
+            resultMap="getDetailView">
+        SELECT MD1.*
+        FROM TB_MASTERDATA M1
+                 LEFT JOIN TB_MASTERDATA_DETAIL MD1
+                           ON M1.MASTERDATA_ID = MD1.MASTERDATA_ID
+        WHERE M1.MASTERDATA_KEY = #{masterdataKey} AND M1.LOCALE = #{userLocale}
+    </select>
+    <!-- SELECT -->
+
+    <!-- INSERT -->
+    <insert id="insertMasterHead" parameterType="com.hdel.miri.api.domain.masterdata.MasterData$MasterDataHeadCreate" >
+        INSERT INTO TB_MASTERDATA(MASTERDATA_KEY ,MASTERDATA_NAME ,LOCALE ,NOTE ,CREATION_USER ,LASTUPDATE_USER)
+        VALUES(#{masterdataKey} ,#{masterdataName} ,#{locale} ,#{note} ,#{currentUser} ,#{currentUser})
+    </insert>
+
+    <insert id="insertMasterDetail" parameterType="com.hdel.miri.api.domain.masterdata.MasterData$MasterDataDetailCreate" >
+        INSERT INTO TB_MASTERDATA_DETAIL (MASTERDATA_ID ,CODE ,VALUE_1 ,VALUE_2 ,VALUE_3 ,VALUE_4 ,VALUE_5 ,SORT_SEQ ,CREATION_USER ,LASTUPDATE_USER)
+        VALUES(#{masterdataId},#{code}
+            ,#{value1} ,#{value2} ,#{value3} ,#{value4} ,#{value5}
+            ,#{sortSeq}
+            ,#{currentUser},#{currentUser})
+    </insert>
+
+
+    <update id="insertMasterDetailImport" parameterType="com.hdel.miri.api.domain.masterdata.MasterData$MasterDataDetailImport" >
+        {
+            Call
+                declare
+                begin
+                    DELETE TB_MASTERDATA_DETAIL
+                    WHERE MASTERDATA_ID = #{masterdataId};
+
+                    <foreach collection="detailList" item="item">
+                        INSERT INTO TB_MASTERDATA_DETAIL (MASTERDATA_ID ,CODE ,VALUE_1 ,VALUE_2 ,VALUE_3 ,VALUE_4 ,VALUE_5 ,SORT_SEQ ,CREATION_USER ,LASTUPDATE_USER)
+                        VALUES(
+                            #{masterdataId}
+                            ,#{item.code}
+                            ,#{item.value1} 
+                            ,#{item.value2} 
+                            ,#{item.value3} 
+                            ,#{item.value4} 
+                            ,#{item.value5}
+                            ,#{item.sortSeq}
+                            ,#{currentUser},#{currentUser});
+                    </foreach>
+                    commit;
+                end
+        }
+    </update>
+
+    <!-- <insert id="insertMasterDetailImport" parameterType="com.hdel.miri.api.domain.masterdata.MasterData$MasterDataDetailImport" >
+        INSERT INTO TB_MASTERDATA_DETAIL (MASTERDATA_ID ,CODE ,VALUE_1 ,VALUE_2 ,VALUE_3 ,VALUE_4 ,VALUE_5 ,SORT_SEQ ,CREATION_USER ,LASTUPDATE_USER)
+        VALUES(#{masterdataId},#{code}
+            ,#{value1} ,#{value2} ,#{value3} ,#{value4} ,#{value5}
+            ,#{sortSeq}
+            ,#{currentUser},#{currentUser})
+    </insert> -->
+    <!-- INSERT -->
+
+    <!-- UPDATE -->
+    <update id="updateMasterHead" parameterType="com.hdel.miri.api.domain.masterdata.MasterData$MasterDataHeadUpdate">
+        UPDATE TB_MASTERDATA
+        SET MASTERDATA_NAME   = NVL(#{masterdataName},MASTERDATA_NAME)
+        ,NOTE = NVL(#{note},NOTE)
+        ,LASTUPDATE_USER = #{currentUser}
+        WHERE 1=1
+        <if test="masterdataId != null and masterdataId != '' ">AND MASTERDATA_ID = #{masterdataId}</if>
+    </update>
+
+    <update id="updateMasterDetail" parameterType="com.hdel.miri.api.domain.masterdata.MasterData$MasterDataDetailUpdate">
+        UPDATE TB_MASTERDATA_DETAIL
+        SET CODE            = #{code}
+        <if test="value1 != null">,VALUE_1         = #{value1}</if>
+        <if test="value2 != null">,VALUE_2         = #{value2}</if>
+        <if test="value3 != null">,VALUE_3         = #{value3}</if>
+        <if test="value4 != null">,VALUE_4         = #{value4}</if>
+        <if test="value5 != null">,VALUE_5         = #{value5}</if>
+        <if test="sortSeq != null">,SORT_SEQ        = #{sortSeq}</if>
+        ,LASTUPDATE_USER = #{currentUser}
+        WHERE 1=1
+        <if test="masterdataDetailId !=null and masterdataDetailId !='' ">AND MASTERDATA_DETAIL_ID = #{masterdataDetailId}</if>
+    </update>
+
+    <!-- UPDATE -->
+
+    <!-- DELETE -->
+    <delete id="deleteMasterHeads" parameterType="com.hdel.miri.api.domain.masterdata.MasterData$MasterDataHeadDelete">
+        DELETE FROM TB_MASTERDATA
+        WHERE 1=1
+        AND MASTERDATA_ID IN
+        <foreach collection="masterdataIds" item="item" index="idx" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+    <delete id="deleteMasterDetailByMasterIds" parameterType="com.hdel.miri.api.domain.masterdata.MasterData$MasterDataHeadDelete">
+        DELETE TB_MASTERDATA_DETAIL
+        WHERE 1=1
+        AND MASTERDATA_ID IN
+        <foreach collection="masterdataIds" item="item" index="idx" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+    <delete id="deleteMasterDetails" parameterType="com.hdel.miri.api.domain.masterdata.MasterData$MasterDataDetailDelete">
+        DELETE TB_MASTERDATA_DETAIL
+        WHERE 1=1
+        AND MASTERDATA_DETAIL_ID IN
+        <foreach collection="masterdataDetailIds" item="item" index="idx" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+    <!-- DELETE -->
+</mapper>

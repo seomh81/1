@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.api.domain.ad.section.SectionADRepository">
+    <!-- RESULT MAP -->
+    <resultMap id="getSectionAD" type="com.hdel.miri.api.domain.ad.section.SectionAD$SectionADVO">
+        <result column="AD_ID"            property="adId" />
+        <result column="AD_NAME"            property="adName" />
+        <result column="ACTIVATION_YN"            property="activationYn" />
+        <result column="DEL_YN"            property="delYn" />
+    </resultMap>
+    <resultMap id="getDetailSectionAD" type="com.hdel.miri.api.domain.ad.section.SectionAD$SectionADDetailVO">
+        <result column="AD_ID"            property="adId" />
+        <result column="AD_DETAIL_ID"            property="adDetailId" />
+        <result column="PHYSICAL_FILE_NAME"            property="physicalFileName" />
+        <result column="ORIGINAL_FILE_NAME"            property="originalFileName" />
+    </resultMap>
+    <!-- RESULT MAP -->
+    <!-- SELECT -->
+    <select id="selectImages" resultType="string">
+        SELECT
+            FL.PHYSICAL_FILE_NAME PHYSICAL_FILE_NAME
+        FROM (
+                 SELECT
+                     RN,AD_ID
+                 FROM
+                     ( SELECT ROWNUM RN , AD.AD_ID AD_ID
+                       FROM TB_INTERIM_AD AD
+                       WHERE ACTIVATION_YN = 'y'
+                       ORDER BY LASTUPDATE_DT DESC) A
+                 WHERE A.RN = 1 ) B
+                 LEFT JOIN TB_INTERIM_AD_DETAIL DT ON DT.AD_ID = B.AD_ID
+                 LEFT JOIN TB_UPLOAD_FILE FL ON FL.PHYSICAL_FILE_NAME = DT.PHYSICAL_FILE_NAME
+    </select>
+    <select id="selectList"
+        parameterType="com.hdel.miri.api.domain.ad.section.SectionAD$SectionADSearch"
+        resultMap="getSectionAD"
+    >
+        SELECT
+        AD_ID
+        ,AD_NAME
+        ,ACTIVATION_YN
+        ,DEL_YN
+        FROM TB_INTERIM_AD
+        WHERE 1=1
+        <if test="searchKeyword != null and searchKeyword != '' ">AND AD_NAME LIKE '%'||#{searchKeyword}||'%' </if>
+        <if test="activationYn neq 'ALL' "> AND ACTIVATION_YN = #{activationYn}</if>
+        AND DEL_YN =  'n'
+        ORDER BY AD_NAME, LASTUPDATE_DT DESC
+    </select>
+    <select id="selectDetails"
+            parameterType="com.hdel.miri.api.domain.ad.section.SectionAD$SectionADDetailSearch"
+            resultMap="getDetailSectionAD">
+        SELECT
+            AD.AD_ID AS AD_ID
+             ,	AD.AD_DETAIL_ID AS AD_DETAIL_ID
+             ,	AD.PHYSICAL_FILE_NAME AS PHYSICAL_FILE_NAME
+             ,	F.ORIGINAL_FILE_NAME  AS ORIGINAL_FILE_NAME
+        FROM TB_INTERIM_AD_DETAIL AD
+                LEFT JOIN TB_UPLOAD_FILE F
+                ON AD.PHYSICAL_FILE_NAME  = F.PHYSICAL_FILE_NAME
+        WHERE AD.AD_ID = #{adId}
+    </select>
+    <!-- SELECT -->
+    <!-- UPDATE -->
+    <update id="update" parameterType="com.hdel.miri.api.domain.ad.section.SectionAD$SectionADUpdate">
+        UPDATE TB_INTERIM_AD
+        SET AD_NAME = #{adName}
+        ,LASTUPDATE_USER = #{currentUser}
+        WHERE 1=1
+        <if test="adId !=null">AND AD_ID = #{adId}</if>
+    </update>
+    <update id="active" parameterType="com.hdel.miri.api.domain.ad.section.SectionAD$SectionADActivation">
+        UPDATE TB_INTERIM_AD
+        SET ACTIVATION_YN = 'y'
+        ,LASTUPDATE_USER = #{currentUser}
+        WHERE
+        AD_ID IN
+        <foreach collection="adIds" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </update>
+    <update id="inactive" parameterType="com.hdel.miri.api.domain.ad.section.SectionAD$SectionADActivation">
+        UPDATE TB_INTERIM_AD
+        SET ACTIVATION_YN = 'n'
+        ,LASTUPDATE_USER = #{currentUser}
+        WHERE
+        AD_ID IN
+        <foreach collection="adIds" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </update>
+    <update id="remove" parameterType="com.hdel.miri.api.domain.ad.section.SectionAD$SectionADRemove">
+        UPDATE TB_INTERIM_AD
+        SET DEL_YN = 'y'
+        ,LASTUPDATE_USER = #{currentUser}
+        WHERE  AD_ID IN
+        <foreach collection="adIds" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </update>
+    <!-- UPDATE -->
+    <!-- INSERT -->
+    <insert id="insert" parameterType="com.hdel.miri.api.domain.ad.section.SectionAD$SectionADCreate">
+        INSERT INTO TB_INTERIM_AD(
+                                  AD_NAME
+                                 ,CREATION_USER
+                                 ,LASTUPDATE_USER)
+        VALUES(#{adName}, #{currentUser},#{currentUser})
+    </insert>
+    <insert id="insertDetails" parameterType="com.hdel.miri.api.domain.ad.section.SectionAD$SectionADDetailCreate">
+        INSERT INTO TB_INTERIM_AD_DETAIL(AD_ID, PHYSICAL_FILE_NAME, CREATION_USER, LASTUPDATE_USER)
+        <foreach collection="files" item="item" separator=" UNION ALL ">
+            select #{adId}
+            ,#{item.physicalFileName}
+            ,#{currentUser}
+            ,#{currentUser} FROM DUAL
+        </foreach>
+    </insert>
+    <!-- INSERT -->
+    <!-- DELETE -->
+    <!--
+    <delete id="delete" parameterType="section.ad.domain.com.hdel.miri.api.SectionAD$SectionADRemove">
+        DELETE FROM TB_INTERIM_AD
+        WHERE 1=1
+        <if test="adId !=null">AND AD_ID = #{adId}</if>
+    </delete>
+    <delete id="deleteDetails" parameterType="section.ad.domain.com.hdel.miri.api.SectionAD$SectionADRemove">
+        DELETE FROM TB_INTERIM_AD_DETAIL
+        WHERE 1=1
+        <if test="adId !=null">AND AD_ID = #{adId}</if>
+    </delete> -->
+    <delete id="deleteDetail" parameterType="com.hdel.miri.api.domain.ad.section.SectionAD$SectionADDetailDelete">
+        DELETE FROM TB_INTERIM_AD_DETAIL
+        WHERE 1=1
+        <if test="adDetailId !=null">AND AD_DETAIL_ID = #{adDetailId}</if>
+    </delete>
+    <!-- DELETE -->
+</mapper>

@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.api.domain.user.UserRepository">
+    <!-- RESULT MAP -->
+    <resultMap id="ContractSummary" type="com.hdel.miri.api.domain.contract.Contract$ContractSummary">
+        <id column="INTG_PRJ_TRLINE_CD_CODE"    property="intgPrjTrlineCdCode" />
+        <result column="APPROVAL_YN"    property="approvalYn" />
+    </resultMap>
+    <resultMap id="UserSummary" type="com.hdel.miri.api.domain.user.User$UserSummary">
+        <result column="USER_ID"            property="userId" />
+        <result column="USER_NAME"            property="userName" />
+        <result column="AVATAR"         property="avatar" />
+        <result column="PHONENUMBER"             property="phonenumber" />
+        <result column="DEL_YN"             property="delYn" />
+        <result column="ROLE_TYPE"       property="roleType" />
+        <result column="ACCOUNT_STATUS"             property="accountStatus" />
+        <result column="ADDRESS"             property="address" />   
+        <result column="CREATION_DT"      property="creationDt" />
+        <result column="LASTUPDATE_DT"      property="lastupdateDt" />
+        <result column="COMPS_CNTR_NO"      property="compsCntrNo" />
+        <result column="BUILD_NM"      property="buildNm" />
+        <collection property="contract" resultMap="ContractSummary">
+            <id column="INTG_PRJ_TRLINE_CD_CODE"    property="intgPrjTrlineCdCode" />
+            <result column="APPROVAL_YN"    property="approvalYn" />
+        </collection>
+    </resultMap>
+    <resultMap id="FuncRender" type="com.hdel.miri.api.domain.user.User$FunctionRenderingByUser">
+        <result column="METHOD_NAME"    property="methodName" />
+    </resultMap>
+    <resultMap id="ViewRender" type="com.hdel.miri.api.domain.user.User$ViewRenderingByUser">
+        <id column="VUE_FILE_URL" property="vueFileUrl"></id>
+        <collection property="methods" resultMap="FuncRender">
+            <result column="METHOD_NAME"    property="methodName" />
+        </collection>
+    </resultMap>
+    <resultMap id="userAcceptKeyMap" type="com.hdel.miri.api.domain.user.User$mailReSendByUser">
+        <result column="USER_ID"         property="userId" />
+        <result column="USER_NAME"       property="userName" />
+        <result column="PHONENUMBER"     property="phoneNumber" />
+        <result column="ROLE_TYPE"       property="roleType" />
+        <result column="SEND_ACCEPT_KEY" property="sendAcceptKey" />
+    </resultMap>
+    <resultMap id="userAcceptMailInfo" type="com.hdel.miri.api.domain.user.User$userAcceptMailInfo">
+        <result column="CREATION_FG"       property="creationFg" />
+        <result column="USER_NAME"         property="userName" />
+        <result column="COMPS_CNTR_NO"     property="compsCntrNo" />
+        <result column="SALES_USER_ID"     property="salesUserId" />
+        <result column="SALES_USER_NAME"   property="salesUserName" />
+    </resultMap>
+    <resultMap id="nonContractData" type="com.hdel.miri.api.domain.user.User$nonContractData">
+        <result column="USER_ID"                    property="userId" />
+        <result column="USER_NAME"                  property="userName" />
+        <result column="PHONENUMBER"                property="phonenumber" />
+        <result column="ROLE_TYPE"                  property="roleType" />
+        <result column="STATUS"                     property="status" />
+        <result column="DEL_YN"                     property="delYn" />
+        <result column="INTG_PRJ_TRLINE_CD_CODE"    property="intgPrjTrlineCdCode" />
+    </resultMap>
+    <!-- RESULT MAP -->
+    <!-- SELECT -->
+    <select id="selectUserByPhoneAndUsername" parameterType="com.hdel.miri.api.domain.user.User$FindAccount" resultType="string">
+        <!-- SELECT USER_ID FROM TB_USER
+        WHERE   USER_NAME = #{userName}
+        AND     PHONENUMBER = #{phonenumber} -->
+        SELECT LISTAGG(USER_ID,',') AS USER_ID FROM TB_USER
+        WHERE   USER_NAME = #{userName}
+        AND     PHONENUMBER = #{phonenumber}
+    </select>
+
+    <select id="selectUserByPhoneAndUserId" parameterType="com.hdel.miri.api.domain.user.User$FindPassword" resultType="string">
+        SELECT USER_ID FROM TB_USER
+        WHERE   USER_ID = #{userId}
+        AND     PHONENUMBER = #{phonenumber}
+    </select>
+    <select id="selectList"
+            parameterType="com.hdel.miri.api.domain.user.User$UserSearch"
+            resultMap="UserSummary"
+            >
+        SELECT USER_ID
+             , USER_NAME
+             , AVATAR
+             , PHONENUMBER
+             , ROLE_TYPE
+             , ADDRESS
+             , ACCOUNT_STATUS
+             , DEL_YN
+             , CREATION_DT
+             , LASTUPDATE_DT
+             , COMPS_CNTR_NO
+             , BUILD_NM
+          FROM (
+        SELECT TU.USER_ID                                                            AS USER_ID
+             , TU.USER_NAME                                                          AS USER_NAME
+             , TU.AVATAR                                                             AS AVATAR
+             , TU.PHONENUMBER                                                        AS PHONENUMBER
+             , TU.ROLE_TYPE                                                          AS ROLE_TYPE
+             , TU.ADDRESS || TU.DETAILADDRESS                                        AS ADDRESS
+             , TU.ACCOUNT_STATUS                                                     AS ACCOUNT_STATUS
+             , TU.DEL_YN                                                             AS DEL_YN
+             , TO_CHAR(TU.CREATION_DT ,'YYYY-MM-DD HH24:MI:SS')                      AS CREATION_DT
+             , TO_CHAR(TU.LASTUPDATE_DT,'YYYY-MM-DD HH24:MI:SS')                     AS LASTUPDATE_DT
+             , CEI.COMPS_CNTR_NO
+             , CEI.BULD_NM                                                           AS BUILD_NM
+             , ROW_NUMBER() OVER(PARTITION BY TU.USER_ID ORDER BY CEI.COMPS_CNTR_NO) AS ROW_NUM
+          FROM TB_USER TU
+          LEFT OUTER JOIN TB_PORTFOLIO TP
+            ON TP.PORTFOLIO_NAME = 'lobby'
+           AND TP.USER_ID        = TU.USER_ID
+          LEFT OUTER JOIN TB_PORTFOLIO_CONTRACT_MAPPING TPCM
+            ON TPCM.USER_PORTFOLIO_MAPPING_ID = TP.USER_PORTFOLIO_MAPPING_ID
+          LEFT OUTER JOIN CT_EL_INFO CEI
+            ON CEI.INTG_PRJ_NO||CEI.TRLINE_CD = TPCM.INTG_PRJ_TRLINE_CD_CODE
+         WHERE 1=1
+            <if test="targetRoleType != 'ALL' and targetRoleType != null and targetRoleType != '' ">AND TU.ROLE_TYPE = #{targetRoleType}</if>
+            <if test="accountStatus neq 'ALL' "> AND TU.ACCOUNT_STATUS = #{accountStatus} </if>        
+            <if test="delYn != 'ALL' and delYn != null and delYn != '' "> AND TU.DEL_YN = #{delYn} </if>        
+            <if test="searchKeyword != null and  searchKeyword != '' ">AND (TU.USER_NAME LIKE '%'||#{searchKeyword}||'%' OR TU.USER_ID LIKE '%'||#{searchKeyword}||'%') </if>
+            <choose>
+                <when test=" roleType == 'USER' "> AND U.USER_ID = #{currentUser} </when>
+                <when test=" roleType == 'ACCOUNT' or roleType == 'ENGINEER' ">
+                AND (TU.USER_ID IN (
+                    WITH TEMP AS (
+                            SELECT DISTINCT B.INTG_PRJ_TRLINE_CD_CODE  FROM TB_PORTFOLIO A, TB_PORTFOLIO_CONTRACT_MAPPING B
+                            WHERE A.USER_PORTFOLIO_MAPPING_ID = B.USER_PORTFOLIO_MAPPING_ID  
+                            AND A.USER_ID = #{currentUser}
+                            AND A.PORTFOLIO_NAME = 'lobby'
+                        )
+                        SELECT DISTINCT USER_ID FROM TB_PORTFOLIO A, TB_PORTFOLIO_CONTRACT_MAPPING B, TEMP C
+                        WHERE A.USER_PORTFOLIO_MAPPING_ID = B.USER_PORTFOLIO_MAPPING_ID
+                        AND B.INTG_PRJ_TRLINE_CD_CODE = C.INTG_PRJ_TRLINE_CD_CODE
+                        AND A.PORTFOLIO_NAME = 'lobby'
+                ) OR  TU.USER_ID = #{currentUser})
+                AND TU.ROLE_TYPE != 'SYSTEM'
+            </when>
+            <when test=" roleType == 'MANAGER' ">
+                AND TU.USER_ID IN (
+                    WITH TEMP AS (
+                            SELECT DISTINCT B.INTG_PRJ_TRLINE_CD_CODE  FROM TB_PORTFOLIO A, TB_PORTFOLIO_CONTRACT_MAPPING B
+                            WHERE A.USER_PORTFOLIO_MAPPING_ID = B.USER_PORTFOLIO_MAPPING_ID  
+                            AND A.USER_ID = #{currentUser}
+                            AND A.PORTFOLIO_NAME = 'lobby'
+                        )
+                        SELECT DISTINCT USER_ID FROM TB_PORTFOLIO A, TB_PORTFOLIO_CONTRACT_MAPPING B, TEMP C
+                        WHERE A.USER_PORTFOLIO_MAPPING_ID = B.USER_PORTFOLIO_MAPPING_ID
+                        AND B.INTG_PRJ_TRLINE_CD_CODE = C.INTG_PRJ_TRLINE_CD_CODE
+                        AND A.PORTFOLIO_NAME = 'lobby'
+                )
+                AND ( TU.ROLE_TYPE = 'USER' OR TU.USER_ID = #{currentUser} )
+            </when>
+        </choose>
+        ) WHERE ROW_NUM = 1
+        <if test="searchKeyword2 != null and searchKeyword2 != ''">AND (COMPS_CNTR_NO LIKE '%'||#{searchKeyword2}||'%' OR BUILD_NM LIKE '%'||#{searchKeyword2}||'%')</if>
+        <choose>
+            <when test=' contractYn.equals("Y") '>
+                AND COMPS_CNTR_NO IS NOT NULL
+            </when>
+            <when test=' contractYn.equals("N")'>
+                AND COMPS_CNTR_NO IS NULL
+            </when>
+        </choose>
+        <if test="selectedUserId != null and selectedUserId != ''">AND USER_ID != #{selectedUserId}</if>
+    </select>
+
+    <select id="selectCountByUserId" parameterType="com.hdel.miri.api.domain.user.User$UserAlready" resultType="integer">
+        SELECT COUNT(*) FROM TB_USER WHERE USER_ID = #{userId}
+    </select>
+
+    <select id="selectCountByUserIdExt" parameterType="com.hdel.miri.api.domain.user.User$UserAlreadyExt" resultType="integer">
+        SELECT COUNT(*) FROM TB_USER WHERE USER_ID = #{userId}
+    </select>
+
+    <select id="selectCurrentUserPage"
+            parameterType="com.hdel.miri.api.domain.user.User$UserRenderingRequest"
+            resultMap="ViewRender"
+    >
+        SELECT DISTINCT
+            tv.VUE_FILE_URL VUE_FILE_URL
+            ,tf.METHOD_NAME METHOD_NAME
+        FROM TB_VIEW tv, TB_VIEW_FUNC_MAPPING vf, TB_FUNC tf
+        WHERE tv.VIEW_ID  IN (
+            SELECT DISTINCT VIEW_ID  FROM TB_MENU_VIEW_MAPPING tmvm
+            WHERE MENU_ID  IN (
+                SELECT MENU_ID  FROM TB_MENU
+                                        START WITH menu_id IN (
+            SELECT DISTINCT MENU_ID  FROM TB_ROLE_MENU_MAPPING
+            WHERE ROLE_ID  IN (SELECT ROLE_ID  FROM TB_ROLE tm
+            START WITH ROLE_ID in  ( SELECT ROLE_ID FROM TB_ROLE_USER_MAPPING WHERE USER_ID = #{currentUser})
+            CONNECT BY PRIOR ROLE_ID  = PARENT_ROLE_ID)
+            )
+        CONNECT BY PRIOR MENU_ID = PARENT_MENU_ID
+            )
+            )
+        AND tv.VIEW_ID = vf.VIEW_ID(+)
+        AND vf.FUNCTION_ID = tf.FUNCTION_ID(+)
+    </select>
+    <select id="selectAcceptKeyForReSend"
+            parameterType="com.hdel.miri.api.domain.user.User$UserRecovery"
+            resultMap="userAcceptKeyMap">
+        SELECT USER_ID
+             , USER_NAME
+             , PHONENUMBER
+             , ROLE_TYPE
+             , SEND_ACCEPT_KEY
+          FROM TB_USER
+         WHERE USER_ID IN (
+                    <foreach collection="userIds" item="item" separator=",">
+                            #{item}
+                    </foreach>
+                          )
+    </select>
+    <select id="selectInfoForAcceptUser"
+            parameterType="com.hdel.miri.api.domain.user.User$UserAccountStatus"
+            resultMap="userAcceptMailInfo"
+    >
+        SELECT CASE WHEN COUNT(B.USER_ID) <![CDATA[ > ]]> 0 THEN 'Y'
+                    WHEN A.CREATION_USER = 'miriauto'       THEN 'Y'
+                    ELSE 'N'
+                END AS CREATION_FG
+             , A.USER_NAME
+             , D.COMPS_CNTR_NO
+             , C.SALES_USER_ID
+             , C.SALES_USER_NAME
+          FROM TB_USER A
+          LEFT OUTER JOIN TB_USER B
+            ON B.USER_ID = A.CREATION_USER
+          LEFT OUTER JOIN (
+                            SELECT BASE_USER_ID
+                                 , SALES_USER_ID
+                                 , SALES_USER_NAME
+                              FROM (
+                                     SELECT A.USER_ID       AS BASE_USER_ID
+                                          , D.USER_ID       AS SALES_USER_ID
+                                          , D.USER_NAME     AS SALES_USER_NAME
+                                          , ROW_NUMBER() OVER(PARTITION BY A.USER_ID ORDER BY D.USER_ID) AS ROW_NUM
+                                       FROM TB_PORTFOLIO A
+                                      INNER JOIN TB_PORTFOLIO_CONTRACT_MAPPING B
+                                         ON B.USER_PORTFOLIO_MAPPING_ID = A.USER_PORTFOLIO_MAPPING_ID
+                                      INNER JOIN CT_EL_INFO C
+                                         ON C.INTG_PRJ_NO||C.TRLINE_CD = B.INTG_PRJ_TRLINE_CD_CODE
+                                      INNER JOIN TB_USER D
+                                         ON D.SALES_EMPL = C.SALES_EMPL
+                                      WHERE A.PORTFOLIO_NAME = 'lobby'
+                                        AND A.USER_ID        = #{userId}
+                                   )
+                             WHERE ROW_NUM = 1
+                          ) C
+            ON C.BASE_USER_ID = A.USER_ID
+          LEFT OUTER JOIN (
+                            SELECT USER_ID
+                                 , COMPS_CNTR_NO
+                              FROM (
+                                     SELECT A.USER_ID
+                                          , C.COMPS_CNTR_NO
+                                          , ROW_NUMBER() OVER(PARTITION BY A.USER_ID ORDER BY C.COMPS_CNTR_NO) AS ROW_NUM
+                                       FROM TB_PORTFOLIO A
+                                      INNER JOIN TB_PORTFOLIO_CONTRACT_MAPPING B
+                                         ON B.USER_PORTFOLIO_MAPPING_ID = A.USER_PORTFOLIO_MAPPING_ID
+                                      INNER JOIN CT_EL_INFO C
+                                         ON C.INTG_PRJ_NO||C.TRLINE_CD = B.INTG_PRJ_TRLINE_CD_CODE
+                                      WHERE A.PORTFOLIO_NAME = 'lobby'
+                                        AND A.USER_ID        = #{userId}
+                                   )
+                             WHERE ROW_NUM = 1
+                          ) D
+            ON D.USER_ID = A.USER_ID
+         WHERE A.USER_ID = #{userId}
+         GROUP BY A.CREATION_USER, A.USER_NAME, D.COMPS_CNTR_NO, C.SALES_USER_ID, C.SALES_USER_NAME
+    </select>
+    <select id="selectSystemUser" resultType="String">
+        SELECT USER_ID
+          FROM TB_USER
+         WHERE ROLE_TYPE = 'SYSTEM'
+           AND DEL_YN = 'n'
+    </select>
+    <select id="selectNonContractList" resultMap="nonContractData">
+        SELECT USER_ID
+             , USER_NAME
+             , PHONENUMBER
+             , ROLE_TYPE
+             , STATUS
+             , DEL_YN
+             , INTG_PRJ_TRLINE_CD_CODE
+          FROM (
+                SELECT A.USER_ID
+                     , A.USER_NAME
+                     , CASE WHEN TRIM(A.PHONENUMBER) IS NULL THEN ''
+                            ELSE SUBSTR(A.PHONENUMBER, 0, 3)||'-'||SUBSTR(A.PHONENUMBER, 4, 4)||'-'||SUBSTR(A.PHONENUMBER, 8, 4)
+                        END AS PHONENUMBER
+                     , C.ROLE_NAME AS ROLE_TYPE
+                     , D.VALUE_1 AS STATUS
+                     , E.VALUE_1 AS DEL_YN
+                     , NVL(B.INTG_PRJ_TRLINE_CD_CODE, '-') AS INTG_PRJ_TRLINE_CD_CODE
+                     , ROW_NUMBER() OVER( PARTITION BY A.USER_ID ORDER BY B.CREATION_DT DESC) AS ROW_NUM
+                  FROM (
+                        SELECT A.USER_ID
+                             , A.USER_NAME
+                             , REPLACE(A.PHONENUMBER, '-', '') AS PHONENUMBER
+                             , A.ROLE_TYPE
+                             , A.ACCOUNT_STATUS
+                             , A.DEL_YN
+                             , COUNT(C.INTG_PRJ_TRLINE_CD_CODE) AS CONTRACT_CNT
+                          FROM TB_USER A
+                          LEFT OUTER JOIN TB_PORTFOLIO B
+                            ON B.PORTFOLIO_NAME = 'lobby'
+                           AND B.USER_ID = A.USER_ID
+                          LEFT OUTER JOIN TB_PORTFOLIO_CONTRACT_MAPPING C
+                            ON C.USER_PORTFOLIO_MAPPING_ID = B.USER_PORTFOLIO_MAPPING_ID
+                         WHERE A.ROLE_TYPE IN ('MAJOR', 'MANAGER', 'USER')
+                         GROUP BY A.USER_ID, A.USER_NAME, A.PHONENUMBER, A.ROLE_TYPE, A.ACCOUNT_STATUS, A.DEL_YN
+                       ) A
+                  LEFT OUTER JOIN TB_ACCOUNT_CH_LOG B
+                    ON B.PROC_TYPE = 1
+                   AND B.PORTFOLIO_NAME = 'lobby'
+                   AND B.USER_ID = A.USER_ID
+                  LEFT OUTER JOIN TB_ROLE C
+                    ON C.PAYLOAD = A.ROLE_TYPE
+                  LEFT OUTER JOIN TB_MASTERDATA_DETAIL D
+                    ON D.MASTERDATA_ID = '16'
+                   AND D.CODE = A.ACCOUNT_STATUS
+                  LEFT OUTER JOIN TB_MASTERDATA_DETAIL E
+                    ON E.MASTERDATA_ID = '8'
+                   AND E.CODE = A.DEL_YN
+                 WHERE A.CONTRACT_CNT <![CDATA[ < ]]>= 0
+               )
+         WHERE ROW_NUM = 1
+         ORDER BY USER_ID
+    </select>
+    <!-- SELECT -->
+
+    <!-- INSERT -->
+    <sql id="insertMeta">
+        INSERT INTO TB_USER
+        (USER_ID
+        , USER_NAME
+        , PASSWORD
+        , AVATAR
+        , POSTNUMBER
+        , ADDRESS
+        , DETAILADDRESS
+        , PHONENUMBER
+        , NOTE
+        , DEL_YN
+        , CREATION_USER
+        , LASTUPDATE_USER
+        , FIREBASE_USER_ID
+        , ROLE_TYPE
+        ) VALUES(#{userId}, #{userName}, #{password} ,null, #{postnumber}, #{address}
+        , #{detailaddress}, #{phonenumber}, #{note}, 'n', #{currentUser}, #{currentUser},  #{firebaseUserId}
+    </sql>
+    <sql id="insertDefault">
+        INSERT INTO TB_USER
+        (USER_ID
+        , USER_NAME
+        , PASSWORD
+        , PHONENUMBER
+        , DEL_YN
+        , CREATION_USER
+        , LASTUPDATE_USER
+        , ROLE_TYPE
+        )
+        VALUES (#{userId}, #{userName}, #{password}, #{phonenumber}, 'n', #{currentUser}, #{currentUser}
+    </sql>
+    <insert id="insertTypeUser" parameterType="com.hdel.miri.api.domain.user.User$DefaultOtherUserCreate">
+        <include refid="insertDefault" />, 'USER')
+    </insert>
+    <insert id="insertTypeManager" parameterType="com.hdel.miri.api.domain.user.User$DefaultUserCreate">
+        <include refid="insertMeta" />, 'MANAGER')
+    </insert>
+    <insert id="insertTypeMajor" parameterType="com.hdel.miri.api.domain.user.User$DefaultOtherUserCreate">
+        <include refid="insertDefault" />, #{roleType})
+    </insert>
+    <insert id="insertTypeEngineer" parameterType="com.hdel.miri.api.domain.user.User$DefaultOtherUserCreate">
+        <include refid="insertDefault" />, 'ENGINEER')
+    </insert>
+    <insert id="insertTypeAccount" parameterType="com.hdel.miri.api.domain.user.User$DefaultOtherUserCreate">
+        INSERT INTO TB_USER
+        (USER_ID
+        , USER_NAME
+        , PASSWORD
+        , PHONENUMBER
+        , DEL_YN
+        , CREATION_USER
+        , LASTUPDATE_USER
+        , ROLE_TYPE
+        , SALES_EMPL
+        )
+        VALUES (#{userId}, #{userName}, #{password}, #{phonenumber}, 'n', #{currentUser}, #{currentUser}, 'ACCOUNT', #{empId})
+    </insert>
+    <insert id="insertTypeSystemAdmin" parameterType="com.hdel.miri.api.domain.user.User$DefaultUserCreate">
+        <include refid="insertDefault" />, 'SYSTEM')
+    </insert>
+    <insert id="insertTypeAuto" parameterType="com.hdel.miri.api.domain.user.User$DefaultOtherUserCreate">
+        INSERT
+          INTO TB_USER
+               (
+                 USER_ID
+               , USER_NAME
+               , PASSWORD
+               , PHONENUMBER
+               , DEL_YN
+               , CREATION_USER
+               , LASTUPDATE_USER
+               , ROLE_TYPE
+               )
+        VALUES (
+                 #{userId}
+               , #{userName}
+               , #{password}
+               , #{phonenumber}
+               , 'n'
+               , 'miriauto'
+               , 'miriauto'
+               , #{roleType}
+               )
+    </insert>
+    <!-- INSERT -->
+
+    <!-- UPDATE -->
+    <update id="update" parameterType="com.hdel.miri.api.domain.user.User$UserUpdate">
+        UPDATE TB_USER
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userName != null and  userName != '' ">USER_NAME = #{userName},</if>
+            <if test="postnumber != null and  postnumber != '' ">POSTNUMBER = #{postnumber},</if>
+            <if test="phonenumber != null and  phonenumber != '' ">PHONENUMBER = #{phonenumber},</if>
+            <if test="address != null and  address != '' ">ADDRESS = #{address},</if>
+            <if test="detailaddress != null and  detailaddress != '' ">DETAILADDRESS = #{detailaddress},</if>
+            <if test="currentUser != null and  currentUser != '' ">LASTUPDATE_USER = #{currentUser}</if>
+        </trim>
+        WHERE USER_ID = #{currentUser}
+    </update>
+
+    <update id="updateAdminPage" parameterType="com.hdel.miri.api.domain.user.User$UserUpdateAdminPage">
+        UPDATE TB_USER
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userName != null and  userName != '' ">USER_NAME = #{userName},</if>
+            <if test="phonenumber != null and  phonenumber != '' ">PHONENUMBER = #{phonenumber},</if>
+            <if test="currentUser != null and  currentUser != '' ">LASTUPDATE_USER = #{currentUser}</if>
+        </trim>
+        WHERE 1=1
+          AND USER_ID = #{userId}
+    </update>
+
+    <update id="updatePassword" parameterType="com.hdel.miri.api.domain.user.User$ChangePassword">
+        UPDATE TB_USER
+        SET PASSWORD = #{newPassword}
+          ,LASTUPDATE_USER = #{currentUser}
+        WHERE 1=1
+          AND USER_ID = #{userId}
+    </update>
+
+    <update id="updatePasswordForAnonymous" parameterType="com.hdel.miri.api.domain.user.User$FindPassword">
+        UPDATE TB_USER
+        SET PASSWORD = #{newPassword}
+          ,LASTUPDATE_USER = #{userId}
+        WHERE 1=1
+          AND USER_ID = #{userId}
+          AND PHONENUMBER = #{phonenumber}
+    </update>
+
+    <update id="updateAccountStatus" parameterType="com.hdel.miri.api.domain.user.User$UserAccountStatus">
+        UPDATE TB_USER
+        SET ACCOUNT_STATUS = #{accountStatus}
+        , LASTUPDATE_USER = #{currentUser}
+        WHERE 1=1
+          AND USER_ID = #{userId}
+    </update>
+
+    <update id="updateInnerAccountStatus" parameterType="com.hdel.miri.api.domain.user.User$UserAccountStatus">
+        UPDATE TB_USER A
+           SET ACCOUNT_STATUS = (SELECT CASE WHEN A.CREATION_USER = 'miriauto' THEN '0040'
+                                             ELSE (SELECT CASE WHEN COUNT(B.USER_ID)  <![CDATA[ > ]]> 0  THEN '0040'
+                                                               ELSE #{accountStatus}
+                                                           END
+                                                     FROM TB_USER B
+                                                    WHERE B.USER_ID = A.CREATION_USER  ) 
+                                         END
+                                   FROM DUAL )
+            , LASTUPDATE_USER = #{userId}                        
+        WHERE USER_ID = #{userId} 
+    </update>
+
+    <update id="updateSendAcceptKey" parameterType="com.hdel.miri.api.domain.user.User$UpdateAcceptKey">
+        UPDATE TB_USER
+        SET SEND_ACCEPT_KEY = #{sendAcceptKey}
+          , LASTUPDATE_USER = 'SYSTEM'
+        WHERE 1=1
+          AND USER_ID = #{userId}
+    </update>
+
+    <update id="updateRecvAcceptKey" parameterType="com.hdel.miri.api.domain.user.User$UpdateAcceptKey">
+        UPDATE TB_USER
+        SET RECV_ACCEPT_KEY = #{recvAcceptKey}
+          , LASTUPDATE_USER = 'SYSTEM'
+        WHERE 1=1
+          AND SEND_ACCEPT_KEY = #{recvAcceptKey}
+          AND USER_ID = #{userId}
+    </update>
+
+    <update id="remove" parameterType="com.hdel.miri.api.domain.user.User$UserRemove">
+        UPDATE TB_USER
+        SET DEL_YN = 'y'
+        WHERE   1=1
+        AND     USER_ID IN
+        <foreach collection="userIds" item="item" open="(" close=")" separator=",">
+            <if test="item != null and item neq '' "> #{item}</if>
+        </foreach>
+    </update>
+    <update id="recovery" parameterType="com.hdel.miri.api.domain.user.User$UserRecovery">
+        UPDATE TB_USER
+        SET DEL_YN = 'n'
+        WHERE   1=1
+        AND     USER_ID IN
+        <foreach collection="userIds" item="item" open="(" close=")" separator=",">
+            <if test="item != null and item neq '' "> #{item}</if>
+        </foreach>
+    </update>
+    <!-- UPDATE -->
+
+    <insert id="insertUserRoleMapping" parameterType="com.hdel.miri.api.domain.user.User$DefaultOtherUserCreate">
+        INSERT INTO TB_ROLE_USER_MAPPING(USER_ID, ROLE_ID)
+        WITH TEMP AS (
+            SELECT #{userId} as USER_ID, ROLE_ID FROM TB_ROLE
+            WHERE PAYLOAD = #{roleType}
+        ) SELECT * FROM TEMP
+    </insert>
+
+    <insert id="insertUserRoleMapping2" parameterType="com.hdel.miri.api.domain.user.User$DefaultUserCreate">
+        INSERT INTO TB_ROLE_USER_MAPPING(USER_ID, ROLE_ID)
+        WITH TEMP AS (
+            SELECT #{userId} as USER_ID, ROLE_ID FROM TB_ROLE
+            WHERE PAYLOAD = #{roleType}
+        ) SELECT * FROM TEMP
+    </insert>
+
+    <insert id="insertPortfolioNonContract" parameterType="com.hdel.miri.api.domain.user.User$setNonContractUser">
+        INSERT 
+          INTO TB_PORTFOLIO_CONTRACT_MAPPING
+               (
+                 USER_PORTFOLIO_MAPPING_ID
+               , INTG_PRJ_TRLINE_CD_CODE
+               , APPROVAL_YN
+               , CREATION_DT
+               , CREATION_USER
+               , LASTUPDATE_DT
+               , LASTUPDATE_USER
+               )
+        SELECT A.USER_PORTFOLIO_MAPPING_ID
+             , B.INTG_PRJ_TRLINE_CD_CODE
+             , 'n'
+             , SYSDATE
+             , #{currentUser}
+             , SYSDATE
+             , #{currentUser}
+          FROM TB_PORTFOLIO A
+          LEFT OUTER JOIN (
+                        <foreach collection="lobby" item="item" separator="UNION ALL">
+                            SELECT #{item.intgPrjNo}||#{item.trlineCd} AS INTG_PRJ_TRLINE_CD_CODE
+                              FROM DUAL
+                        </foreach>
+                          ) B
+            ON 1 = 1
+         WHERE A.USER_ID        = #{userId}
+           AND A.PORTFOLIO_NAME = 'lobby'
+           AND NOT EXISTS (
+                             SELECT 1
+                               FROM TB_PORTFOLIO_CONTRACT_MAPPING C
+                              WHERE C.USER_PORTFOLIO_MAPPING_ID = A.USER_PORTFOLIO_MAPPING_ID
+                                AND C.INTG_PRJ_TRLINE_CD_CODE = B.INTG_PRJ_TRLINE_CD_CODE
+                          )
+    </insert>
+</mapper>

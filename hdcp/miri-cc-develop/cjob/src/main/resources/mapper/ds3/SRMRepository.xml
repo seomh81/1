@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.concurrent.domain.srm.SRMRepository">
+    <select id="getCcTargetElList" resultType="com.hdel.miri.concurrent.domain.dgk.vo.ReqVO$ElVO" parameterType="com.hdel.miri.concurrent.domain.dgk.vo.ReqVO$ElevatorTargetSyncVO">
+        SELECT XX.* FROM (
+            SELECT DISTINCT
+                TRIM(BOTH FROM sid) AS elevator_no
+                , CASE WHEN C.CS126_DDT = '' THEN 'n' else 'y' end as del_yn
+                , 'SRM' AS db_type
+                , AEDAT || AEZEIT as change_dt
+                , CS126_UPN AS intgPrjNo
+                , CS126_CST AS trlineCd
+                , ROW_NUMBER() OVER ( PARTITION BY A.SID ORDER BY c.CS126_UGS DESC) ROW_NUM
+            FROM
+                (
+                    SELECT MANDT, PJT, HNO, SID FROM SAPHSP.ZCST111 WHERE MANDT = '100'
+                ) A
+                INNER JOIN SAPHSP.ZCST126 C
+                        ON A.MANDT     = C.MANDT
+                        AND A.PJT = C.CS126_PJT
+                        AND A.HNO = C.CS126_HNO
+                        <!-- AND C.CS126_HYN = 'Y'  -->
+                        AND (C.CS126_HYN = 'Y' OR ( C.CS126_MOYN2 ='Y' AND C.CS126_HYN = 'N' ) )
+                        AND C.CS126_PST = 'A6'
+                        AND C.VKBUR     = 'H100'
+                        AND LENGTH(TRIM(BOTH FROM sid)) = 7
+                        AND sid != '0000000'
+                        <!-- AND TO_CHAR ( SYSDATE, 'YYYYMMDD' ) BETWEEN C.CS126_UGS AND C.CS126_UMR  -->
+                    <if test="lastUpdateDt != null and lastUpdateDt != ''">
+                    AND ((<![CDATA[ C.AEDAT >= #{lastUpdateDt}]]> AND TO_CHAR(SYSDATE,'YYYYMMDD') <![CDATA[>]]> C.CS126_UGS )
+                        OR TO_CHAR(SYSDATE,'YYYYMMDD') = C.CS126_UGS)
+                    </if>
+        ) XX
+        WHERE Row_num = 1
+        FOR READ ONLY WITH UR
+
+    </select>
+
+    <select id="getCcTargetNoElList" resultType="com.hdel.miri.concurrent.domain.dgk.vo.ReqVO$NoElVO" parameterType="com.hdel.miri.concurrent.domain.dgk.vo.ReqVO$ElevatorTargetSyncVO">
+        SELECT  DISTINCT
+                'SRM' AS db_type
+                ,TRIM(BOTH FROM sid) AS elevator_no
+                ,C.CS126_PJT AS pjt
+                ,C.CS126_HNO AS hno
+                ,C.CS126_UPN AS upn
+                ,C.CS126_CST AS cst
+                ,C.CS126_GNO AS gno
+                ,C.CS126_UGS AS cont_start
+                ,C.CS126_UMR AS cont_end
+                ,C.AEDAT || C.AEZEIT AS change_dt
+                ,DECODE(TRIM(CS126_MOYN1),'','N',CS126_MOYN1) AS miricall_yn
+                ,DECODE(TRIM(CS126_MOYN2),'','N',CS126_MOYN2) AS miriview_yn
+                ,DECODE(TRIM(CS126_MOYN3),'','N',CS126_MOYN3) AS mirirobot_yn
+                ,DECODE(TRIM(CS126_MYN),'','N',CS126_MYN) AS miri_yn
+                ,CS121_SPT AS site_nm
+                ,CS121_NAM AS cust_nm
+                ,DECODE(C.CS126_SAID,' ',C.CS126_SID, C.CS126_SAID) AS sales_empl
+                ,DECODE(C.CS126_SAID,' ',C.CS126_ZMAN, G.USERNAME) AS sales_empl_nm
+                ,ABR_NM AS sales_gcdnm
+                ,C.CS126_HYN AS hrtsYn
+        FROM
+            (
+                SELECT MANDT, PJT, HNO, SID FROM SAPHSP.ZCST111 WHERE MANDT = '100'
+            ) A
+            INNER JOIN SAPHSP.ZCST126 C
+                  ON A.MANDT     = C.MANDT
+                    AND A.PJT = C.CS126_PJT
+                    AND A.HNO = C.CS126_HNO
+            LEFT  OUTER JOIN SAPHSP.ZWBT010 R2
+                  ON  C.MANDT        = R2.MANDT
+                    AND C.CS126_BSU    = R2.LGORT
+            LEFT OUTER JOIN SAPHSP.ZUSERF G
+                   ON C.MANDT      = G.MANDT
+                   AND C.CS126_SAID = G.USERNUMB    
+            INNER JOIN SAPHSP.ZCST121 B
+                  ON 1 = 1
+                    AND C.MANDT = B.MANDT
+                    AND C.CS126_UPN = B.CS121_UPN
+                    AND C.CS126_CST = B.CS121_CST
+                    AND C.CS126_HYN = 'Y'
+                    AND C.CS126_PST = 'A6'
+                    AND C.VKBUR     = 'H100'
+                    AND (LENGTH(TRIM(BOTH FROM sid)) != 7 OR TRIM(BOTH FROM sid) is NULL OR sid = '0000000' )
+                    AND TO_CHAR ( SYSDATE, 'YYYYMMDD' ) BETWEEN C.CS126_UGS AND C.CS126_UMR
+                    <!-- AND ( (C.AEDAT >= '20230717' AND C.AEDAT<=TO_CHAR(SYSDATE,'YYYYMMDD') )  OR TO_CHAR(SYSDATE,'YYYYMMDD') = C.CS126_UGS  )  -->
+        FOR READ ONLY WITH UR
+    </select>
+
+    <!-- RESULT MAP -->
+    <resultMap id="InternalKeysFromSRM" type="com.hdel.miri.concurrent.domain.scrm.SCRM$VO">
+        <result column="prjNo" property="prjNo"></result>
+        <result column="hoNo" property="hoNo"></result>
+        <result column="intgPrjNo" property="intgPrjNo"></result>
+        <result column="trlineCd" property="trlineCd"></result>
+        <result column="salesEmpl" property="salesEmpl"></result>
+        <result column="salesEmplNm" property="salesEmplNm"></result>
+        <result column="mgtComTel" property="mgtComTel"></result>
+        <result column="mgtComHp" property="mgtComHp"></result>
+        <result column="mgtComCd" property="mgtComCd"></result>
+        <result column="mgtComNm" property="mgtComNm"></result>
+        <result column="contractStartDt" property="contractStartDt"></result>
+        <result column="contractEndDt" property="contractEndDt"></result>
+        <result column="compsCntrNo" property="compsCntrNo"></result>
+        <result column="elNo" property="elevatorNo"></result>
+        <result column="address1" property="address1"></result>
+        <result column="address2" property="address2"></result>
+        <result column="applcBeDt" property="applcBeDt"></result>
+        <result column="applcEnDt" property="applcEnDt"></result>
+        <result column="resultNm" property="resultNm"></result>
+        <result column="areaNm" property="areaNm"></result>
+        <result column="sigunguNm" property="sigunguNm"></result>
+        <result column="buldMgtNo1" property="buldMgtNo1"></result>
+        <result column="buldMgtNo2" property="buldMgtNo2"></result>
+        <result column="buldNm" property="buldNm"></result>
+        <result column="elvtrDivNm" property="elvtrDivNm"></result>
+        <result column="elvtrForm" property="elvtrForm"></result>
+        <result column="elvtrDetailForm" property="elvtrDetailForm"></result>
+        <result column="elvtrKindNm" property="elvtrKindNm"></result>
+        <result column="elvtrSttsNm" property="elvtrSttsNm"></result>
+        <result column="frstInstallationDe" property="frstInstallationDe"></result>
+        <result column="installationDe" property="installationDe"></result>
+        <result column="installationPlace" property="installationPlace"></result>
+        <result column="liveLoad" property="liveLoad"></result>
+        <result column="ratedCap" property="ratedCap"></result>
+        <result column="shuttleSection" property="shuttleSection"></result>
+        <result column="shuttleFloorCnt" property="shuttleFloorCnt"></result>
+        <result column="groundFloorCnt" property="groundFloorCnt"></result>
+        <result column="undgrndFloorCnt" property="undgrndFloorCnt"></result>
+        <result column="wgslon" property="wgsLon"></result>
+        <result column="wgslat" property="wgsLat"></result>
+        <result column="miricallYn" property="miricallYn"></result>
+        <result column="miriviewYn" property="miriviewYn"></result>
+        <result column="mirirobotYn" property="mirirobotYn"></result>
+        <result column="miriYn" property="miriYn"></result>
+        <result column="creationUser" property="creationUser"></result>
+        <result column="changeDt" property="changeDt"></result>
+        <result column="siteNm" property="siteNm"></result>
+        <result column="custNm" property="custNm"></result>
+        <result column="model" property="model"></result>
+        <result column="hrtsYn" property="hrtsYn"></result>
+        <!--2023-10-04 gmw-->
+        <result column="chkitem" property="chkitem"></result>
+    </resultMap>
+
+    <!--20230617 gmw-->
+    <select id="getInternalKeysFromSRM" parameterType="java.util.List" resultMap="InternalKeysFromSRM">
+         SELECT DISTINCT
+                CS126_PJT               as prjNo
+                ,CS126_HNO              as hoNo
+                ,CS126_UPN              as intgPrjNo
+                ,CS126_CST              as trlineCd
+                ,DECODE(CS126_SAID, ' ', CS126_SID, CS126_SAID )  as salesEmpl
+                ,DECODE(CS126_SAID, ' ', CS126_ZMAN, USERNAME )  as salesEmplNm
+                ,CS406_TEL              as mgtComTel
+                ,CS406_HP               as mgtComHp
+                ,CS126_BSU              as mgtComCd
+                ,ABR_NM                 as mgtComNm
+                ,CS126_RGS              as contractStartDt
+                ,CS126_RMR              as contractEndDt
+
+                ,CS126_GNO              as compsCntrNo
+                ,el_no                  as elNo 
+                ,address1
+                ,address2
+                ,applc_be_dt            as applcBeDt
+                ,applc_en_dt            as applcEnDt
+                ,result_nm              as resultNm
+                ,area_nm                as areaNm
+                ,sigungu_nm             as sigunguNm
+                ,buld_mgt_no1           as buldMgtNo1
+                ,buld_mgt_no2           as buldMgtNo2
+                ,buld_nm                as buldNm
+                ,elvtr_div_nm           as elvtrDivNm
+                ,elvtr_form             as elvtrForm
+                ,elvtr_detail_form      as elvtrDetailForm
+                ,elvtr_kind_nm          as elvtrKindNm
+                ,elvtr_stts_nm          as elvtrSttsNm
+                ,frstInstallation_de    as frstInstallationDe
+                ,installation_de        as installationDe
+                ,installation_place     as installationPlace
+                ,live_load              as liveLoad
+                ,rated_cap              as ratedCap
+                ,shuttle_section        as shuttleSection
+                ,shuttle_floor_cnt      as shuttleFloorCnt
+                ,ground_floor_cnt       as groundFloorCnt
+                ,undgrnd_floor_cnt      as undgrndFloorCnt
+
+                ,'' as wgslon
+                ,'' as wgslat
+                ,MIRICALL_YN            as miricallYn
+                ,MIRIVIEW_YN            as miriviewYn
+                ,MIRIROBOT_YN           as mirirobotYn
+                ,MIRI_YN                as miriYn
+                ,'SRM'                  as creationUser
+                ,change_dt as changeDt
+                ,CS121_SPT as siteNm
+                ,CS121_NAM as custNm
+                ,CS126_TYP as model
+                ,CS126_HYN as hrtsYn
+                ,'' as chkitem
+        FROM
+        (
+        <foreach collection="list" item="item" separator="UNION">
+            SELECT
+                CAST(#{item.elevatorNo}             as VARCHAR) as el_no
+                ,CAST(#{item.address1}              as VARCHAR) as address1
+                ,CAST(#{item.address2}              as VARCHAR) as address2
+                ,CAST(#{item.applcBeDt}             as VARCHAR) as applc_be_dt
+                ,CAST(#{item.applcEnDt}             as VARCHAR) as applc_en_dt
+                ,CAST(#{item.resultNm}              as VARCHAR) as result_nm
+                ,CAST(#{item.areaNm}                as VARCHAR) as area_nm
+                ,CAST(#{item.sigunguNm}             as VARCHAR) as sigungu_nm
+                ,CAST(#{item.buldMgtNo1}            as VARCHAR) as buld_mgt_no1
+                ,CAST(#{item.buldMgtNo2}            as VARCHAR) as buld_mgt_no2
+                ,CAST(#{item.buldNm}                as VARCHAR) as buld_nm
+                ,CAST(#{item.elvtrDivNm}            as VARCHAR) as elvtr_div_nm
+                ,CAST(#{item.elvtrForm}             as VARCHAR) as elvtr_form
+                ,CAST(#{item.elvtrKindNm}           as VARCHAR) as elvtr_kind_nm
+                ,CAST(#{item.elvtrSttsNm}           as VARCHAR) as elvtr_stts_nm
+                ,CAST(#{item.frstInstallationDe}    as VARCHAR) as frstInstallation_de
+                ,CAST(#{item.installationDe}        as VARCHAR) as installation_de
+                ,CAST(#{item.installationPlace}     as VARCHAR) as installation_place
+                ,CAST(#{item.liveLoad}              as VARCHAR) as live_load
+                ,CAST(#{item.ratedCap}              as VARCHAR) as rated_cap
+                ,CAST(#{item.shuttleSection}        as VARCHAR) as shuttle_section
+                ,CAST(#{item.shuttleFloorCnt}       as VARCHAR) as shuttle_floor_cnt
+                ,CAST(#{item.groundFloorCnt}        as VARCHAR) as ground_floor_cnt
+                ,CAST(#{item.undgrndFloorCnt}       as VARCHAR) as undgrnd_floor_cnt
+            FROM SYSIBM.SYSDUMMY1
+        </foreach>
+        ) C1
+        LEFT JOIN (
+            SELECT XX.* FROM (
+                SELECT
+                    SID,
+                    CS126_PJT ,
+                    CS126_HNO ,
+                    CS126_UPN ,
+                    CS126_CST ,
+                    CS126_SID ,
+                    CS126_ZMAN ,
+                    CS126_SAID ,
+                    G.USERNAME ,
+                    CS126_GNO ,
+                    CS126_TYP ,
+                    ABR_NM ,
+                    CS406_HP ,
+                    CS406_TEL ,
+                    CS126_UGS ,
+                    CS126_UMR ,
+                    CS126_RGS ,
+                    CS126_RMR ,
+                    CS121_SPT,
+                    CS121_NAM,
+                    CS126_BSU,
+                    CS126_HYN,
+                    CONCAT(T1.AEDAT,T1.AEZEIT) AS change_dt,
+                    DECODE(TRIM(CS126_MOYN1),'','N',CS126_MOYN1) AS MIRICALL_YN ,
+                    DECODE(TRIM(CS126_MOYN2),'','N',CS126_MOYN2) AS MIRIVIEW_YN ,
+                    DECODE(TRIM(CS126_MOYN3),'','N',CS126_MOYN3) AS MIRIROBOT_YN,
+                    DECODE(TRIM(CS126_MYN),'','N',CS126_MYN) AS MIRI_YN,
+                    CASE WHEN substr(NVL(CS126_TYP,'--'),1,2) IN ('WB','GT') THEN 'WB/GT'
+                        ELSE 'ST7'
+                    END elvtr_detail_form,
+                    ROW_NUMBER() OVER ( PARTITION BY SID ORDER BY CS126_UGS DESC) ROW_NUM
+                FROM	SAPHSP.ZCST126 T1
+                LEFT JOIN (SELECT TRIM(BOTH FROM SID) as SID, PJT, HNO, UPN, CST, MANDT FROM SAPHSP.ZCST111 WHERE MANDT = 100 ) R1
+                        ON 	T1.MANDT 		= R1.MANDT
+                        AND T1.CS126_PJT 	= R1.PJT
+                        AND T1.CS126_HNO 	= R1.HNO
+                LEFT 	OUTER JOIN SAPHSP.ZWBT010 R2
+                        ON 	T1.MANDT 		= R2.MANDT
+                        AND T1.CS126_BSU 	= R2.LGORT
+                LEFT 	OUTER JOIN SAPHSP.ZCST406 R3
+                        ON 	T1.MANDT 		= R3.MANDT
+                        AND R2.LIFNR 		= R3.LIFNR
+                LEFT OUTER JOIN SAPHSP.ZUSERF G
+                        ON T1.MANDT      = G.MANDT
+                        AND T1.CS126_SAID = G.USERNUMB
+                INNER JOIN SAPHSP.ZCST121 B
+                        ON 1 = 1
+                        AND T1.MANDT = B.MANDT
+                        AND T1.CS126_UPN = B.CS121_UPN
+                        AND T1.CS126_CST = B.CS121_CST
+                WHERE 1 = 1
+                <!-- AND TO_CHAR ( SYSDATE, 'YYYYMMDD' ) BETWEEN CS126_UGS AND CS126_UMR -->
+                AND (T1.CS126_HYN = 'Y' OR ( CS126_MOYN2 ='Y' AND T1.CS126_HYN = 'N' ) )
+                AND T1.CS126_PST = 'A6'
+                AND T1.VKBUR     = 'H100'
+                AND LENGTH(TRIM(BOTH FROM sid)) = 7
+                AND sid != '0000000'
+                AND CS126_DDT = ''
+                <!-- AND ((T1.AEDAT <![CDATA[ >= ]]> '20230501'
+                    AND TO_CHAR(SYSDATE,'YYYYMMDD') <![CDATA[>]]> T1.CS126_UGS )
+                    OR TO_CHAR(SYSDATE,'YYYYMMDD') = T1.CS126_UGS) -->
+                <!-- AND ((T1.AEDAT <![CDATA[ >= ]]> TO_CHAR (SYSDATE-1, 'YYYYMMDD' )
+                    AND TO_CHAR(SYSDATE,'YYYYMMDD') <![CDATA[>]]> T1.CS126_UGS )
+                    OR TO_CHAR(SYSDATE,'YYYYMMDD') = T1.CS126_UGS) -->
+                AND TO_CHAR(SYSDATE,'YYYYMMDD') <![CDATA[>=]]> T1.CS126_UGS
+            ) XX
+            WHERE ROW_NUM = 1
+        ) D1
+        ON C1.el_no = D1.SID
+        ORDER BY C1.el_no ,change_dt
+    FOR READ ONLY WITH UR
+    </select>
+
+    <select id="getOrgInfoList" resultType="com.hdel.miri.concurrent.domain.dgk.vo.ReqVO$NoElVO" >
+        SELECT
+            'SRM' AS db_type,
+            LGORT AS org_cd ,
+            ABR_NM  AS org_nm
+        FROM SAPHSP.ZWBT010
+        WHERE MANDT = '100'
+        AND VKGRP ='H11'
+         AND BSU_ARA = 'E5'
+        FOR READ ONLY WITH UR
+    </select>
+
+    <!--2023-10-04 gmw add-->
+    <select id="getSrmElInfo" parameterType="String" resultMap="InternalKeysFromSRM">
+        SELECT elNo,chkitem,compsCntrNo
+        FROM (
+            SELECT
+                SID AS elNo ,
+                CS126_PJT||CS126_HNO||CS126_UPN||CS126_CST AS chkitem,CS126_GNO AS compsCntrNo,
+                ROW_NUMBER() OVER ( PARTITION BY SID ORDER BY CS126_UGS DESC) ROW_NUM
+            FROM    SAPHSP.ZCST126 T1
+            LEFT JOIN (SELECT TRIM(BOTH FROM SID) as SID, PJT, HNO, UPN, CST, MANDT FROM SAPHSP.ZCST111 WHERE MANDT = 100 ) R1
+                    ON  T1.MANDT        = R1.MANDT
+                    AND T1.CS126_PJT    = R1.PJT
+                    AND T1.CS126_HNO    = R1.HNO
+            LEFT    OUTER JOIN SAPHSP.ZWBT010 R2
+                    ON  T1.MANDT        = R2.MANDT
+                    AND T1.CS126_BSU    = R2.LGORT
+            LEFT    OUTER JOIN SAPHSP.ZCST406 R3
+                    ON  T1.MANDT        = R3.MANDT
+                    AND R2.LIFNR        = R3.LIFNR
+            INNER JOIN SAPHSP.ZCST121 B
+                    ON 1 = 1
+                    AND T1.MANDT = B.MANDT
+                    AND T1.CS126_UPN = B.CS121_UPN
+                    AND T1.CS126_CST = B.CS121_CST
+            WHERE 1 = 1
+            AND (T1.CS126_HYN = 'Y' OR ( CS126_MOYN2 ='Y' AND T1.CS126_HYN = 'N' ) )
+            AND T1.CS126_PST = 'A6'
+            AND T1.VKBUR     = 'H100'
+            AND LENGTH(TRIM(BOTH FROM sid)) = 7
+            AND sid != '0000000'
+            AND CS126_DDT = ''
+            AND TO_CHAR(SYSDATE,'YYYYMMDD') <![CDATA[>=]]> T1.CS126_UGS
+        ) XX
+        WHERE ROW_NUM = 1
+        AND  elNo = #{elevatorNo}
+        FOR READ ONLY WITH UR
+    </select>
+
+    <!--2023-10-13 add-->
+    <select id="getAutoRegUserList" resultType="com.hdel.miri.concurrent.domain.user.User$DefaultUserCreate" >
+        SELECT
+            MANDT as mandt,
+            REQ_SEQ as reqSeq,
+            USER_ID as userId,
+            TRIM(USER_NM) as userName,
+            USER_MOB_NO as phonenumber,
+            CONCAT(INTG_PRJ_NO,TRLINE_CD) as intgPrjTrlineCdCode,
+            'y' as termsServiceUseAg,
+            'y' as termsPlInfoUsingAg,
+            'y' as termsPlInfoStoreTimeAg,
+            'n' as termsAdRecvAg,
+            'SRM' as dbType
+        FROM SAPHSP.ZCST121M
+        WHERE REQ_YN = 'N'
+        ORDER BY REQ_SEQ
+        FOR READ ONLY WITH UR
+    </select>
+
+    <!--2023-10-13-->
+    <update id="updateAutoUserRegister" parameterType="com.hdel.miri.concurrent.domain.user.User$DefaultUserCreate" >
+        UPDATE SAPHSP.ZCST121M
+        SET
+            REQ_YN =#{procYn},
+            PROC_RESULT =#{procResult},
+            PROC_DAYTM = to_char(sysdate,'yyyymmddhh24miss')
+        WHERE 1 = 1 
+          AND   MANDT = #{mandt}
+          AND   REQ_SEQ = #{reqSeq} 
+    </update>
+
+</mapper>

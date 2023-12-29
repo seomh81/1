@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.api.domain.logging.LoggingRepository">
+    <!-- RESULT MAP -->
+    <!-- RESULT MAP -->
+    <!-- SELECT -->
+    <!-- SELECT -->
+    <!-- UPDATE -->
+    <update id="updateComplete" parameterType="com.hdel.miri.api.domain.logging.Logging$Log">
+        MERGE INTO TB_SYSTEM_LOG
+            USING DUAL
+            ON (LOG_ID = #{logId})
+            WHEN MATCHED THEN
+                UPDATE SET IN_VALUE  = #{inValue}
+                    , END_DT = #{endDt}
+                    ,LASTUPDATE_USER = #{lastupdateUser}
+            WHEN NOT MATCHED THEN
+                INSERT (USER_ID
+                    , CONTROLLER_NAME
+                    , IN_VALUE
+                    , OUT_VALUE
+                    , ERROR_YN
+                    , ERROR_CONTENTS
+                    , PLATFORM
+                    , MOBILE
+                    , USER_AGENT
+                    , START_DT
+                    , END_DT
+                    , CREATION_USER
+                    , LASTUPDATE_USER)
+                    VALUES(
+                            #{userId}
+                          , #{controllerName}
+                          , #{inValue}
+                          , #{outValue}
+                          , #{errorYn}
+                          , #{errorContents}
+                          , #{platform}
+                          , #{mobile}
+                          , #{userAgent}
+                          , #{startDt}
+                          , #{endDt}
+                          , #{userId}
+                          , #{userId})
+    </update>
+    <update id="updateError" parameterType="com.hdel.miri.api.domain.logging.Logging$Log">
+        MERGE INTO TB_SYSTEM_LOG
+            USING DUAL
+            ON (LOG_ID = #{logId})
+            WHEN MATCHED THEN
+                UPDATE SET ERROR_YN  = #{errorYn}
+                    ,ERROR_CONTENTS = #{errorContents}
+                    , END_DT = #{endDt}
+                    ,LASTUPDATE_USER = #{lastupdateUser}
+            WHEN NOT MATCHED THEN
+                INSERT (USER_ID, CONTROLLER_NAME, ERROR_YN, ERROR_CONTENTS, END_DT)
+                    VALUES (#{userId}, #{controllerName}, #{errorYn}, #{errorContents},#{endDt})
+    </update>
+    <!-- UPDATE -->
+    <!-- INSERT -->
+    <insert id="insert"
+            useGeneratedKeys="true"
+            keyColumn="LOG_ID"
+            keyProperty="logId"
+            parameterType="com.hdel.miri.api.domain.logging.Logging$Log"
+    >
+
+        INSERT INTO
+        TB_SYSTEM_LOG
+        (USER_ID
+        , CONTROLLER_NAME
+        , OUT_VALUE
+        , ERROR_YN
+        , ERROR_CONTENTS
+        , PLATFORM
+        , MOBILE
+        , USER_AGENT
+        , START_DT
+        , END_DT
+        , CREATION_USER
+        , LASTUPDATE_USER)
+        VALUES(
+        #{userId}
+        , #{controllerName}
+        , #{outValue}
+        , #{errorYn}
+        , #{errorContents}
+        , #{platform}
+        , #{mobile}
+        , #{userAgent}
+        , #{startDt}
+        , #{endDt}
+        , #{userId}
+        , #{userId})
+
+    </insert>
+    <!-- INSERT -->
+    <!-- DELETE -->
+    <!-- DELETE -->
+</mapper>

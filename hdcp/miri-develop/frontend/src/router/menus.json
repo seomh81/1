@@ -1,0 +1,307 @@
+[
+  {
+    "path": "/dashboard",
+    "name": "dashboard",
+    "vueFileUrl": "view/DashBoard.vue",
+    "meta": {
+      "icon": "mdi-view-dashboard",
+      "type": "user"
+    }
+  },
+  {
+    "path": "/map_page",
+    "name": "map_page",
+    "vueFileUrl": "view/CurrentStatusMap.vue",
+
+    "meta": {
+      "icon": "mdi-map-search",
+      "type": "user"
+    }
+  },
+
+  {
+    "path": "/service",
+    "name": "service",
+    "meta": {
+      "type": "user",
+      "icon": "mdi-calendar"
+    },
+    "children": [
+      {
+        "path": "calendars",
+        "name": "service_calendar",
+        "vueFileUrl": "view/ServiceCalendar.vue",
+
+        "meta": {}
+      },
+      {
+        "path": "details",
+        "name": "service_detail",
+        "vueFileUrl": "view/ServiceDetail.vue",
+        "meta": {}
+      }
+    ]
+  },
+  {
+    "path": "/machine",
+    "name": "machine",
+    "meta": {
+      "type": "user",
+      "icon": "mdi-elevator-passenger"
+    },
+    "children": [
+      {
+        "path": "search",
+        "vueFileUrl": "view/MachineSearch.vue",
+        "name": "machine_search",
+        "meta": {}
+      },
+      {
+        "path": "detail",
+        "vueFileUrl": "view/MachineDetail.vue",
+        "name": "machine_detail",
+        "meta": {
+          "hide": true
+        }
+        
+      }
+    ]
+  },
+  {
+    "path": "/parts",
+    "name": "parts",
+    "meta": {
+      "icon": "mdi-video-input-component",
+      "type": "user"
+    },
+    "children": [
+      {
+        "path": "purchase",
+        "vueFileUrl": "view/PartsPurchase.vue",
+        "name": "parts_purchase",
+        "meta": {}
+      },
+
+      {
+        "path": "lifeInquiry",
+        "vueFileUrl": "view/PartsLifeInquiry.vue",
+        "name": "parts_lifeinquiry",
+        "meta": {}
+      }
+    ]
+  },
+
+  {
+    "path": "/report",
+    "name": "report",
+    "meta": {
+      "icon": "mdi-file",
+      "type": "user"
+    },
+    "children": [
+      {
+        "path": "base",
+        "vueFileUrl": "view/ReportBase.vue",
+        "name": "report_base",
+        "meta": {}
+      },
+      {
+        "path": "remote",
+        "vueFileUrl": "view/ReportRemote.vue",
+        "name": "report_remote",
+        "meta": {}
+      }
+    ]
+  },
+
+  {
+    "path": "/contractInfo",
+    "vueFileUrl": "view/ContractInfo.vue",
+    "name": "contractInfo",
+    "meta": {
+      "icon": "mdi-draw",
+      "type": "user"
+    }
+  },
+  {
+    "path": "/system",
+    "name": "notice",
+    "meta": {
+      "type": "user",
+      "icon": "mdi-bullhorn"
+    },
+    "children": [
+      {
+        "path": "faq",
+        "name": "system_faq",
+        "vueFileUrl": "view/admin/SetFAQ.vue_copy",
+        "meta": {}
+      },
+      {
+        "path": "notice",
+        "name": "system_notice",
+        "vueFileUrl": "view/admin/SetNotice.vue_copy",
+        "meta": {}
+      }
+    ]
+  },
+  {
+    "path": "/setting",
+    "name": "setting",
+    "meta": {
+      "hide": true
+    },
+    "children": [
+      {
+        "path": "info",
+        "vueFileUrl": "view/SettingInfo.vue",
+        "name": "setting_info",
+        "meta": {}
+      },
+      {
+        "path": "contact",
+        "vueFileUrl": "view/SettingContact.vue",
+        "name": "setting_contact",
+        "meta": {}
+      },
+      {
+        "path": "portfolio",
+        "vueFileUrl": "view/SettingPortfolio.vue",
+        "name": "setting_portfolio",
+        "meta": {}
+      },
+      {
+        "path": "service",
+        "vueFileUrl": "view/SettingService.vue",
+        "name": "setting_service",
+        "meta": {}
+      }
+    ]
+  },
+  {
+    "path": "/system",
+    "name": "system",
+    "meta": {
+      "type": "admin",
+
+      "icon": "mdi-cog"
+    },
+    "children": [
+      {
+        "path": "notice",
+        "name": "system_notice",
+        "vueFileUrl": "view/admin/SetNotice.vue",
+        "meta": {}
+      },
+      {
+        "vueFileUrl": "view/admin/SetFAQ.vue",
+        "path": "faq",
+        "name": "system_faq",
+        "meta": {}
+      },
+      {
+        "path": "notification",
+        "name": "system_notification",
+        "vueFileUrl": "view/admin/NotificationSearch.vue",
+        "meta": {
+          "icon": "mdi-bell"
+        }
+      },
+      {
+        "path": "message_template",
+        "name": "system_message_template",
+        "vueFileUrl": "view/admin/MessageTemplate.vue",
+        "meta": {}
+      },
+      {
+        "path": "masterdata",
+        "name": "system_masterdata",
+        "vueFileUrl": "view/admin/MasterData.vue",
+        "meta": {}
+      },
+      {
+        "path": "viewlogindata",
+        "name": "system_viewlogindata",
+        "vueFileUrl": "view/admin/ViewLoginData.vue",
+        "meta": {}
+      }
+    ]
+  },
+  {
+    "path": "/ad",
+    "name": "ad",
+    "meta": {
+      "icon": "mdi-camera-image",
+      "type": "admin"
+    },
+    "children": [
+      {
+        "path": "interim",
+        "name": "ad_interim",
+        "vueFileUrl": "view/admin/SetSectionAd.vue",
+        "meta": {}
+      },
+      {
+        "path": "login",
+        "name": "ad_login",
+        "vueFileUrl": "view/admin/SetLoginAd.vue",
+        "meta": {}
+      },
+      {
+        "path": "popup",
+        "name": "ad_popup",
+        "vueFileUrl": "view/admin/SetPopupAd.vue",
+        "meta": {}
+      },
+
+      {
+        "path": "video",
+        "name": "ad_video",
+        "vueFileUrl": "view/admin/SetVideoAd.vue",
+        "meta": {}
+      }
+    ]
+  },
+  {
+    "path": "/priv",
+    "name": "priv",
+    "meta": {
+      "type": "admin",
+
+      "icon": "mdi-briefcase-account-outline"
+    },
+    "children": [
+      {
+        "path": "user",
+        "name": "priv_user",
+        "vueFileUrl": "view/admin/SetUser.vue",
+        "meta": {}
+      },
+      {
+        "path": "view_function",
+        "name": "priv_view_function",
+        "vueFileUrl": "view/admin/MapViewFunction.vue",
+        "meta": {}
+      },
+      {
+        "path": "menu_view",
+        "name": "priv_menu_view",
+        "vueFileUrl": "view/admin/MapMenuView.vue",
+        "meta": {}
+      },
+      {
+        "path": "role_menu",
+        "name": "priv_role_menu",
+        "vueFileUrl": "view/admin/MapRoleMenu.vue",
+        "meta": {}
+      },
+      {
+        "path": "role_user",
+        "name": "priv_role_user",
+        "vueFileUrl": "view/admin/MapRoleUser.vue",
+        "meta": {}
+      }
+    ]
+  }
+]
+

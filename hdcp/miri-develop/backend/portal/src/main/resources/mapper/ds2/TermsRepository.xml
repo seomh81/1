@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.api.domain.terms.TermsRepository">
+    <!-- RESULT MAP -->
+    <!-- RESULT MAP -->
+    <!-- SELECT -->
+    <!-- SELECT -->
+    <!-- INSERT -->
+    <sql id="insert">
+        INSERT INTO TB_SERVICE_TERMS (USER_ID, SERVICE_USE_AG, PL_INFO_USING_AG, PL_INFO_STORE_TIME_AG, AD_RECV_AG, CREATION_USER, LASTUPDATE_USER)
+    </sql>
+    <insert id="insertDefault"
+            parameterType="com.hdel.miri.api.domain.terms.Terms$TermsDefaultCreate">
+        <include refid="insert" /> VALUES(#{userId}, #{serviceUseAg}, #{plInfoUsingAg}, #{plInfoStoreTimeAg}, #{adRecvAg}, #{userId}, #{userId})
+    </insert>
+
+    <!-- INSERT -->
+    <!-- UPDATE -->
+    <update id="updateAdRecvAg"
+            parameterType="com.hdel.miri.api.domain.terms.Terms$TermsUpdate">
+        UPDATE TB_SERVICE_TERMS
+            <trim prefix="SET" suffixOverrides=",">
+                <if test="plInfoStoreTimeAg != null and  plInfoStoreTimeAg != ''">PL_INFO_STORE_TIME_AG = #{plInfoStoreTimeAg},PL_INFO_STORE_TIME_AG_DT = SYSDATE,</if>
+                <if test="adRecvAg != null and  adRecvAg != ''">AD_RECV_AG = #{adRecvAg},AD_RECV_AG_DT = SYSDATE,</if>
+                <if test="userId != null and  userId != '' ">LASTUPDATE_USER = #{userId}</if>
+            </trim>
+        WHERE USER_ID = #{userId}
+    </update>
+    <!-- UPDATE -->
+
+    <!-- DELETE -->
+    <!-- DELETE -->
+</mapper>

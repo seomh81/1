@@ -1,0 +1,602 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.api.domain.hrts.HRTSRepository">
+    <resultMap id="HRTSMasterJoin" type="com.hdel.miri.api.domain.hrts.HRTS$HRTSMasterJoin">
+        <result column="INTG_PRJ_NO" property="intgPrjNo" />
+        <result column="TRLINE_CD" property="trlineCd" />
+        <result column="PRJ_NO" property="prjNo" />
+        <result column="CAR_NO" property="carNo" />
+        <result column="DIAG_MONTH" property="diagMonth" />
+        <result column="SITENM" property="siteNm" />
+        <result column="DONGCAR_NM" property="dongcarNm" />
+        <result column="EL_PROJ_NO" property="elProjNo" />
+        <result column="CHK_DATE" property="chkDate" />
+    </resultMap>
+    <resultMap id="HRTSMasterJoinWeb" type="com.hdel.miri.api.domain.hrts.HRTS$HRTSMasterJoinWeb">
+        <result column="SITENM" property="siteNm" />
+        <result column="DONGCAR_NM" property="dongcarNm" />
+        <result column="EL_PROJ_NO" property="elProjNo" />
+    </resultMap>
+    <resultMap id="HRTSRemoteInspectVO" type="com.hdel.miri.api.domain.hrts.HRTS$HRTSRemoteInspectVO">
+        <result column="ELEVATOR_NO" property="elevatorNo" />
+        <result column="ELVTR_DIV_NM"       property="elvtrDivNm" />
+        <result column="BULD_NM"       property="buldNm" />
+        <result column="PROJ_NO"      property="projNo" />
+        <result column="REPORT_TYPE"       property="reportType" />
+        <result column="CHK_DATE" property="chkDate" />
+    </resultMap>
+
+    <resultMap id="RunAvgTot" type="com.hdel.miri.api.domain.hrts.HRTS$RunAvgTotVO">
+        <result column="YYYY" property="yyyy" />
+        <result column="MM" property="mm" />
+        <result column="TOT_AVG_RUN_TIME" property="totAvgRunTime" />
+        <result column="TOT_AVG_RUN_DISTANCE" property="totAvgRunDistance" />
+        <result column="TOT_AVG_RUN_NUM" property="totAvgRunNum" />
+        <result column="TOT_AVG_DOCC" property="totAvgDocc" />
+    </resultMap>
+    <resultMap id="RunAvgTarget" type="com.hdel.miri.api.domain.hrts.HRTS$RunAvgTargetVO">
+        <result column="YYYY" property="yyyy" />
+        <result column="MM" property="mm" />
+        <result column="EL_AVG_RUN_TIME" property="elAvgRunTime" />
+        <result column="EL_AVG_RUN_DISTANCE" property="elAvgRunDistance" />
+        <result column="EL_AVG_RUN_NUM" property="elAvgRunNum" />
+        <result column="EL_AVG_DOCC" property="elAvgDocc" />
+
+    </resultMap>
+    <resultMap id="CurrentMonthRunTimeTargetVO" type="com.hdel.miri.api.domain.hrts.HRTS$CurrentMonthRunTimeTargetVO">
+        <result column="YYYY" property="yyyy" />
+        <result column="MM" property="mm" />
+        <result column="EL_AVG_RUN_TIME" property="elAvgRunTime" />
+    </resultMap>
+    <resultMap id="DOCCAvgTot" type="com.hdel.miri.api.domain.hrts.HRTS$DOCCTypeVO">
+        <result column="YYYY" property="yyyy" />
+        <result column="MM" property="mm" />
+        <result column="TOT_AVG_DOCC" property="totAvgDocc" />
+    </resultMap>
+    <resultMap id="DOCCAvgTarget" type="com.hdel.miri.api.domain.hrts.HRTS$DOCCTargetVO">
+        <result column="YYYY" property="yyyy" />
+        <result column="MM" property="mm" />
+        <result column="EL_AVG_DOCC" property="elAvgDocc" />
+    </resultMap>
+    <resultMap id="HRTSPerformanceCheckResult" type="com.hdel.miri.api.domain.hrts.HRTS$HRTSPerformanceCheckResultVO">
+        <result column="f_total_exe"    property="fTotalExe" />
+        <result column="f_level_nr"     property="fLevelNr" />
+        <result column="f_open_cv"      property="fOpenCv" />
+        <result column="f_close_cv"     property="fCloseCv" />
+        <result column="f_rst"          property="fRst" />
+        <result column="s_total_exe"    property="sTotalExe" />
+        <result column="s_level_nr"     property="sLevelNr" />
+        <result column="s_open_cv"      property="sOpenCv" />
+        <result column="s_close_cv"     property="sCloseCv" />
+        <result column="s_rst"          property="sRst" />
+    </resultMap>
+    <resultMap id="runDistanceAvg" type="com.hdel.miri.api.domain.hrts.HRTS$HRTSAvgRunDistanceResultVO">
+        <result column="EL_AVG_RUN_DISTANCE"    property="elAvgRunDistance" />
+        <result column="START_DATE"             property="startDate" />
+        <result column="END_DATE"               property="endDate" />
+    </resultMap>
+    <select id="selectAIMasterJoinWeb"
+            parameterType="com.hdel.miri.api.domain.hrts.HRTS$HRTSMonitVO"
+            resultMap="HRTSMasterJoinWeb"
+    >
+     select
+         SITENM
+          , DONGCAR_NM
+          , EL_PROJ_NO
+     from  bsrm.rm_el_info
+     where EL_PROJ_NO = CONCAT(#{projNo},#{hoNo})
+    </select>
+    <select id="selectAIMasterJoin"
+            parameterType="com.hdel.miri.api.domain.hrts.HRTS$HRTSMasterSearch"
+            resultMap="HRTSMasterJoin"
+    >
+        select
+            #{intgPrjNo} INTG_PRJ_NO
+            , #{trlineCd} TRLINE_CD
+            , #{prjNo} PRJ_NO
+            , #{carNo} CAR_NO
+            , concat(ELS.YYYY,'년 - ',ELS.MM,'월') DIAG_MONTH
+            , EL.SITENM SITENM
+            , EL.DONGCAR_NM DONGCAR_NM
+            , EL.EL_PROJ_NO EL_PROJ_NO
+            , CONCAT(ELS.YYYY,right(concat('0',ELS.MM),2),'01') as CHK_DATE
+        from (
+                select
+                SITENM
+                , DONGCAR_NM
+                , EL_PROJ_NO
+                from  bsrm.rm_el_info
+                where EL_PROJ_NO = CONCAT(#{prjNo},#{carNo})
+            ) EL
+        left join run_month_elev_sum ELS
+        on EL.EL_PROJ_NO = ELS.EL_PROJ_NO
+        order by YYYY DESC,MM DESC
+        limit 12
+        <!-- <if test="mobile == true">limit 6</if> -->
+    </select>
+    <select id="selectAIMasterJoinTest"
+            parameterType="com.hdel.miri.api.domain.hrts.HRTS$HRTSMasterSearch"
+            resultMap="HRTSMasterJoin"
+    >
+        SELECT A.INTG_PRJ_NO
+             , A.TRLINE_CD
+             , A.PRJ_NO
+             , A.CAR_NO
+             , A.DIAG_MONTH
+             , A.SITENM
+             , A.DONGCAR_NM
+             , A.EL_PROJ_NO
+             , A.CHK_DATE
+          FROM (
+                SELECT #{intgPrjNo}                                      AS INTG_PRJ_NO
+                     , #{trlineCd}                                       AS TRLINE_CD
+                     , #{prjNo}                                          AS PRJ_NO
+                     , #{carNo}                                          AS CAR_NO
+                     , DATE_FORMAT(ELS.`DATETIME`, '%Y년 - %m월')        AS DIAG_MONTH
+                     , EL.SITENM                                         AS SITENM
+                     , EL.DONGCAR_NM                                     AS DONGCAR_NM
+                     , EL.EL_PROJ_NO                                     AS EL_PROJ_NO
+                     , CONCAT(DATE_FORMAT(ELS.`DATETIME`, '%Y%m'),'01')  AS CHK_DATE
+                     , CASE WHEN DATE_FORMAT(ELS.`DATETIME`, '%Y%m') = DATE_FORMAT(NOW(),'%Y%m') THEN 1
+                            WHEN NVL(RE.INSP, 0) != 0                                            THEN 1
+                            ELSE 0
+                        END                                              AS SEARCH_FG
+                  FROM BSRM.RM_EL_INFO EL
+                  LEFT JOIN BSFM.EL_SELF_INSP_RESULT ELS
+                    ON ELS.PROJNO = EL.EL_PROJ_NO
+                  LEFT OUTER JOIN BSFM.REPORT_RECORD RE
+                    ON RE.EL_PROJ_NO = ELS.PROJNO
+                   AND RE.YYYYMM     = DATE_FORMAT(ELS.`DATETIME`, '%Y%m')
+                 WHERE EL.EL_PROJ_NO = CONCAT(#{prjNo},#{carNo})
+               ) A
+         WHERE A.SEARCH_FG = 1
+         ORDER BY A.CHK_DATE DESC
+         LIMIT 12
+        <!-- <if test="mobile == true">limit 6</if> -->
+    </select>
+    <!-- SELECT -->
+    <select id="selectRunAvgType"
+        parameterType="com.hdel.miri.api.domain.hrts.HRTS$HRTSRunAvgSearch"
+        resultMap="RunAvgTot"
+    >
+    select 
+        max(YYYY) as YYYY
+        ,max(MM) as MM
+        ,max(TOT_AVG_RUN_TIME) as TOT_AVG_RUN_TIME
+        ,max(TOT_AVG_RUN_DISTANCE) as TOT_AVG_RUN_DISTANCE
+        ,max(TOT_AVG_RUN_NUM) as TOT_AVG_RUN_NUM
+        ,max(TOT_AVG_DOCC) as TOT_AVG_DOCC
+    from 
+    (		select 
+                A.YYYY
+                ,A.MM
+                ,ifnull(TOT_AVG_RUN_TIME,0) as TOT_AVG_RUN_TIME
+                ,ifnull(TOT_AVG_RUN_DISTANCE,0) as TOT_AVG_RUN_DISTANCE
+                ,ifnull(TOT_AVG_RUN_NUM,0) as TOT_AVG_RUN_NUM
+                ,null as TOT_AVG_DOCC
+            from 
+            (
+                select 
+                    DATE_FORMAT(DATE_ADD(#{requestDate}, INTERVAL -2 MONTH),'%Y') as YYYY, 
+                    DATE_FORMAT(DATE_ADD(#{requestDate}, INTERVAL -2 MONTH),'%m') as MM
+                from DUAL
+                union all 
+                select
+                    DATE_FORMAT(DATE_ADD(#{requestDate}, INTERVAL -1 MONTH),'%Y') as YYYY,
+                    DATE_FORMAT(DATE_ADD(#{requestDate}, INTERVAL -1 MONTH),'%m') as MM
+                from dual
+                union all
+                select
+                    DATE_FORMAT(STR_TO_DATE(#{requestDate},'%Y%m%d'),'%Y') as YYYY,
+                    DATE_FORMAT(STR_TO_DATE(#{requestDate},'%Y%m%d'),'%m') as MM 
+                from dual
+            ) A
+            left outer join (
+                    SELECT YYYY, MM,
+                        ROUND((ROUND((AVG(RUN_TIME_SUM / RUN_DAYS) / 60.0), 2) / 60.0), 2) AS TOT_AVG_RUN_TIME,
+                        ROUND((ROUND(AVG(RUN_DISTANCE_SUM / RUN_DAYS / 100.0), 2) / 1000), 2) AS TOT_AVG_RUN_DISTANCE,
+                        ROUND(AVG(RUN_NUM_SUM / RUN_DAYS),0) AS TOT_AVG_RUN_NUM
+                    FROM RUN_MONTH_ELEV_SUM TB, (select TOTFC from bsrm.rm_el_info where EL_PROJ_NO = concat(#{prjNo},#{carNo}) limit 1) B
+                    WHERE MAX_FLOOR = b.TOTFC
+                    AND RUN_DAYS != 0
+                    <!-- AND TB.EL_PROJ_NO = concat(#{prjNo}, #{carNo}) -->
+                    GROUP BY YYYY, MM) B
+            on a.yyyy = b.yyyy and a.mm = b.mm
+            
+            union all 
+            
+            select 
+                    A.YYYY
+                    ,A.MM
+                    ,null as TOT_AVG_RUN_TIME
+                    ,null as TOT_AVG_RUN_DISTANCE
+                    ,null as TOT_AVG_RUN_NUM
+                    ,ifnull(TOT_AVG_DOCC,0) as TOT_AVG_DOCC
+                from 
+                (
+                    select 
+                        DATE_FORMAT(DATE_ADD(#{requestDate}, INTERVAL -2 MONTH),'%Y') as YYYY, 
+                        DATE_FORMAT(DATE_ADD(#{requestDate}, INTERVAL -2 MONTH),'%m') as MM
+                    from DUAL
+                    union all 
+                    select
+                        DATE_FORMAT(DATE_ADD(#{requestDate}, INTERVAL -1 MONTH),'%Y') as YYYY,
+                        DATE_FORMAT(DATE_ADD(#{requestDate}, INTERVAL -1 MONTH),'%m') as MM
+                    from dual
+                    union all
+                    select
+                        DATE_FORMAT(STR_TO_DATE(#{requestDate},'%Y%m%d'),'%Y') as YYYY,
+                        DATE_FORMAT(STR_TO_DATE(#{requestDate},'%Y%m%d'),'%m') as MM 
+                    from dual
+                ) A
+                left outer join (
+                        SELECT YYYY, MM,
+                            ROUND(AVG(DOCC_SUM / CAST(DOCC_DAYS as FLOAT)), 0) AS TOT_AVG_DOCC
+                        FROM RUN_MONTH_ELEV_SUM A, (select TOTFC from bsrm.rm_el_info where EL_PROJ_NO = concat(#{prjNo},#{carNo}) limit 1) B
+                        WHERE DOCC_DAYS != 0
+                        AND MAX_FLOOR = b.TOTFC
+                        <!-- AND EL_PROJ_NO = concat(#{prjNo}, #{carNo}) -->
+                group by YYYY,MM) B
+                on a.yyyy = b.yyyy and a.mm = b.mm
+    ) as temp 
+    group by YYYY, MM
+    </select>
+    <select id="selectRunAvgTargetAll"
+            parameterType="java.util.List"
+            resultMap="runDistanceAvg"
+    >
+        select
+        IFNULL(ROUND((ROUND((SUM(a.FLOOR_COUNT_UP + a.FLOOR_COUNT_DN) * b.AVG_FLOOR),2) / 24 / 100.0) / 1000,2),0) as EL_AVG_RUN_DISTANCE
+      , DATE_FORMAT(DATE_SUB(DATE_SUB(NOW(), INTERVAL 1 DAY), INTERVAL 1 MONTH), '%y.%m.%d') AS START_DATE
+      , DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 DAY), '%y.%m.%d') AS END_DATE
+        from BSFM.EL_MV a, BSRM.RM_EL_INFO b
+        where a.PROJNO =b.EL_PROJ_NO
+        and a.PROJNO in
+        <if test="list.size == 0">
+            ('')
+        </if>
+        <foreach collection="list" item="item" open="(" separator="," close=")" >
+            #{item.prjNos}
+        </foreach>
+        AND DATE BETWEEN DATE_SUB(DATE_SUB(NOW(), INTERVAL 1 DAY), INTERVAL 1 MONTH) and now()
+        AND VALID=1
+    </select>
+
+    <select id="selectRunTimeCurrentMonth"
+        parameterType="com.hdel.miri.api.domain.hrts.HRTS$HRTSRunAvgSearch"
+            resultMap="CurrentMonthRunTimeTargetVO"
+    >
+        select
+            IFNULL(DATE_FORMAT(DATE,'%Y'),#{firstYear}) AS YYYY
+            , IFNULL(DATE_FORMAT(DATE,'%m'),#{firstMonth}) AS MM
+            , IFNULL(ROUND((ROUND((SUM(RUN_TIME_UP + RUN_TIME_DN) / CAST((COUNT(PROJNO)/24) as FLOAT)) / 60.0, 2) / 60.0), 2), 0) AS EL_AVG_RUN_TIME
+        from BSFM.EL_MV
+        WHERE PROJNO= CONCAT(#{prjNo},#{carNo})
+        AND DATE BETWEEN #{firstStart} and #{firstEnd}
+        and VALID = 1
+    </select>
+    <select id="selectRunAvgTarget"
+        parameterType="com.hdel.miri.api.domain.hrts.HRTS$HRTSRunAvgSearch"
+        resultMap="RunAvgTarget"
+    >
+    select 
+        max(YYYY) as YYYY
+        ,max(MM) as MM
+        ,max(EL_AVG_RUN_TIME) as EL_AVG_RUN_TIME
+        ,max(EL_AVG_RUN_DISTANCE) as EL_AVG_RUN_DISTANCE
+        ,max(EL_AVG_RUN_NUM) as EL_AVG_RUN_NUM
+        ,max(EL_AVG_DOCC) as EL_AVG_DOCC
+    from 
+    (
+            select 
+                A.YYYY
+                ,A.MM
+                ,null as  EL_AVG_RUN_TIME
+                ,null as EL_AVG_RUN_DISTANCE
+                ,null as EL_AVG_RUN_NUM
+                ,ifnull(EL_AVG_DOCC,0) as EL_AVG_DOCC
+            from 
+            (
+                select 
+                    DATE_FORMAT(DATE_ADD(#{requestDate}, INTERVAL -2 MONTH),'%Y') as YYYY, 
+                    DATE_FORMAT(DATE_ADD(#{requestDate}, INTERVAL -2 MONTH),'%m') as MM
+                from DUAL
+                union all 
+                select
+                    DATE_FORMAT(DATE_ADD(#{requestDate}, INTERVAL -1 MONTH),'%Y') as YYYY,
+                    DATE_FORMAT(DATE_ADD(#{requestDate}, INTERVAL -1 MONTH),'%m') as MM
+                from dual
+                union all
+                select
+                    DATE_FORMAT(STR_TO_DATE(#{requestDate},'%Y%m%d'),'%Y') as YYYY,
+                    DATE_FORMAT(STR_TO_DATE(#{requestDate},'%Y%m%d'),'%m') as MM 
+                from dual
+            ) A
+            left outer join (
+                SELECT DOCC_TMP.YYYY AS YYYY, DOCC_TMP.MM AS MM,
+                        IFNULL(ROUND(DOCC_TMP.EL_DOCC_SUM / CAST(DOCC_TMP.CNT as FLOAT),0), 0) AS EL_AVG_DOCC
+                FROM ( SELECT 
+                            DATE_FORMAT(DATE, '%Y') AS YYYY
+                    , DATE_FORMAT(DATE, '%m') AS MM,
+                    IFNULL(SUM(FL_1+Fl_2+FL_3+FL_4+FL_5+FL_6+FL_7+FL_8+FL_9+FL_10+FL_11+FL_12+FL_13+FL_14+FL_15+FL_16+FL_17+FL_18+FL_19+FL_20+
+                                FL_21+FL_22+FL_23+FL_24+FL_25+FL_26+FL_27+FL_28+FL_29+FL_30+
+                                FL_31+FL_32+FL_33+FL_34+FL_35+FL_36+FL_37+FL_38+FL_39+FL_40+
+                                FL_41+FL_42+FL_43+FL_44+FL_45+FL_46+FL_47+FL_48+FL_49+FL_50+
+                                FL_51+FL_52+FL_53+FL_54+FL_55+FL_56+FL_57+FL_58+FL_59+FL_60+
+                                FL_61+FL_62+FL_63+FL_64+FL_65+FL_66+FL_67+FL_68+FL_69+FL_70+
+                                FL_71+FL_72+FL_73+FL_74+FL_75+FL_76+FL_77+FL_78+FL_79+FL_80+
+                                FL_81+FL_82+FL_83+FL_84+FL_85+FL_86+FL_87+FL_88+FL_89+FL_90), 0) AS EL_DOCC_SUM,
+                    COUNT(PROJNO) AS CNT
+                    FROM BSFM.EL_DOCC
+                WHERE PROJNO= concat(#{prjNo}, #{carNo})
+                AND VALID=1
+                AND DATE between DATE_ADD(#{requestDate}, INTERVAL -2 MONTH) and last_day(STR_TO_DATE(#{requestDate},'%Y%m%d'))
+                GROUP BY DATE_FORMAT(DATE,'%Y'), DATE_FORMAT(DATE,'%m')
+                    ) DOCC_TMP) B
+            on a.yyyy = b.yyyy and a.mm = b.mm
+            union all 
+            select 
+                A.YYYY
+                ,A.MM
+                ,ifnull(EL_AVG_RUN_TIME,0) as EL_AVG_RUN_TIME
+                ,ifnull(EL_AVG_RUN_DISTANCE,0) as EL_AVG_RUN_DISTANCE
+                ,ifnull(EL_AVG_RUN_NUM,0) as EL_AVG_RUN_NUM
+                ,null as EL_AVG_DOCC
+            from 
+            (
+                select 
+                    DATE_FORMAT(DATE_ADD(#{requestDate}, INTERVAL -2 MONTH),'%Y') as YYYY, 
+                    DATE_FORMAT(DATE_ADD(#{requestDate}, INTERVAL -2 MONTH),'%m') as MM
+                from DUAL
+                union all 
+                select
+                    DATE_FORMAT(DATE_ADD(#{requestDate}, INTERVAL -1 MONTH),'%Y') as YYYY,
+                    DATE_FORMAT(DATE_ADD(#{requestDate}, INTERVAL -1 MONTH),'%m') as MM
+                from dual
+                union all
+                select
+                    DATE_FORMAT(STR_TO_DATE(#{requestDate},'%Y%m%d'),'%Y') as YYYY,
+                    DATE_FORMAT(STR_TO_DATE(#{requestDate},'%Y%m%d'),'%m') as MM 
+                from dual
+            ) A
+            left outer join (
+                    SELECT 
+                        date_format(date,'%Y') as YYYY
+                        ,date_format(date,'%m') as MM
+                        ,ROUND(ROUND(SUM(RUN_TIME_UP + RUN_TIME_DN)/(COUNT(projno)/24)/60.0,2)/60.0,2) as EL_AVG_RUN_TIME
+                        ,ROUND(SUM(FLOOR_COUNT_UP + FLOOR_COUNT_DN) * AVG_FLOOR / (COUNT(PROJNO)/24)/100.0 / 1000,2) AS EL_AVG_RUN_DISTANCE
+                        ,ROUND(SUM(RUN_COUNT_UP + RUN_COUNT_DN) / (COUNT(PROJNO)/ 24), 0) as EL_AVG_RUN_NUM
+                    FROM 	BSFM.EL_MV A, BSRM.RM_EL_INFO B
+                    WHERE 	A.PROJNO = B.EL_PROJ_NO
+                    AND 	A.VALID = 1
+                    AND		A.PROJNO = concat(#{prjNo}, #{carNo})
+                    AND     DATE between DATE_ADD(#{requestDate}, INTERVAL -2 MONTH) and last_day(STR_TO_DATE(#{requestDate},'%Y%m%d'))
+                    group by projno, DATE_FORMAT(date,'%Y%m')) B
+            on a.yyyy = b.yyyy and a.mm = b.mm
+    ) kk
+    group by yyyy, mm
+    </select>
+    <select id="selectDOCCType"
+        parameterType="com.hdel.miri.api.domain.hrts.HRTS$HRTSRunAvgSearch"
+        resultMap="DOCCAvgTot"
+    >
+        SELECT YYYY, CAST(#{firstMonth} as VARCHAR(2)) MM,
+               ROUND(AVG(DOCC_SUM / CAST(DOCC_DAYS as FLOAT)), 0) AS TOT_AVG_DOCC
+        FROM RUN_MONTH_ELEV_SUM TB
+        WHERE YYYY= CAST(#{firstYear} as VARCHAR(4)) AND MM=CAST(#{firstMonth} as VARCHAR(2))
+          AND MAX_FLOOR=CAST((select TOTFC
+                              from bsrm.rm_el_info
+                              where EL_PROJ_NO =  CONCAT(CAST(#{prjNo} AS VARCHAR(6)),CAST(#{carNo} AS VARCHAR(3)))) as VARCHAR(3))
+          AND DOCC_DAYS != 0
+          AND EL_PROJ_NO = CONCAT(CAST(#{prjNo} AS VARCHAR(6)),CAST(#{carNo} AS VARCHAR(3)))
+        group by YYYY,MM
+        UNION ALL
+        SELECT YYYY, CAST(#{secondMonth} as VARCHAR(2)) MM,
+               ROUND(AVG(DOCC_SUM / CAST(DOCC_DAYS as FLOAT)), 0) AS TOT_AVG_DOCC
+        FROM RUN_MONTH_ELEV_SUM TB
+        WHERE YYYY= CAST(#{secondYear} as VARCHAR(4)) AND MM=CAST(#{secondMonth} as VARCHAR(2))
+          AND MAX_FLOOR=CAST((select TOTFC
+                              from bsrm.rm_el_info
+                              where EL_PROJ_NO =  CONCAT(CAST(#{prjNo} AS VARCHAR(6)),CAST(#{carNo} AS VARCHAR(3)))) as VARCHAR(3))
+          AND DOCC_DAYS != 0
+          AND EL_PROJ_NO = CONCAT(CAST(#{prjNo} AS VARCHAR(6)),CAST(#{carNo} AS VARCHAR(3)))
+        group by YYYY,MM
+        UNION ALL
+        SELECT YYYY, CAST(#{thirdMonth} as VARCHAR(2)) MM,
+               ROUND(AVG(DOCC_SUM / CAST(DOCC_DAYS as FLOAT)), 0) AS TOT_AVG_DOCC
+        FROM RUN_MONTH_ELEV_SUM TB
+        WHERE YYYY= CAST(#{thirdYear} as VARCHAR(4)) AND MM=CAST(#{thirdMonth} as VARCHAR(2))
+          AND MAX_FLOOR=CAST((select TOTFC
+                              from bsrm.rm_el_info
+                              where EL_PROJ_NO =  CONCAT(CAST(#{prjNo} AS VARCHAR(6)),CAST(#{carNo} AS VARCHAR(3)))) as VARCHAR(3))
+          AND DOCC_DAYS != 0
+          AND EL_PROJ_NO = CONCAT(CAST(#{prjNo} AS VARCHAR(6)),CAST(#{carNo} AS VARCHAR(3)))
+        group by YYYY,MM
+    </select>
+    <select id="selectDOCCTarget"
+            parameterType="com.hdel.miri.api.domain.hrts.HRTS$HRTSRunAvgSearch"
+            resultMap="DOCCAvgTarget"
+    >
+        SELECT DOCC_TMP.YYYY AS YYYY, DOCC_TMP.MM AS MM,
+               IFNULL(ROUND(DOCC_TMP.EL_DOCC_SUM / CAST(DOCC_TMP.CNT as FLOAT)), 0) AS EL_AVG_DOCC
+        FROM ( SELECT CONCAT(CAST(#{prjNo} AS VARCHAR(6)),CAST(#{carNo} AS VARCHAR(3))) AS EL_PROJ_NO,
+                      CAST(#{firstYear} as VARCHAR(4)) AS YYYY, CAST(#{firstMonth} as VARCHAR(4)) AS MM,
+                      (
+                          SELECT COUNT(DISTINCT DATE) FROM BSFM.EL_DOCC
+                          WHERE PROJNO= CONCAT(CAST(#{prjNo} AS VARCHAR(6)),CAST(#{carNo} AS VARCHAR(3))) AND DATE between #{firstStart} and #{firstEnd}
+                       AND VALID=1
+             ) AS EL_DOCC_DAYS,
+             IFNULL(SUM(FL_1+Fl_2+FL_3+FL_4+FL_5+FL_6+FL_7+FL_8+FL_9+FL_10+FL_11+FL_12+FL_13+FL_14+FL_15+FL_16+FL_17+FL_18+FL_19+FL_20+
+                        FL_21+FL_22+FL_23+FL_24+FL_25+FL_26+FL_27+FL_28+FL_29+FL_30+
+                        FL_31+FL_32+FL_33+FL_34+FL_35+FL_36+FL_37+FL_38+FL_39+FL_40+
+                        FL_41+FL_42+FL_43+FL_44+FL_45+FL_46+FL_47+FL_48+FL_49+FL_50+
+                        FL_51+FL_52+FL_53+FL_54+FL_55+FL_56+FL_57+FL_58+FL_59+FL_60+
+                        FL_61+FL_62+FL_63+FL_64+FL_65+FL_66+FL_67+FL_68+FL_69+FL_70+
+                        FL_71+FL_72+FL_73+FL_74+FL_75+FL_76+FL_77+FL_78+FL_79+FL_80+
+                        FL_81+FL_82+FL_83+FL_84+FL_85+FL_86+FL_87+FL_88+FL_89+FL_90), 0) AS EL_DOCC_SUM,
+             COUNT(PROJNO) AS CNT
+            FROM BSFM.EL_DOCC
+        WHERE PROJNO= CONCAT(CAST(#{prjNo} AS VARCHAR(6)),CAST(#{carNo} AS VARCHAR(3))) AND VALID=1
+          AND DATE between #{firstStart} and #{firstEnd}
+        GROUP BY DATE_FORMAT(DATE, '%Y'), DATE_FORMAT(DATE, '%c')
+            ) DOCC_TMP
+        UNION ALL
+        SELECT DOCC_TMP.YYYY AS YYYY, DOCC_TMP.MM AS MM,
+               IFNULL(ROUND(DOCC_TMP.EL_DOCC_SUM / CAST(DOCC_TMP.CNT as FLOAT)), 0 )AS EL_AVG_DOCC
+        FROM ( SELECT CONCAT(CAST(#{prjNo} AS VARCHAR(6)),CAST(#{carNo} AS VARCHAR(3))) AS EL_PROJ_NO,
+                      CAST(#{secondYear} as VARCHAR(4)) AS YYYY, CAST(#{secondMonth} as VARCHAR(4)) AS MM,
+                      (
+                          SELECT COUNT(DISTINCT DATE) FROM BSFM.EL_DOCC
+                          WHERE PROJNO= CONCAT(CAST(#{prjNo} AS VARCHAR(6)),CAST(#{carNo} AS VARCHAR(3))) AND DATE between #{secondStart} and #{secondEnd}
+                       AND VALID=1
+             ) AS EL_DOCC_DAYS,
+             IFNULL(SUM(FL_1+Fl_2+FL_3+FL_4+FL_5+FL_6+FL_7+FL_8+FL_9+FL_10+FL_11+FL_12+FL_13+FL_14+FL_15+FL_16+FL_17+FL_18+FL_19+FL_20+
+                        FL_21+FL_22+FL_23+FL_24+FL_25+FL_26+FL_27+FL_28+FL_29+FL_30+
+                        FL_31+FL_32+FL_33+FL_34+FL_35+FL_36+FL_37+FL_38+FL_39+FL_40+
+                        FL_41+FL_42+FL_43+FL_44+FL_45+FL_46+FL_47+FL_48+FL_49+FL_50+
+                        FL_51+FL_52+FL_53+FL_54+FL_55+FL_56+FL_57+FL_58+FL_59+FL_60+
+                        FL_61+FL_62+FL_63+FL_64+FL_65+FL_66+FL_67+FL_68+FL_69+FL_70+
+                        FL_71+FL_72+FL_73+FL_74+FL_75+FL_76+FL_77+FL_78+FL_79+FL_80+
+                        FL_81+FL_82+FL_83+FL_84+FL_85+FL_86+FL_87+FL_88+FL_89+FL_90), 0) AS EL_DOCC_SUM,
+             COUNT(PROJNO) AS CNT
+            FROM BSFM.EL_DOCC
+        WHERE PROJNO= CONCAT(CAST(#{prjNo} AS VARCHAR(6)),CAST(#{carNo} AS VARCHAR(3))) AND VALID=1
+          AND DATE between #{secondStart} and #{secondEnd}
+        GROUP BY DATE_FORMAT(DATE, '%Y'), DATE_FORMAT(DATE, '%c')
+            ) DOCC_TMP
+        UNION ALL
+        SELECT DOCC_TMP.YYYY AS YYYY, DOCC_TMP.MM AS MM,
+               IFNULL(ROUND(DOCC_TMP.EL_DOCC_SUM / CAST(DOCC_TMP.CNT as FLOAT)), 0) AS EL_AVG_DOCC
+        FROM ( SELECT CONCAT(CAST(#{prjNo} AS VARCHAR(6)),CAST(#{carNo} AS VARCHAR(3))) AS EL_PROJ_NO,
+                      CAST(#{thirdYear} as VARCHAR(4)) AS YYYY, CAST(#{thirdMonth} as VARCHAR(4)) AS MM,
+                      (
+                          SELECT COUNT(DISTINCT DATE) FROM BSFM.EL_DOCC
+                          WHERE PROJNO= CONCAT(CAST(#{prjNo} AS VARCHAR(6)),CAST(#{carNo} AS VARCHAR(3))) AND DATE between #{thirdStart} and #{thirdEnd}
+                       AND VALID=1
+             ) AS EL_DOCC_DAYS,
+             IFNULL(SUM(FL_1+Fl_2+FL_3+FL_4+FL_5+FL_6+FL_7+FL_8+FL_9+FL_10+FL_11+FL_12+FL_13+FL_14+FL_15+FL_16+FL_17+FL_18+FL_19+FL_20+
+                        FL_21+FL_22+FL_23+FL_24+FL_25+FL_26+FL_27+FL_28+FL_29+FL_30+
+                        FL_31+FL_32+FL_33+FL_34+FL_35+FL_36+FL_37+FL_38+FL_39+FL_40+
+                        FL_41+FL_42+FL_43+FL_44+FL_45+FL_46+FL_47+FL_48+FL_49+FL_50+
+                        FL_51+FL_52+FL_53+FL_54+FL_55+FL_56+FL_57+FL_58+FL_59+FL_60+
+                        FL_61+FL_62+FL_63+FL_64+FL_65+FL_66+FL_67+FL_68+FL_69+FL_70+
+                        FL_71+FL_72+FL_73+FL_74+FL_75+FL_76+FL_77+FL_78+FL_79+FL_80+
+                        FL_81+FL_82+FL_83+FL_84+FL_85+FL_86+FL_87+FL_88+FL_89+FL_90), 0) AS EL_DOCC_SUM,
+             COUNT(PROJNO) AS CNT
+            FROM BSFM.EL_DOCC
+        WHERE PROJNO= CONCAT(CAST(#{prjNo} AS VARCHAR(6)),CAST(#{carNo} AS VARCHAR(3))) AND VALID=1
+          AND DATE between #{thirdStart} and #{thirdEnd}
+        GROUP BY DATE_FORMAT(DATE, '%Y'), DATE_FORMAT(DATE, '%c')
+            ) DOCC_TMP
+    </select>
+    <select id="selectHRTSPerformanceCheckResult"
+        parameterType="com.hdel.miri.api.domain.hrts.HRTS$HRTSRunAvgSearch"
+        resultMap="HRTSPerformanceCheckResult"
+    >
+    select
+        round(f_total_exe,1) as f_total_exe
+        ,round(f_level_nr,1) as f_level_nr
+        ,round(f_open_cv,1) as f_open_cv
+        ,round(f_close_cv,1) as f_close_cv
+        ,case when LEAST(f_total_exe,f_level_nr,f_open_cv,f_close_cv) = 0 then 'Z'
+            when LEAST(f_total_exe,f_level_nr,f_open_cv,f_close_cv) <![CDATA[ <= 55 ]]> then 'D'
+            when LEAST(f_total_exe,f_level_nr,f_open_cv,f_close_cv) <![CDATA[ <= 70 ]]> then 'C'
+            when LEAST(f_total_exe,f_level_nr,f_open_cv,f_close_cv) <![CDATA[ <= 85 ]]> then 'B'
+        else 'A' end f_rst
+        ,LEAST(f_total_exe,f_level_nr,f_open_cv,f_close_cv) as f_min
+        ,round(s_total_exe,1) as s_total_exe
+        ,round(s_level_nr,1) as s_level_nr
+        ,round(s_open_cv,1) as s_open_cv
+        ,round(s_close_cv,1) as s_close_cv
+        ,case when LEAST(s_total_exe,s_level_nr,s_open_cv,s_close_cv) = 0 then 'Z'
+            when LEAST(s_total_exe,s_level_nr,s_open_cv,s_close_cv) <![CDATA[ <= 55 ]]> then 'D'
+            when LEAST(s_total_exe,s_level_nr,s_open_cv,s_close_cv) <![CDATA[ <= 70 ]]> then 'C'
+            when LEAST(s_total_exe,s_level_nr,s_open_cv,s_close_cv) <![CDATA[ <= 85 ]]> then 'B'
+        else 'A' end s_rst
+        from bsfm.el_self_insp_result
+        where projno = CONCAT(#{prjNo},#{carNo})
+        and `datetime` between  STR_TO_DATE(CONCAT(DATE_FORMAT(LAST_DAY(STR_TO_DATE(#{requestDate},'%Y%m%d') - interval 1 MONTH), '%Y%m%d'), '000000'), '%Y%m%d%H%i%s') and STR_TO_DATE(CONCAT(DATE_FORMAT(LAST_DAY(STR_TO_DATE(#{requestDate},'%Y%m%d')), '%Y%m%d'), '235959'), '%Y%m%d%H%i%s');
+    </select>
+    <select id="selectSelfInspRemoteWithMonth"
+            parameterType="com.hdel.miri.api.domain.cc.CC$InspectSearchByPortfolioExtMonth"
+            resultType="long">
+        select ifnull(COUNT(*),0)  SELF_INSP
+        from (
+         select DATETIME,PROJNO
+         from bsfm.el_self_insp esi
+         where DATE_FORMAT(`DATETIME`,'%Y%m') between #{startMonth} and #{endMonth}
+            <if test="projnos == null or projnos.size == 0 ">
+                and PROJNO = ''
+            </if>
+            <if test="projnos != null and projnos.size > 0">
+                and PROJNO in
+                <foreach collection="projnos" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+                group by projno
+            </if>
+         ) TOT
+    </select>
+    <select id="selectAIMasterInfoForWeb"
+            parameterType="com.hdel.miri.api.domain.hrts.HRTS$HRTSMasterSearchWeb"
+            resultMap="HRTSRemoteInspectVO"
+    >
+        WITH TEMP AS (
+        <if test="joinList == null or joinList.size == 0 ">
+            SELECT NULL
+        </if>
+        <if test="joinList != null and joinList.size > 0">
+            <foreach collection="joinList" item="item" separator="UNION ALL">
+                SELECT A.ELEVATOR_NO
+                     , A.ELVTR_DIV_NM
+                     , A.BULD_NM
+                     , A.PROJ_NO
+                     , A.REPORT_TYPE
+                     , A.CHK_DATE
+                  FROM (
+                SELECT #{item.elevatorNo}                 AS ELEVATOR_NO
+                     , #{item.elvtrDivNm}                 AS ELVTR_DIV_NM
+                     , #{item.buldNm}                     AS BULD_NM
+                     , #{item.projNo}                     AS PROJ_NO
+                     , #{item.reportType}                 AS REPORT_TYPE
+                     , DATE_FORMAT(A.`DATETIME`,'%Y%m%d') AS CHK_DATE
+                     , CASE WHEN DATE_FORMAT(A.`DATETIME`,'%Y%m') = DATE_FORMAT(NOW(), '%Y%m') THEN 1
+                            WHEN NVL(B.INSP, 0) != 0                                           THEN 1
+                            ELSE 0
+                        END AS SEARCH_FG
+                  FROM BSFM.EL_SELF_INSP_RESULT A
+                  LEFT OUTER JOIN BSFM.REPORT_RECORD B
+                    ON B.EL_PROJ_NO = A.PROJNO
+                   AND B.YYYYMM     = DATE_FORMAT(A.`DATETIME`, '%Y%m')
+                 WHERE A.PROJNO = #{item.projNo}
+                <if test="startDate != null and startDate != ''">
+                    <if test="endDate != null and endDate != ''">
+                        AND A.`DATETIME` BETWEEN CONCAT(#{startDate}, '000000') AND CONCAT(#{endDate}, '235959')
+                    </if>
+                </if>
+                  ) A
+                WHERE A.SEARCH_FG = 1
+            </foreach>
+        </if>
+        )
+        select * from TEMP
+    </select>
+
+    <select id="getHrtsReport" parameterType="com.hdel.miri.api.domain.hrts.HRTS$HRTSReportReqVO" resultType="com.hdel.miri.api.domain.hrts.HRTS$HRTSReportVO">
+        select
+            concat(YYYYMM,'/',FOLDER_PATH,'/',FILE_NM) as s3Key,
+            FILE_NM as fileNm
+        from bsfm.report_record
+        where 1=1
+        and EL_PROJ_NO = concat(#{projNo},#{hoNo})
+        and YYYYMM = #{yyyymm}
+        limit 1
+    </select>
+    <!-- SELECT -->
+    <!-- INSERT -->
+    <!-- INSERT -->
+    <!-- UPDATE -->
+    <!-- UPDATE -->
+    <!-- DELETE -->
+    <!-- DELETE -->
+</mapper>

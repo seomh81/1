@@ -1,0 +1,679 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.api.domain.hccc.HCCCRepository">
+    <resultMap id="HoStatusVO" type="com.hdel.miri.api.domain.hccc.HCCC$HCCCHoStatusVO">
+        <result column="EL_STATUS" property="elStatus" />
+        <result column="ACTIVITY_STATUS" property="activityStatus" />
+        <result column="ACPT_DATE" property="acptDate" />
+    </resultMap>
+    <resultMap id="HCCCELESRunCountInfo" type="com.hdel.miri.api.domain.hccc.HCCC$HCCCELESCountVO">
+        <result column="RUN" property="run" />
+        <result column="NOT_RUN" property="notRun" />
+    </resultMap>
+    <resultMap id="FailStatusVO" type="com.hdel.miri.api.domain.hccc.HCCC$HCCCFailStatusVO">
+        <result column="TEXT" property="text" />
+        <result column="HO_NO" property="hoNo" />
+        <result column="EL_STATUS" property="elStatus" />
+        <result column="ACTIVITY_STATUS" property="activityStatus" />
+        <result column="UPD_DT" property="updDt" />
+    </resultMap>
+
+    <resultMap id="GetHcccReceptionInfoForMonthVO" type="com.hdel.miri.api.domain.cc.CC$CalenderVO">
+        <result column="ACPT_NO"        property="acptNo" />
+        <result column="INTG_PRJ_NO"    property="intgPrjNo" />
+        <result column="TRLINE_CD"      property="trlineCd" />
+        <result column="PRJ_NO"         property="prjNo" />
+        <result column="HO_NO"          property="hoNo" />
+        <result column="EL_NO"          property="elNo" />
+        <result column="PRJ_NM"         property="prjNm" />
+        <result column="HO_NM"          property="hoNm" />
+        <result column="TARGET_DT"      property="targetDt" />
+        <result column="STATUS"         property="status" />
+        <result column="D_TYPE"         property="dType" />
+    </resultMap>
+    <resultMap id="FailCountInfoVO" type="com.hdel.miri.api.domain.hccc.HCCC$HCCCFailCountInfoVO">
+        <result column="FAIL_COMPLETE"    property="failComplete" />
+        <result column="FAIL_DETECT"      property="failDetect" />
+        <result column="REMOTE_REPAIR"         property="remoteRepair" />
+        <result column="FIELD_REPAIR"          property="fieldRepair" />
+    </resultMap>
+
+    <resultMap id="RunAvgInPeriod" type="com.hdel.miri.api.domain.hccc.HCCC$HCCCRunAvgInPeriod">
+        <result column="MONTH_RUNAVG"    property="month" />
+        <result column="QUARTER_RUNAVG"      property="quarter" />
+        <result column="HALFYEAR_RUNAVG"         property="halfyear" />
+    </resultMap>
+
+    <resultMap id="GetHcccReceptionInfoForOneTargetVO" type="com.hdel.miri.api.domain.hccc.HCCC$HCCCReceptionDetailVO">
+        <result column="ACPT_NO"         property="acptNo" />
+        <result column="PRJ_NM"          property="prjNm" />
+        <result column="CAR_NO"          property="carNo" />
+        <result column="CONSL_MCD"       property="conslMcd" />
+        <result column="CONSL_MCD_NM"    property="conslMcdNm" />
+        <result column="CONSL_SCD"       property="conslScd" />
+        <result column="CONSL_SCD_NM"    property="conslScdNm" />
+        <result column="BKDN_LOC_LCD"    property="bkdnLocLcd" />
+        <result column="BKDN_LOC_LCD_NM" property="bkdnLocLcdNm" />
+        <result column="BKDN_LOC_MCD"    property="bkdnLocMcd" />
+        <result column="BKDN_LOC_MCD_NM" property="bkdnLocMcdNm" />
+        <result column="BKDN_LOC_SCD"    property="bkdnLocScd" />
+        <result column="BKDN_LOC_SCD_NM" property="bkdnLocScdNm" />
+        <result column="BKDN_CAU_CD"     property="bkdnCauCd" />
+        <result column="BKDN_CAU_CD_NM"  property="bkdnCauCdNm" />
+        <result column="PROC_RSLT_CD"    property="procRsltCd" />
+        <result column="PROC_RSLT_CD_NM" property="procRsltCdNm" />
+        <result column="STATUS"          property="status" />
+    </resultMap>
+
+    <select id="selectELCount"
+            parameterType="list"
+            resultType="long">
+        SELECT SUM(CT) ALL_COUNT
+        FROM (
+        <foreach collection="list" item="item" separator="UNION ALL">
+            SELECT COUNT(*) CT
+            FROM HCSADM.UC_MIRI_HO_STATUS umhs
+            WHERE INTG_PRJ_NO = #{item.intgPrjNo}
+            AND DEAL_LINE_DIV = #{item.trlineCd}
+            <!-- AND HRTS_YN = 'Y' -->
+        </foreach>
+        ) TOT
+
+    </select>
+
+    <select id="selectAllCount"
+            parameterType="list"
+            resultType="long">
+        <!-- SELECT SUM(CT) ALL_COUNT
+        FROM (
+                SELECT 0 as CT FROM DUAL
+                <foreach collection="list" item="item" open=" UNION ALL " separator="UNION ALL">
+                    SELECT COUNT(PRJ_NO||HO_NO) CT
+                    FROM HCSADM.UC_MIRI_HO_STATUS umhs
+                    WHERE INTG_PRJ_NO = #{item.intgPrjNo}
+                    AND DEAL_LINE_DIV = #{item.trlineCd}
+                    AND HRTS_YN = 'Y'
+                </foreach>
+            ) TOT -->
+        SELECT COUNT(PRJ_NO||HO_NO) as ALL_COUNT FROM HCSADM.UC_MIRI_HO_STATUS
+        WHERE 1 = 1 
+        <!-- AND HRTS_YN = 'Y' -->
+        <if test="list != null and !list.isEmpty">
+            AND (
+                (INTG_PRJ_NO,DEAL_LINE_DIV) IN (
+                <foreach collection="list" item="item" index="idx" separator=",">
+                <if test="idx == 1000"> ) OR (INTG_PRJ_NO,DEAL_LINE_DIV) IN (</if>
+                (#{item.intgPrjNo}, #{item.trlineCd})
+                </foreach>
+                )
+            )
+        </if>
+
+        <if test="list == null or list.isEmpty">
+            AND 1=2
+        </if>
+
+    </select>
+        <select id="selectAllCount2"
+            parameterType="list"
+            resultType="long">
+        SELECT SUM(CT) ALL_COUNT
+        FROM (
+                SELECT 0 as CT FROM DUAL
+                <foreach collection="list" item="item" open=" UNION ALL " separator="UNION ALL">
+                    SELECT COUNT(PRJ_NO||HO_NO) CT
+                    FROM HCSADM.UC_MIRI_HO_STATUS umhs
+                    WHERE INTG_PRJ_NO||DEAL_LINE_DIV = #{item}
+                    <!-- AND HRTS_YN = 'Y' -->
+                    <!-- SELECT COUNT(*) CT
+                    FROM HCSADM.UC_MIRI_HO_STATUS umhs
+                    WHERE INTG_PRJ_NO = #{item.intgPrjNo}
+                    AND DEAL_LINE_DIV = #{item.trlineCd}
+                    AND HRTS_YN = 'Y' -->
+                    <!-- AND EL_STATUS = 'N' -->
+                </foreach>
+            ) TOT
+
+    </select>
+    <select id="selectFailCount"
+            parameterType="list"
+            resultType="long"
+    >
+    SELECT SUM(CT) FAIL_COUNT
+    FROM (
+        SELECT 0 as CT FROM DUAL
+        <foreach collection="list" item="item" open=" UNION ALL " separator="UNION ALL">
+            SELECT COUNT(*) CT
+            FROM HCSADM.UC_MIRI_HO_STATUS umhs
+            WHERE INTG_PRJ_NO = #{item.intgPrjNo}
+            AND DEAL_LINE_DIV = #{item.trlineCd}
+            <!-- AND HRTS_YN = 'Y' -->
+            AND EL_STATUS = 'N'
+        </foreach>
+    ) TOT
+    </select>
+    <select id="selectELRunCountInfo"
+            parameterType="list"
+            resultMap="HCCCELESRunCountInfo"
+    >
+        SELECT NVL(SUM(RUN),0) RUN ,NVL(SUM(NOT_RUN),0) NOT_RUN
+        FROM (
+                <if test="list == null or list.size == 0 ">
+                    SELECT 0 RUN , 0 NOT_RUN FROM DUAL
+                </if>
+                <if test="list != null and list.size > 0 ">
+                    <foreach collection="list" item="item" separator="UNION ALL">
+                    SELECT
+                        NVL(SUM(CASE WHEN (EL_STATUS IS NULL OR  EL_STATUS != 'N') THEN 1 ELSE 0 END),0) RUN
+                        ,NVL(SUM(CASE WHEN EL_STATUS = 'N' THEN 1 ELSE 0 END),0) NOT_RUN
+                    FROM HCSADM.UC_MIRI_HO_STATUS HS
+                    WHERE INTG_PRJ_NO = #{item.intgPrjNo}
+                    AND DEAL_LINE_DIV = #{item.trlineCd}
+                    <!-- AND HRTS_YN = 'Y' -->
+                    AND HO_NO LIKE 'L%'
+                    </foreach>
+                </if>
+            ) TOT
+    </select>
+    <select id="selectESRunCountInfo"
+            parameterType="list"
+            resultMap="HCCCELESRunCountInfo"
+    >
+        SELECT NVL(SUM(RUN),0) RUN ,NVL(SUM(NOT_RUN),0) NOT_RUN
+        FROM (
+        <if test="list == null or list.size == 0 ">
+            SELECT 0 RUN , 0 NOT_RUN FROM DUAL
+        </if>
+        <if test="list != null and list.size > 0 ">
+            <foreach collection="list" item="item" separator="UNION ALL">
+                SELECT
+                NVL(SUM(CASE WHEN (EL_STATUS IS NULL OR  EL_STATUS != 'N') THEN 1 ELSE 0 END),0) RUN
+                ,NVL(SUM(CASE WHEN EL_STATUS = 'N' THEN 1 ELSE 0 END),0) NOT_RUN
+                FROM HCSADM.UC_MIRI_HO_STATUS HS
+                WHERE INTG_PRJ_NO = #{item.intgPrjNo}
+                AND DEAL_LINE_DIV = #{item.trlineCd}
+                <!-- AND HRTS_YN = 'Y' -->
+                AND SUBSTR(HO_NO,0,1) IN ('M','W')
+            </foreach>
+        </if>
+        ) TOT
+    </select>
+    <select id="selectELRunAvg"
+            parameterType="com.hdel.miri.api.domain.hccc.HCCC$ContractJoin"
+            resultType="double"
+    >
+        SELECT
+            NVL(ROUND(AVG(RUNAVG),2),0) RUNAVG
+        FROM (
+        <if test=" list != null and list.size > 0">
+               SELECT A.INTG_PRJ_NO
+                    , A.PRJ_NO
+                    , A.DEAL_LINE_DIV
+                    , A.HO_NO
+                    , AVG(NVL(B.RUNAVG, 100)) AS RUNAVG
+                 FROM HCSADM.UC_MIRI_HO_STATUS A
+                 LEFT OUTER JOIN HCSADM.UC_MIRI_MON_OPRATE B
+                   ON B.ACPT_DATE     = #{prevMonth}
+                  AND B.INTG_PRJ_NO   = A.INTG_PRJ_NO
+                  AND B.PRJ_NO        = A.PRJ_NO
+                  AND B.DEAL_LINE_DIV = A.DEAL_LINE_DIV
+                  AND B.HO_NO         = A.HO_NO
+                WHERE A.HO_NO   LIKE 'L%'
+                  <!-- AND A.HRTS_YN = 'Y' -->
+                  AND (A.INTG_PRJ_NO, A.DEAL_LINE_DIV) IN (
+            <foreach collection="list" item="item" index="idx" separator=",">
+                (#{item.intgPrjNo}, #{item.trlineCd})
+            </foreach>
+                )
+                GROUP BY A.INTG_PRJ_NO ,A.PRJ_NO ,A.DEAL_LINE_DIV, A.HO_NO
+        </if>
+        <if test=" list == null or list.size == 0">
+            select 100 as RUNAVG from dual
+        </if>
+        ) TOT
+    </select>
+
+    <select id="selectElRunAvgInPeriod"
+            parameterType="com.hdel.miri.api.domain.hccc.HCCC$ContractPeriod"
+            resultMap="RunAvgInPeriod">
+            SELECT ROUND(AVG(NVL(A.MONTH_RUNAVG, 100)),1)    AS MONTH_RUNAVG
+                 , ROUND(AVG(NVL(B.QUARTER_RUNAVG, 100)),1)  AS QUARTER_RUNAVG
+                 , ROUND(AVG(NVL(C.HALFYEAR_RUNAVG, 100)),1) AS HALFYEAR_RUNAVG
+              FROM HCSADM.UC_MIRI_HO_STATUS EL
+              LEFT OUTER JOIN (
+                                SELECT INTG_PRJ_NO
+                                     , PRJ_NO
+                                     , DEAL_LINE_DIV
+                                     , HO_NO
+                                     , ROUND(AVG(RUNAVG),1) AS MONTH_RUNAVG
+                                  FROM HCSADM.UC_MIRI_MON_OPRATE
+                                  WHERE ACPT_DATE  = TO_CHAR(ADD_MONTHS(SYSDATE,-1),'YYYYMM')
+                                  GROUP BY INTG_PRJ_NO, PRJ_NO, DEAL_LINE_DIV, HO_NO
+                              ) A
+                ON A.INTG_PRJ_NO   = EL.INTG_PRJ_NO
+               AND A.PRJ_NO        = EL.PRJ_NO
+               AND A.DEAL_LINE_DIV = EL.DEAL_LINE_DIV
+               AND A.HO_NO         = EL.HO_NO
+              LEFT OUTER JOIN (
+                                SELECT INTG_PRJ_NO
+                                     , PRJ_NO
+                                     , DEAL_LINE_DIV
+                                     , HO_NO
+                                     , ROUND(AVG(RUNAVG),1) AS QUARTER_RUNAVG
+                                  FROM HCSADM.UC_MIRI_MON_OPRATE
+                                 WHERE <![CDATA[ ACPT_DATE > TO_CHAR(ADD_MONTHS(SYSDATE,-3),'YYYYMM') ]]>
+                                 GROUP BY INTG_PRJ_NO, PRJ_NO, DEAL_LINE_DIV, HO_NO
+                              ) B
+                ON B.INTG_PRJ_NO   = EL.INTG_PRJ_NO
+               AND B.PRJ_NO        = EL.PRJ_NO
+               AND B.DEAL_LINE_DIV = EL.DEAL_LINE_DIV
+               AND B.HO_NO         = EL.HO_NO
+              LEFT OUTER JOIN (
+                                SELECT INTG_PRJ_NO
+                                     , PRJ_NO
+                                     , DEAL_LINE_DIV
+                                     , HO_NO
+                                     , ROUND(AVG(RUNAVG),2) AS HALFYEAR_RUNAVG
+                                  FROM HCSADM.UC_MIRI_MON_OPRATE
+                                 WHERE <![CDATA[ ACPT_DATE > TO_CHAR(ADD_MONTHS(SYSDATE,-6),'YYYYMM') ]]>
+                                 GROUP BY INTG_PRJ_NO, PRJ_NO, DEAL_LINE_DIV, HO_NO
+                              ) C
+                ON C.INTG_PRJ_NO   = EL.INTG_PRJ_NO
+               AND C.PRJ_NO        = EL.PRJ_NO
+               AND C.DEAL_LINE_DIV = EL.DEAL_LINE_DIV
+               AND C.HO_NO         = EL.HO_NO
+             WHERE 1 = 1
+               <!-- AND EL.HRTS_YN = 'Y' -->
+               AND EL.HO_NO   LIKE 'L%'
+              <if test="list.size>0">
+               AND (EL.INTG_PRJ_NO, EL.DEAL_LINE_DIV) IN 
+              <foreach collection="list" item="item" open="(" close=")" separator=",">
+                    (#{item.intgPrjNo},#{item.trlineCd})
+              </foreach>
+             </if>
+    </select>
+
+    <select id="selectESRunAvg"
+            parameterType="com.hdel.miri.api.domain.hccc.HCCC$ContractJoin"
+            resultType="double"
+    >
+            SELECT
+                NVL(ROUND(AVG(RUNAVG),2),0) RUNAVG
+            FROM (
+    <if test=" list != null and list.size > 0">
+                SELECT A.INTG_PRJ_NO
+                        , A.PRJ_NO
+                        , A.DEAL_LINE_DIV
+                        , A.HO_NO
+                        , AVG(NVL(B.RUNAVG, 100)) AS RUNAVG
+                    FROM HCSADM.UC_MIRI_HO_STATUS A
+                    LEFT OUTER JOIN HCSADM.UC_MIRI_MON_OPRATE B
+                    ON B.ACPT_DATE     = #{prevMonth}
+                    AND B.INTG_PRJ_NO   = A.INTG_PRJ_NO
+                    AND B.PRJ_NO        = A.PRJ_NO
+                    AND B.DEAL_LINE_DIV = A.DEAL_LINE_DIV
+                    AND B.HO_NO         = A.HO_NO
+                    WHERE  1 = 1
+                    AND SUBSTR(A.HO_NO,0,1) IN ('M','W')
+    <!-- AND A.HRTS_YN = 'Y' -->
+                    AND (A.INTG_PRJ_NO, A.DEAL_LINE_DIV) IN (
+    <foreach collection="list" item="item" index="idx" separator=",">
+                    (#{item.intgPrjNo}, #{item.trlineCd})
+    </foreach>
+                    )
+                    GROUP BY A.INTG_PRJ_NO ,A.PRJ_NO ,A.DEAL_LINE_DIV, A.HO_NO
+    </if>
+    <if test=" list == null or list.size == 0">
+                select 100 as RUNAVG from dual
+    </if>
+            ) TOT
+    </select>
+  <!-- 엘레베이터와 동일 기준으로 수정한 버전, 후일 동일 기준으로 갈 상황을 대비하여 일단 남겨둠      
+    SELECT
+            NVL(ROUND(AVG(RUNAVG),2),0) RUNAVG
+        FROM (
+        <if test=" list != null and list.size > 0">
+               SELECT A.INTG_PRJ_NO
+                    , A.PRJ_NO
+                    , A.DEAL_LINE_DIV
+                    , A.HO_NO
+                    , AVG(NVL(B.RUNAVG, 100)) AS RUNAVG
+                 FROM HCSADM.UC_MIRI_HO_STATUS A
+                 LEFT OUTER JOIN HCSADM.UC_MIRI_MON_OPRATE B
+                   ON B.ACPT_DATE         = #{prevMonth}
+                  AND B.INTG_PRJ_NO       = A.INTG_PRJ_NO
+                  AND B.PRJ_NO            = A.PRJ_NO
+                  AND B.DEAL_LINE_DIV     = A.DEAL_LINE_DIV
+                  AND B.HO_NO             = A.HO_NO
+                WHERE SUBSTR(A.HO_NO,0,1) IN ('M','W')
+                  AND (A.INTG_PRJ_NO, A.DEAL_LINE_DIV) IN (
+            <foreach collection="list" item="item" index="idx" separator=",">
+                (#{item.intgPrjNo}, #{item.trlineCd})
+            </foreach>
+                )
+                GROUP BY A.INTG_PRJ_NO ,A.PRJ_NO ,A.DEAL_LINE_DIV, A.HO_NO
+        </if>
+        <if test=" list == null or list.size == 0">
+            select 100 as RUNAVG from dual
+        </if>
+        ) TOT -->
+    <select id="selectELInfoJoinHOStatus"
+            parameterType="list"
+            resultMap="HoStatusVO"
+        >
+        WITH TEMP AS (
+        <if test="list.size == 0">
+            SELECT '' as INTG_PRJ_NO
+            , '' as DEAL_LINE_DIV
+            , '' as PRJ_NO
+            , '' as HO_NO
+            FROM DUAL
+        </if>
+        <foreach collection="list"  item="item" separator="UNION ALL">
+            SELECT #{item.intgPrjNo} as INTG_PRJ_NO
+                 , #{item.trlineCd} as DEAL_LINE_DIV
+                 , #{item.prjNo} as PRJ_NO
+                 , #{item.hoNo} as HO_NO
+            FROM DUAL
+        </foreach>
+        ) SELECT NVL(ST.EL_STATUS,'Y')          AS EL_STATUS
+               , NVL(ST.ACTIVITY_STATUS,'완료') AS ACTIVITY_STATUS
+               , ST.ACPT_DATE                   AS ACPT_DATE
+            FROM TEMP
+            LEFT JOIN  HCSADM.UC_MIRI_HO_STATUS ST
+              ON TEMP.INTG_PRJ_NO = ST.INTG_PRJ_NO
+             AND TEMP.DEAL_LINE_DIV = ST.DEAL_LINE_DIV
+             AND TEMP.PRJ_NO = ST.PRJ_NO
+             AND TEMP.HO_NO = ST.HO_NO
+           ORDER BY TEMP.PRJ_NO, TEMP.HO_NO
+             <!-- AND ST.HRTS_YN = 'Y' -->
+    </select>
+    <select id="selectELInfoJoinFailStatus"
+            parameterType="com.hdel.miri.api.domain.hccc.HCCC$HCCCJoinWithMobile"
+            resultMap="FailStatusVO"
+    >
+        WITH TEMP AS (
+        <if test="list.size == 0">
+            SELECT '' as INTG_PRJ_NO
+            , '' as DEAL_LINE_DIV
+            , '' as PRJ_NO
+            , '' as HO_NO
+            FROM DUAL
+        </if>
+        <foreach collection="list"  item="item" separator="UNION ALL">
+            SELECT #{item.intgPrjNo} as INTG_PRJ_NO
+            , #{item.trlineCd} as DEAL_LINE_DIV
+            , #{item.prjNo} as PRJ_NO
+            , #{item.hoNo} as HO_NO
+            FROM DUAL
+        </foreach>
+        ) SELECT
+        ('[ '||ST.PRJ_NM||' ] - '||ST.HO_NO||' 호기') TEXT
+        , ST.HO_NO||' 호기' HO_NO
+        , NVL(ST.EL_STATUS,'Y') EL_STATUS
+        , NVL(CASE WHEN ST.ACTIVITY_STATUS = '접수' THEN '고장접수'
+        WHEN ST.ACTIVITY_STATUS = '배치' THEN '기사배치'
+        WHEN ST.ACTIVITY_STATUS = '출발' THEN '기사출발'
+        WHEN ST.ACTIVITY_STATUS = '도착' THEN '수리중'
+        WHEN ST.ACTIVITY_STATUS = '완료' THEN '수리완료'
+        ELSE '' END,'이상없음') ACTIVITY_STATUS
+        , SUBSTR(ACPT_DATE, 0, 4)||'-'||SUBSTR(ACPT_DATE, 5, 2)||'-'||SUBSTR(ACPT_DATE, 7, 2) AS UPD_DT <!--TO_CHAR(UPD_DT,'YYYY-MM-DD') UPD_DT-->
+        FROM TEMP
+        INNER JOIN  HCSADM.UC_MIRI_HO_STATUS ST
+        ON TEMP.INTG_PRJ_NO = ST.INTG_PRJ_NO 
+        AND ST.ACTIVITY_STATUS IS NOT NULL
+        AND ST.EL_STATUS != 'Y'
+        AND TEMP.DEAL_LINE_DIV = ST.DEAL_LINE_DIV
+        AND TEMP.PRJ_NO = ST.PRJ_NO
+        AND TEMP.HO_NO = ST.HO_NO
+        <!-- AND ST.HRTS_YN = 'Y' -->
+        <if test="mobile == true"> <![CDATA[ AND ROWNUM  <= 3 ]]> </if>
+        ORDER BY UPD_DT DESC
+    </select>
+    <select id="selectFailCountInfo"
+        parameterType="com.hdel.miri.api.domain.contract.Contract$ContractSearchPortfolioExtendsMonth"
+        resultMap="FailCountInfoVO"
+    >
+        SELECT
+            NVL(SUM(FAIL_COMPLETE),0) FAIL_COMPLETE
+        ,NVL(SUM(FAIL_DETECT),0) FAIL_DETECT
+        ,NVL(SUM(REMOTE_REPAIR),0) REMOTE_REPAIR
+        ,NVL(SUM(FIELD_REPAIR),0) FIELD_REPAIR
+        FROM (
+        SELECT
+            RMSCNT + ASSCNT AS FAIL_COMPLETE
+            ,ASSCNT + RMSCNT + ASSNCNT AS FAIL_DETECT
+            ,RMSCNT AS REMOTE_REPAIR
+            ,ASSCNT AS FIELD_REPAIR
+        FROM HCSADM.UC_MIRI_MON_FAILMGMT ummf
+        WHERE 1 = 1 
+        <!-- AND HRTS_YN ='Y' -->
+        <if test="list == null or list.size == 0">
+            AND PRJ_NO||HO_NO = ''
+        </if>
+        <if test="list != null and list.size > 0">
+            AND (
+            <foreach collection="list"  item="item" open="(" separator="OR" close=")">
+                INTG_PRJ_NO = substr( #{item.intgPrjTrlineCdCode},1,6) and DEAL_LINE_DIV = substr( #{item.intgPrjTrlineCdCode},-3) 
+            </foreach>
+            )
+        </if>
+        AND ACPT_DATE BETWEEN #{startMonth} AND #{endMonth} ) TOT
+    </select>
+    <select id="getHcccReceptionInfoForMonth" parameterType="List" resultMap="GetHcccReceptionInfoForMonthVO">
+        SELECT ACPT_NO
+             , INTG_PRJ_NO
+             , TRLINE_CD
+             , PRJ_NO
+             , HO_NO
+             , SID AS EL_NO
+             , PRJ_NM
+             , HO_NM
+             , TARGET_DT
+             , STATUS
+             , D_TYPE
+          FROM (
+                 SELECT A.ACPT_NO
+                      , A.INTG_PRJ_NO
+                      , A.DEAL_LINE_DIV AS TRLINE_CD
+                      , A.PRJ_NO
+                      , A.HO_NO
+                      , A.PRJ_NM
+                      , REPLACE(A.HO_NM, '엘리베이터', '') AS HO_NM
+                      , D.SID
+                      , A.ACPT_DATE AS TARGET_DT
+                      , CASE WHEN B.PROC_STAT_CD  ='21004' THEN '완료'
+                             WHEN B.FIN_TIME  IS NOT NULL  THEN '완료'
+                             WHEN B.ARRV_TIME IS NOT NULL  THEN '도착'
+                             WHEN B.DEP_TIME  IS NOT NULL  THEN '배치'
+                             WHEN B.ARRG_TIME IS NOT NULL  THEN '배치'
+                             WHEN B.CALL_TIME IS NOT NULL  THEN '배치'
+                             ELSE '접수'
+                         END STATUS
+                      , 'FAULT_HIS' AS D_TYPE
+                      , CASE WHEN B.PROC_STAT_CD  ='21004' THEN 4
+                             WHEN B.FIN_TIME  IS NOT NULL  THEN 4
+                             WHEN B.ARRV_TIME IS NOT NULL  THEN 3
+                             WHEN B.DEP_TIME  IS NOT NULL  THEN 2
+                             WHEN B.ARRG_TIME IS NOT NULL  THEN 2
+                             WHEN B.CALL_TIME IS NOT NULL  THEN 2
+                             ELSE 1
+                         END ORDER_NUM
+                   FROM HCSADM.UC_ASS_BASE A
+                  INNER JOIN HCSADM.UC_ASS_PROC_HIST B
+                     ON B.PROC_STAT_CD <![CDATA[ <> '21007' ]]>
+                    AND B.ACPT_NO = A.ACPT_NO
+                  INNER JOIN HCSADM.UC_MIRI_HO_STATUS D
+                     ON D.INTG_PRJ_NO   = A.INTG_PRJ_NO
+                    AND D.DEAL_LINE_DIV = A.DEAL_LINE_DIV
+                    AND D.PRJ_NO        = A.PRJ_NO
+                    AND D.HO_NO         = A.HO_NO
+                  WHERE A.PROC_TC   = '07001'
+                    AND A.CONSL_LCD = '010000'
+                    AND A.ACPT_DATE BETWEEN ${startDate} AND ${endDate}
+                    AND EXISTS (
+                                  SELECT 1
+                                    FROM HCSADM.UC_ASS_FIN_RPT C
+                                   WHERE C.PROC_USER_ID != 'RMS'
+                                     AND C.ACPT_NO      = A.ACPT_NO
+                               )
+                  AND (
+                          <foreach collection="intgPrjNoAndTrlineCds" item="item">
+                              (A.INTG_PRJ_NO = SUBSTR(#{item},1,6) AND A.DEAL_LINE_DIV = SUBSTR(#{item},-3)) OR
+                          </foreach>
+                          1=2
+                      ) 
+               )
+         ORDER BY TARGET_DT, ORDER_NUM, PRJ_NO, HO_NO
+    </select>
+
+    <select id="getFailRemarks" parameterType="com.hdel.miri.api.domain.hccc.HCCC$HCCCFailRemakrSearchVO" resultType="HashMap">
+        SELECT PRJ_NO, HNO, REMARK, MA_MONTH FROM HCSADM.UC_ECN_MST
+        WHERE 	PRJ_NO  = substr(#{prjhno},1,6)
+        AND 	HNO 	= substr(#{prjhno},-3)
+        AND     DEL_YN = 'N'
+        <if test="orStrs !=null and orStrs.size > 0">
+            AND (
+                <foreach collection="orStrs" item="item" separator="OR">
+                    REMARK LIKE '%'||#{item}||'%'
+                </foreach>
+                )   
+        </if>
+        <if test="notStrs !=null and notStrs.size > 0">
+            AND (
+                <foreach collection="notStrs" item="item" separator="OR">
+                    REMARK NOT LIKE '%'||#{item}||'%'
+                </foreach>
+                )   
+        </if>
+    </select>
+
+    <select id="selectElevatorList" parameterType="java.util.List" resultType="com.hdel.miri.api.domain.cc.CC$CCElevatorInfoVO">
+        SELECT 
+            DISTINCT
+            B.elevatorNo,
+            B.prjNo,
+            B.elvtrDiv,
+            B.hoNo,
+            CASE    WHEN EL_STATUS = 'Y' THEN '운행중' 
+                    WHEN EL_STATUS IS NULL THEN '운행중' 
+            ELSE '고장' END || ' - ' || NVL(ACTIVITY_STATUS,'완료') as elvtrSttsNm,
+            B.applcEnDt,
+            B.installationDe,
+            B.installationPlace,
+            B.buldNm,
+            B.inspCompanyNm ,
+            B.inspCompanyTel,
+            B.issueCompanyNm,
+            B.issueContEnDe,
+            B.shuttleMngrNm,
+            B.mgrValdEndDt
+        FROM (
+            <if test="list !=null and list.isEmpty"> 
+                SELECT
+                    '' as elevatorNo,
+                    '' as prjNo,
+                    '' as elvtrDiv,
+                    '' as hoNo,
+                    '' as elvtrSttsNm,
+                    '' as applcEnDt,
+                    '' as installationDe,
+                    '' as installationPlace,
+                    '' as buldNm,
+                    '' as inspCompanyNm ,
+                    '' as inspCompanyTel,
+                    '' as issueCompanyNm,
+                    '' as issueContEnDe,
+                    '' as shuttleMngrNm,
+                    '' as mgrValdEndDt
+                FROM DUAL
+            </if>
+            <foreach collection="list" item="item" separator=" UNION ALL ">
+                SELECT
+                    #{item.elevatorNo} as elevatorNo,
+                    #{item.prjNo} as prjNo,
+                    #{item.elvtrDiv} as elvtrDiv,
+                    #{item.hoNo} as hoNo,
+                    #{item.elvtrSttsNm} as elvtrSttsNm,
+                    #{item.applcEnDt} as applcEnDt,
+                    #{item.installationDe} as installationDe,
+                    #{item.installationPlace} as installationPlace,
+                    #{item.buldNm} as buldNm,
+                    #{item.inspCompanyNm} as inspCompanyNm ,
+                    #{item.inspCompanyTel} as inspCompanyTel,
+                    #{item.issueCompanyNm} as issueCompanyNm,
+                    #{item.issueContEnDe} as issueContEnDe,
+                    #{item.shuttleMngrNm} as shuttleMngrNm,
+                    #{item.mgrValdEndDt} as mgrValdEndDt
+                FROM DUAL
+            </foreach>
+        ) B, HCSADM.UC_MIRI_HO_STATUS UCB
+        WHERE B.elevatorNo = UCB.SID(+)
+        AND LENGTH(B.elevatorNo) = 7
+        ORDER BY elvtrSttsNm, prjNo, hoNo
+
+         <!-- WITH TEMP AS (
+        <if test="list.size == 0">
+            SELECT '' as INTG_PRJ_NO
+            , '' as DEAL_LINE_DIV
+            , '' as PRJ_NO
+            , '' as HO_NO
+            FROM DUAL
+        </if>
+        <foreach collection="list"  item="item" separator="UNION ALL">
+            SELECT #{item.intgPrjNo} as INTG_PRJ_NO
+                 , #{item.trlineCd} as DEAL_LINE_DIV
+                 , #{item.prjNo} as PRJ_NO
+                 , #{item.hoNo} as HO_NO
+            FROM DUAL
+        </foreach>
+        ) SELECT
+            NVL(ST.EL_STATUS,'Y') EL_STATUS
+               , NVL(ST.ACTIVITY_STATUS,'완료') ACTIVITY_STATUS
+        FROM TEMP
+             LEFT JOIN  HCSADM.UC_MIRI_HO_STATUS ST
+                ON TEMP.INTG_PRJ_NO = ST.INTG_PRJ_NO
+                    AND TEMP.DEAL_LINE_DIV = ST.DEAL_LINE_DIV
+                    AND TEMP.PRJ_NO = ST.PRJ_NO
+                    AND TEMP.HO_NO = ST.HO_NO
+                    AND ST.HRTS_YN = 'Y' -->
+    </select>
+
+    <select id="getHcccReceptionInfoForOneTarget" parameterType="List" resultMap="GetHcccReceptionInfoForOneTargetVO">
+        SELECT UAB.ACPT_NO 
+             , UAB.PRJ_NM 
+             , UAB.PRJ_NO ||UAB.HO_NO AS CAR_NO
+             , UAB.CONSL_MCD --접수유형(중)
+             , (SELECT CD_NM FROM HCSADM.UC_SYS_CODEBOOK usc WHERE LCD ='CONSL_CD' AND CD = UAB.CONSL_MCD)   AS CONSL_MCD_NM
+             , UAB.CONSL_SCD --접수유형(소)
+             , (SELECT CD_NM FROM HCSADM.UC_SYS_CODEBOOK usc WHERE LCD ='CONSL_CD' AND CD = UAB.CONSL_SCD)   AS CONSL_SCD_NM
+             , UAFR.BKDN_LOC_LCD --고장부위(대)
+             , (SELECT CD_NM FROM HCSADM.UC_SYS_CODEBOOK usc WHERE LCD ='BKPART' AND CD = UAFR.BKDN_LOC_LCD) AS BKDN_LOC_LCD_NM
+             , UAFR.BKDN_LOC_MCD --고장부위(중)
+             , (SELECT CD_NM FROM HCSADM.UC_SYS_CODEBOOK usc WHERE LCD ='BKPART' AND CD = UAFR.BKDN_LOC_MCD) AS BKDN_LOC_MCD_NM
+             , UAFR.BKDN_LOC_CD AS BKDN_LOC_SCD --고장부위(소)
+             , (SELECT CD_NM FROM HCSADM.UC_SYS_CODEBOOK usc WHERE LCD ='BKPART' AND CD = UAFR.BKDN_LOC_CD)  AS BKDN_LOC_SCD_NM
+             , UAFR.BKDN_CAU_CD --원인
+             , (SELECT CD_NM FROM HCSADM.UC_SYS_CODEBOOK usc WHERE LCD ='020000' AND CD = UAFR.BKDN_CAU_CD)  AS BKDN_CAU_CD_NM
+             , UAFR.PROC_RSLT_CD --처리결과
+             , (SELECT CD_NM FROM HCSADM.UC_SYS_CODEBOOK usc WHERE LCD ='030000' AND CD = UAFR.PROC_RSLT_CD) AS PROC_RSLT_CD_NM
+             , NVL(( SELECT CASE WHEN PROC_STAT_CD  ='21004'    THEN '완료'
+                                 WHEN FIN_TIME      IS NOT NULL THEN '완료'
+                                 WHEN ARRV_TIME     IS NOT NULL THEN '처리중'
+                                 WHEN DEP_TIME      IS NOT NULL THEN '배치'
+                                 WHEN ARRG_TIME     IS NOT NULL THEN '배치'
+                                 WHEN CALL_TIME     IS NOT NULL THEN '배치'
+                                 ELSE '접수' --해당값은 셋팅 안되지만 구분하기위해 정의함
+                             END PROC
+                     FROM HCSADM.UC_ASS_PROC_HIST UAPH --접수처리 이력 테이블
+                     WHERE UAPH.PROC_STAT_CD <![CDATA[ <> ]]> '21007'
+                       AND UAPH.ACPT_NO  = UAB.ACPT_NO
+                       AND ROWNUM =1
+                    ),'접수') AS STATUS
+          FROM HCSADM.UC_ASS_BASE UAB 
+         INNER JOIN HCSADM.UC_ASS_FIN_RPT UAFR
+            ON UAFR.ACPT_NO = UAB.ACPT_NO
+         WHERE UAB.ACPT_NO = #{targetAcptNo}
+           AND UAB.PROC_TC = '07001'
+    </select>
+</mapper>

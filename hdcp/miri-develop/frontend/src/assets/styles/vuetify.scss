@@ -1,0 +1,121 @@
+// 텍스트필드 v-text-field
+.fieldRadius {
+  &.lg {
+    .v-field__outline__start {
+      border-radius: 12px 0 0 12px !important;
+    }
+    .v-field__outline__end {
+      border-radius: 0 12px 12px 0 !important;
+    }
+  }
+  &.xl {
+    .v-field__outline__start {
+      border-radius: 20px 0 0 20px !important;
+    }
+    .v-field__outline__end {
+      border-radius: 0 20px 20px 0 !important;
+    }
+  }
+}
+.v-label {
+  // font: initial;
+
+  font-size: 12px;
+  // line-height: 24px;
+
+  padding-top: 4px;
+}
+.v-input--density-compact
+  .v-field--variant-solo
+  .v-label.v-field-label--floating,
+.v-input--density-compact
+  .v-field--variant-filled
+  .v-label.v-field-label--floating {
+  top: -2px;
+}
+
+.v-field {
+  border-radius: 8px;
+}
+.v-field__input {
+  --v-input-padding-top: 6px;
+  // padding-top: 12px !important;
+  // --v-field-padding-top: 0px;
+}
+.v-field__append-inner {
+  padding-top: 11px;
+}
+.v-field__clearable {
+  padding-top: 12px;
+}
+.v-input__details {
+  padding-top: 6px;
+  height: 24px;
+  min-height: auto;
+  .v-messages__message {
+    font-size: 12px;
+    line-height: 4px;
+  }
+}
+
+.v-btn {
+}
+.v-btn--disabled.v-btn--variant-elevated,
+.v-btn--disabled.v-btn--variant-flat {
+  opacity: 0.4;
+}
+
+.v-field--variant-solo {
+  box-shadow: -1px 0px 3px -2px var(--v-shadow-key-umbra-opacity, rgba(0, 0, 0, 0.15)),
+    0px 1px 2px 0px var(--v-shadow-key-penumbra-opacity, rgba(0, 0, 0, 0.15)),
+    0px 1px 5px 0px var(--v-shadow-key-penumbra-opacity, rgba(0, 0, 0, 0.15));
+}
+.customBtn {
+  margin-left: 8px;
+  height: 40px !important;
+  box-shadow: -1px 0px 3px -2px var(--v-shadow-key-umbra-opacity, rgba(0, 0, 0, 0.15)),
+    0px 1px 2px 0px var(--v-shadow-key-penumbra-opacity, rgba(0, 0, 0, 0.15)),
+    0px 1px 5px 0px var(--v-shadow-key-penumbra-opacity, rgba(0, 0, 0, 0.15));
+}
+
+// .customeHeightInput {
+//   .v-field__input,
+//   .v-field__select,
+//   .v-field__field,
+//   input {
+//     --v-input-control-height: 36px;
+
+//     height: 36px;
+//     font: initial;
+//     font-size: 14px;
+//   }
+
+//   &.field {
+//     --v-input-padding-top: 18px;
+//     .v-field__append-inner {
+//       --v-input-padding-top: 8px;
+//     }
+//     .v-field__clearable {
+//       --v-input-padding-top: 8px;
+//     }
+//   }
+//   &.select {
+//     --v-input-padding-top: 10px;
+//     .v-field__append-inner {
+//       --v-input-padding-top: 8px;
+//     }
+//     .v-input--density-default
+//       .v-field--variant-solo
+//       .v-label.v-field-label--floating,
+//     .v-input--density-default
+//       .v-field--variant-filled
+//       .v-label.v-field-label--floating {
+//       top: 0px;
+//     }
+//   }
+
+//   .v-field--variant-plain.v-field {
+//     --v-input-padding-top: 1px;
+//   }
+// }
+// ////////////////////////////////

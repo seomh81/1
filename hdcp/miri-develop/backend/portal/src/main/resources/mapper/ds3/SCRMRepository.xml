@@ -1,0 +1,883 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.api.domain.scrm.SCRMRepository">
+    <!-- RESULT MAP -->
+    <resultMap id="ContractCarInfo" type="com.hdel.miri.api.domain.contract.Contract$ContractCarInfo">
+        <result column="PORTFOLIO_CONTRACT_MAPPING_ID" property="portfolioContractMappingId" />
+        <result column="CAR_NO" property="carNo" />
+        <result column="MODEL" property="model" />
+    </resultMap>
+    <resultMap id="ContractCarInfoPRJNO" type="com.hdel.miri.api.domain.contract.Contract$ContractCarPRJNOInfo">
+        <id column="INTG_PRJ_TRLINE_CD_CODE" property="intgPrjTrlineCdCode" />
+        <result column="CAR_NO" property="carNo" />
+        <result column="MODEL" property="model" />
+    </resultMap>
+    <resultMap id="ContractContactInfo" type="com.hdel.miri.api.domain.contract.Contract$ContractContactInfo">
+        <result column ="NM" property="nm"/>
+        <result column="DEPT_NM" property="deptNm" />
+        <result column="DISP_STR" property="dispStr" />
+        <result column="MOB" property="mob" />
+    </resultMap>
+    <resultMap id="getContractAPI" type="com.hdel.miri.api.domain.contract.Contract$ContractAPI">
+        <result column="INTG_PRJ_NO"            property="intgPrjNo" />
+        <result column="TRLINE_CD"            property="trlineCd" />
+        <result column="MODEL"            property="model" />
+        <result column="SITENM"                 property="siteNm" />
+        <result column="ADDR"            property="addr" />
+    </resultMap>
+    <resultMap id="getContractEmployeeAPI" type="com.hdel.miri.api.domain.contract.Contract$ContractEmployeeAPI">
+        <result column="INTG_PRJ_NO"            property="intgPrjNo" />
+        <result column="TRLINE_CD"            property="trlineCd" />
+    </resultMap>
+
+    <!-- 조재현 -->
+    <resultMap id="getContractDetails" type="com.hdel.miri.api.domain.contract.Contract$ContractDetail">
+        <id column="USER_PORTFOLIO_MAPPING_ID" property="userPortfolioMappingId" />
+        <collection property="contractList" resultMap="ContractInfo" >
+            <id column="CONTRACT_CODE" property="contractCode" />
+        </collection>
+    </resultMap>
+
+    <resultMap id="ContractInfo" type="com.hdel.miri.api.domain.contract.Contract$ContractInfo">
+        <id column="CONTRACT_CODE"                property="contractCode" />
+        <result column="PORTFOLIO_CONTRACT_MAPPING_ID" property="portfolioContractMappingId" />
+        <result column ="INTG_PRJ_TRLINE_CD_CODE"       property="intgPrjTrlineCdCode"/>
+        <result column ="INTG_PRJ_NO" property="intgPrjNo"/>
+        <result column ="TRLINE_CD" property="trlineCd"/>
+        <result column ="BGN_DT" property="bgnDt"/>
+        <result column ="XPIR_DT" property="xpirDt"/>
+        <result column ="CUST_NM" property="custNm"/>
+        <result column ="SITENM" property="siteNm"/>
+        <result column ="BUILD_NM" property="buildNm"/>
+        <result column ="OFFICE_NM" property="officeNm"/>
+        <result column ="SALES_EMPL_NM" property="salesEmplNm"/>
+        <result column ="EL_NO" property="elevatorNo"/>
+        <result column ="MIRI_YN" property="miriYn"/>
+        <result column ="MIRICALL_YN" property="miriCallYn"/>
+        <result column ="MIRIVIEW_YN" property="miriViewYn"/>
+        <result column ="MIRIROBOT_YN" property="miriRobotYn"/>
+        <collection property="projectList" resultMap="ProjectInfo" >
+            <id column="PRJ_NO" property="prjNo" />
+        </collection>
+    </resultMap>
+
+    <resultMap id="ProjectInfo" type="com.hdel.miri.api.domain.contract.Contract$ProjectInfo">
+        <id column="PRJ_NO"                             property="prjNo" />
+        <result column="PORTFOLIO_CONTRACT_MAPPING_ID"  property="portfolioContractMappingId" />
+        <result column="CONTRACT_CODE"                  property="contractCode" />
+        <result column ="INTG_PRJ_TRLINE_CD_CODE"       property="intgPrjTrlineCdCode"/>
+        <result column ="INTG_PRJ_NO"                   property="intgPrjNo" />
+        <result column ="TRLINE_CD"                     property="trlineCd" />
+        <result column ="CUST_NM"                       property="custNm"/>
+        <result column ="SITENM"                        property="siteNm"/>
+        <result column ="BUILD_NM"                      property="buildNm"/>
+        <collection property="carList" resultMap="CarInfo">
+            <id column="CAR_NO"     property="hoNo" />
+        </collection>
+    </resultMap>
+
+    <resultMap id="CarInfo" type="com.hdel.miri.api.domain.contract.Contract$CarInfo">
+        <id column="CAR_NO"                         property="hoNo" />
+        <result column="PORTFOLIO_CONTRACT_MAPPING_ID" property="portfolioContractMappingId" />
+        <result column="CONTRACT_CODE"                property="contractCode" />
+        <result column ="INTG_PRJ_TRLINE_CD_CODE"       property="intgPrjTrlineCdCode"/>
+        <result column ="INTG_PRJ_NO"                   property="intgPrjNo" />
+        <result column ="TRLINE_CD"                     property="trlineCd" />
+        <result column ="PRJ_NO"                    property="prjNo"/>
+        <result column ="CAR_TYPE"                    property="carType"/>
+        <result column ="INSTALLATION_PLACE"             property="installationPlace"/>
+    </resultMap>
+<!-- 조재현 -->
+
+
+    <resultMap id="getContractDetailsDistinct" type="com.hdel.miri.api.domain.contract.Contract$ContractJoinDetailPRJNOInfo">
+        <id column ="INTG_PRJ_TRLINE_CD_CODE" property="intgPrjTrlineCdCode"/>
+        <result column="CONTRACT_CODE"            property="contractCode" />
+        <result column ="INTG_PRJ_NO" property="intgPrjNo"/>
+        <result column ="TRLINE_CD" property="trlineCd"/>
+        <result column ="PRJ_NO" property="prjNo"/>
+        <result column ="MODEL" property="model"/>
+        <result column ="BGN_DT" property="bgnDt"/>
+        <result column ="XPIR_DT" property="xpirDt"/>
+        <result column ="CUST_NM" property="custNm"/>
+        <result column ="SITENM" property="siteNm"/>
+        <collection property="carList" resultMap="ContractCarInfoPRJNO" >
+            <id column="INTG_PRJ_TRLINE_CD_CODE" property="intgPrjTrlineCdCode" />
+            <result column="CAR_NO" property="carNo" />
+            <result column ="MODEL" property="model"/>
+        </collection>
+    </resultMap>
+    <resultMap id="getContractSummary" type="com.hdel.miri.api.domain.contract.Contract$ContractJoinSummary">
+        <id column="PORTFOLIO_CONTRACT_MAPPING_ID"            property="portfolioContractMappingId" />
+        <result column="CONTRACT_CODE"            property="contractCode" />
+        <result column ="INTG_PRJ_TRLINE_CD_CODE" property="intgPrjTrlineCdCode"/>
+        <result column ="INTG_PRJ_NO" property="intgPrjNo"/>
+        <result column ="TRLINE_CD" property="trlineCd"/>
+        <result column ="BGN_DT" property="bgnDt"/>
+        <result column ="XPIR_DT" property="xpirDt"/>
+        <result column ="CUST_NM" property="custNm"/>
+        <result column ="SITENM" property="siteNm"/>
+        <result column ="MODEL" property="model"/>
+    </resultMap>
+    <resultMap id="CAFileInfo" type="com.hdel.miri.api.domain.storage.Storage$CAFileInfo">
+        <result column="SAVED_FILE_PATH"            property="savedFilePath" />
+        <result column="CA_FILE_NM"            property="caFileNm" />
+    </resultMap>
+    <resultMap id="SCRMUnitPurchaseMSTResponse" type="com.hdel.miri.api.domain.scrm.SCRM$SCRMUnitPurchaseMSTResponse">
+        <result column="INTG_PRJ_TRLINE_CD_CODE"            property="intgPrjTrlineCdCode" />
+        <result column="WBS_NO"            property="wbsNo" />
+        <result column="MATER_CONT"            property="materCont" />
+        <result column="CHNG_DT"            property="chngDt" />
+        <result column="ELEVATOR_NO"            property="elevatorNo" />
+        <result column="FRST_INSTALLATION_DE"   property="frstInstallationDe" />
+        <result column="INSTALLATION_DE"        property="installationDe" />
+        <result column="INSTALLATION_PLACE"        property="installationPlace" />
+        <result column="APPLC_EN_DT"            property="applcEnDt" />
+    </resultMap>
+    <resultMap id="SCRMCurrentWBSNoResponse" type="com.hdel.miri.api.domain.scrm.SCRM$SCRMCurrentWBSNoResponse">
+        <result column="MATER_NO" property="materNo"></result>
+        <result column="MATER_CONT" property="materCont"></result>
+        <result column="MATER_VOL" property="materVol"></result>
+        <result column="MATER_SIZE" property="materSize"></result>
+        <result column="MATER_UNIT" property="materUnit"></result>
+        <result column="MATER_TYPE" property="materType"></result>
+    </resultMap>
+    <!-- RESULT MAP -->
+    <!-- SELECT -->
+    <select id="selectAnonymous" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractJoin"
+            resultMap="getContractAPI">
+        SELECT
+            DISTINCT
+            C.INTG_PRJ_NO
+                   , C.TRLINE_CD
+                   , C.MODEL
+                   , B.SITENM
+                   , B.CS121_P1C AS ADDR
+        FROM
+            (
+                SELECT A.MANDT
+                     , A.BUKRS
+                     , A.CUST_NO
+                FROM BSSC.SC_CUST_MST A
+                WHERE A.MANDT = '100'
+                  AND A.BUKRS = '1000'
+                  AND A.CRN = REPLACE(#{searchId},'-','')
+            ) A
+                INNER JOIN BSSC.SC_INTGPRJ_TRLINE_MNG B
+                           ON A.MANDT 		= B.MANDT
+                               AND A.BUKRS		= B.BUKRS
+                               AND A.CUST_NO 	= B.CUST_NO
+                INNER JOIN BSSC.SC_CR_CNTRINFO C
+                           ON B.MANDT     = C.MANDT
+                               AND B.INTG_PRJ_NO  = C.INTG_PRJ_NO
+                               AND B.TRLINE_CD  = C.TRLINE_CD
+                               AND C.MANDT = '100'
+                               AND C.BUKRS = '1000'
+                               AND CNTR_KIND = 'D'
+                               AND ( C.HRTS_YN = 'Y' OR  ( C.HRTS_YN = 'N' and C.MOYN2 ='Y') )
+                               AND C.CNTR_DEL_DT = ' '
+                               AND C.PROG_STAT = 'A6'
+                               AND SALES_GCD != 'H11'
+			AND TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN BGN_DT AND TO_CHAR(TO_DATE(XPIR_DT,'YYYYMMDD') + 40,'YYYYMMDD' )
+        UNION ALL
+        SELECT
+            DISTINCT
+            C.INTG_PRJ_NO
+                   , C.TRLINE_CD
+                   , C.MODEL
+                   , B.SITENM
+                   , B.CS121_P1C AS ADDR
+        FROM
+            (
+                SELECT MANDT, BUKRS, PRJ_NO , CAR_NO, EL_NO  FROM  BSSC.SC_RMTG_CAR_MST WHERE MANDT = '100' AND BUKRS = '1000' AND EL_NO = REPLACE(#{searchId},'-','')
+            ) A
+                INNER JOIN BSSC.SC_CR_CNTRINFO C
+                           ON A.MANDT     = C.MANDT
+                               AND A.BUKRS		= C.BUKRS
+                               AND A.PRJ_NO = C.PRJ_NO
+                               AND A.CAR_NO = C.CAR_NO
+                               AND C.MANDT = '100'
+                               AND C.BUKRS = '1000'
+                               AND CNTR_KIND = 'D'
+                               AND ( C.HRTS_YN = 'Y' OR  ( C.HRTS_YN = 'N' and C.MOYN2 ='Y') )
+                               AND C.CNTR_DEL_DT = ' '
+                               AND C.PROG_STAT = 'A6'
+                               AND SALES_GCD != 'H11'
+			AND TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN BGN_DT AND TO_CHAR(TO_DATE(XPIR_DT,'YYYYMMDD') + 40,'YYYYMMDD' )
+      INNER JOIN BSSC.SC_INTGPRJ_TRLINE_MNG B
+        ON B.MANDT = C.MANDT
+            AND B.BUKRS = C.BUKRS
+            AND B.INTG_PRJ_NO  = C.INTG_PRJ_NO
+            AND B.TRLINE_CD  = C.TRLINE_CD
+    </select>
+    <select id="selectEmployee" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractSearchEmployee" resultMap="getContractEmployeeAPI">
+        SELECT
+            INTG_PRJ_NO
+            ,TRLINE_CD
+        FROM BSSC.SC_CR_CNTRINFO
+        WHERE MANDT = '100'
+        AND BUKRS = '1000'
+        AND CNTR_KIND = 'D'
+        AND ( HRTS_YN = 'Y' OR  ( HRTS_YN = 'N' and MOYN2 ='Y') )
+        AND CNTR_DEL_DT = ' '
+        AND PROG_STAT = 'A6'
+        AND SALES_GCD != 'H11'
+        AND TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN BGN_DT AND TO_CHAR(TO_DATE(XPIR_DT,'YYYYMMDD') + 40,'YYYYMMDD' )
+        AND (AMI = #{empId} OR AAI = #{empId})
+        GROUP BY INTG_PRJ_NO ,TRLINE_CD
+    </select>
+
+    <select id="selectByContract" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractJoin"
+            resultMap="getContractDetails">
+        SELECT
+            DISTINCT
+            C.PORTFOLIO_CONTRACT_MAPPING_ID PORTFOLIO_CONTRACT_MAPPING_ID
+            , C.COMPS_CNTR_NO CONTRACT_CODE
+            , C.INTG_PRJ_TRLINE_CD_CODE INTG_PRJ_TRLINE_CD_CODE
+            , C.INTG_PRJ_NO INTG_PRJ_NO
+            , C.TRLINE_CD TRLINE_CD
+            , C.PRJ_NO PRJ_NO
+            , C.CAR_NO CAR_NO
+            , C.MODEL MODEL
+            , C.BGN_DT BGN_DT
+            , C.XPIR_DT XPIR_DT
+            , B.CUST_NM CUST_NM
+            , B.SITENM SITENM
+            , CASE WHEN substr(NVL(MODEL,'--'),1,2) IN ('WB','GT') THEN 'WB/GT'
+            ELSE 'ST7'
+            END MODEL
+        FROM
+            (
+            SELECT
+                #{portfolioContractMappingId} AS PORTFOLIO_CONTRACT_MAPPING_ID
+                , #{intgPrjTrlineCdCode} AS INTG_PRJ_TRLINE_CD_CODE
+                , MANDT
+                , BUKRS
+                , INTG_PRJ_NO
+                , TRLINE_CD
+                , CAR_NO
+                , PRJ_NO
+                , MODEL
+                , COMPS_CNTR_NO
+                , TO_CHAR(BGN_DT) BGN_DT
+                , TO_CHAR(XPIR_DT) XPIR_DT
+            FROM BSSC.SC_CR_CNTRINFO
+            WHERE MANDT = '100'
+            AND BUKRS = '1000'
+            AND CNTR_KIND = 'D'
+            AND ( HRTS_YN = 'Y' OR  ( HRTS_YN = 'N' and MOYN2 ='Y') )
+            AND CNTR_DEL_DT = ' '
+            AND PROG_STAT = 'A6'
+            AND SALES_GCD != 'H11'
+            AND TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN BGN_DT AND TO_CHAR(TO_DATE(XPIR_DT,'YYYYMMDD') + 40,'YYYYMMDD' )
+            AND INTG_PRJ_NO = #{intgPrjNo}
+            AND TRLINE_CD = #{trlineCd}
+            ) C
+                INNER JOIN BSSC.SC_INTGPRJ_TRLINE_MNG B
+                        ON C.MANDT = B.MANDT
+                            AND C.BUKRS = B.BUKRS
+                            AND C.INTG_PRJ_NO = B.INTG_PRJ_NO
+                            AND C.TRLINE_CD = B.TRLINE_CD
+
+    </select>
+
+    <select id="GetContractFromPrjNos" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractSearchPortfolio"
+                resultMap="getContractDetails">
+        SELECT DISTINCT
+               #{userPortfolioMappingId} as USER_PORTFOLIO_MAPPING_ID
+             , PORTFOLIO_CONTRACT_MAPPING_ID
+             , C.COMPS_CNTR_NO CONTRACT_CODE
+             , C.INTG_PRJ_TRLINE_CD_CODE INTG_PRJ_TRLINE_CD_CODE
+             , C.INTG_PRJ_NO INTG_PRJ_NO
+             , C.TRLINE_CD TRLINE_CD
+             , C.PRJ_NO PRJ_NO
+             , C.CAR_NO CAR_NO
+             , C.MODEL MODEL
+             , C.BGN_DT BGN_DT
+             , C.XPIR_DT XPIR_DT
+             , B.CUST_NM CUST_NM
+             , B.SITENM SITENM
+             , CASE WHEN substr(NVL(MODEL,'--'),1,2) IN ('WB','GT') THEN 'WB/GT'
+                    ELSE 'ST7'
+                END CAR_TYPE
+             , INSTALLATION_PLACE
+             , C.BUILD_NM
+             , C.OFFICE_NM
+             , C.SALES_EMPL_NM
+             , C.EL_NO
+             , C.MIRI_YN
+             , C.MIRICALL_YN
+             , C.MIRIVIEW_YN
+             , C.MIRIROBOT_YN
+          FROM
+            (
+                    SELECT IB.*
+                         , IA.INSTALLATION_PLACE
+                         , IA.PORTFOLIO_CONTRACT_MAPPING_ID
+                         , IA.BUILD_NM
+                         , IA.OFFICE_NM
+                         , IA.EL_NO
+                         , IA.SALES_EMPL_NM
+                      FROM (
+                    <foreach collection="joinList" item="item" separator=" UNION ALL ">
+                        SELECT #{item.prjNo}                      AS PRJ_NO
+                             , #{item.hoNo}                       AS CAR_NO
+                             , #{item.installationPlace}          AS INSTALLATION_PLACE
+                             , #{item.portfolioContractMappingId} AS PORTFOLIO_CONTRACT_MAPPING_ID
+                             , #{item.buildNm}                    AS BUILD_NM
+                             , #{item.officeNm}                   AS OFFICE_NM
+                             , #{item.elevatorNo}                 AS EL_NO
+                             , #{item.salesEmplNm}                AS SALES_EMPL_NM
+                          FROM DUAL
+                    </foreach>
+                        ) IA, (
+                    SELECT
+                        INTG_PRJ_NO||TRLINE_CD AS INTG_PRJ_TRLINE_CD_CODE
+                        , MANDT
+                        , BUKRS
+                        , INTG_PRJ_NO
+                        , TRLINE_CD
+                        , CAR_NO
+                        , PRJ_NO
+                        , MODEL
+                        , COMPS_CNTR_NO
+                        , NVL(MIRI_YN, 'N') AS MIRI_YN
+                        , NVL(MOYN1, 'N')   AS MIRICALL_YN
+                        , NVL(MOYN2, 'N')   AS MIRIVIEW_YN
+                        , NVL(MOYN3, 'N')   AS MIRIROBOT_YN
+                        , TO_CHAR(BGN_DT)   AS BGN_DT
+                        , TO_CHAR(XPIR_DT)  AS XPIR_DT
+                    FROM BSSC.SC_CR_CNTRINFO
+                    WHERE MANDT = '100'
+                    AND BUKRS = '1000'
+                    AND CNTR_KIND = 'D'
+                    AND ( HRTS_YN = 'Y' OR  ( HRTS_YN = 'N' and MOYN2 ='Y') )
+                    AND CNTR_DEL_DT = ' '
+                    AND PROG_STAT = 'A6'
+                    AND SALES_GCD != 'H11'
+                    AND TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN BGN_DT AND TO_CHAR(TO_DATE(XPIR_DT,'YYYYMMDD') + 40,'YYYYMMDD' )
+                    <if test=" keyword != null and keyword != '' ">
+                    AND COMPS_CNTR_NO like '%'||#{keyword}||'%'
+                    </if>
+                    <foreach collection="joinList" open="AND (" item="item" separator=" OR " close=")">
+                        ( INTG_PRJ_NO = #{item.intgPrjNo} AND TRLINE_CD = #{item.trlineCd} )
+                    </foreach>
+                        ) IB
+                    WHERE IA.PRJ_NO = IB.PRJ_NO
+                    AND IA.CAR_NO = IB.CAR_NO
+                ) C
+                INNER JOIN BSSC.SC_INTGPRJ_TRLINE_MNG B
+                        ON 1 = 1
+                    <if test="fieldName != null and fieldName != ''">
+                       AND B.SITENM LIKE '%'||#{fieldName}||'%'
+                    </if>
+                    <if test="clientName != null and clientName != ''">
+                       AND B.CUST_NM LIKE '%'||#{clientName}||'%'
+                    </if>
+                       AND C.MANDT = B.MANDT
+                       AND C.BUKRS = B.BUKRS
+                       AND C.INTG_PRJ_NO = B.INTG_PRJ_NO
+                       AND C.TRLINE_CD = B.TRLINE_CD
+    </select>
+
+
+    <select id="selectByContractExt" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractJoin"
+            resultMap="getContractDetails">
+        SELECT
+            DISTINCT
+            C.PORTFOLIO_CONTRACT_MAPPING_ID PORTFOLIO_CONTRACT_MAPPING_ID
+            , C.COMPS_CNTR_NO CONTRACT_CODE
+            , C.INTG_PRJ_TRLINE_CD_CODE INTG_PRJ_TRLINE_CD_CODE
+            ,C.INTG_PRJ_NO INTG_PRJ_NO
+            , C.TRLINE_CD TRLINE_CD
+            , C.PRJ_NO PRJ_NO
+            , C.CAR_NO CAR_NO
+            , C.MODEL MODEL
+            , C.BGN_DT BGN_DT
+            , C.XPIR_DT XPIR_DT
+            , B.CUST_NM CUST_NM
+            , B.SITENM SITENM
+            , CASE WHEN substr(NVL(MODEL,'--'),1,2) IN ('WB','GT') THEN 'WB/GT'
+                    ELSE 'ST7'
+            END MODEL
+        FROM
+            (
+                SELECT
+                    #{portfolioContractMappingId} AS PORTFOLIO_CONTRACT_MAPPING_ID
+                    , #{intg   PrjTrlineCdCode} AS INTG_PRJ_TRLINE_CD_CODE
+                    , MANDT
+                    , BUKRS
+                    , INTG_PRJ_NO
+                    , TRLINE_CD
+                    , CAR_NO
+                    , PRJ_NO
+                    , MODEL
+                    , COMPS_CNTR_NO
+                    , TO_CHAR(BGN_DT) BGN_DT
+                    , TO_CHAR(XPIR_DT) XPIR_DT
+                FROM BSSC.SC_CR_CNTRINFO
+                WHERE MANDT = '100'
+                AND BUKRS = '1000'
+                AND CNTR_KIND = 'D'
+                AND ( HRTS_YN = 'Y' OR  ( HRTS_YN = 'N' and MOYN2 ='Y') )
+                AND CNTR_DEL_DT = ' '
+                AND PROG_STAT = 'A6'
+                AND SALES_GCD != 'H11'
+                AND TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN BGN_DT AND TO_CHAR(TO_DATE(XPIR_DT,'YYYYMMDD') + 40,'YYYYMMDD' )
+                AND INTG_PRJ_NO = #{intgPrjNo}
+                AND TRLINE_CD = #{trlineCd}
+            ) C
+                INNER JOIN BSSC.SC_INTGPRJ_TRLINE_MNG B
+                        ON C.MANDT = B.MANDT
+                            AND C.BUKRS = B.BUKRS
+                            AND C.INTG_PRJ_NO = B.INTG_PRJ_NO
+                            AND C.TRLINE_CD = B.TRLINE_CD
+
+    </select>
+    <select id="selectByContractDistinct" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractJoinDistinct"
+            resultMap="getContractDetailsDistinct">
+        SELECT
+            DISTINCT
+                    C.COMPS_CNTR_NO CONTRACT_CODE
+                , C.INTG_PRJ_TRLINE_CD_CODE INTG_PRJ_TRLINE_CD_CODE
+                , C.INTG_PRJ_NO INTG_PRJ_NO
+                , C.TRLINE_CD TRLINE_CD
+                , C.BGN_DT BGN_DT
+                , C.XPIR_DT XPIR_DT
+                , B.CUST_NM CUST_NM
+                , B.SITENM SITENM
+                , CASE WHEN substr(NVL(MODEL,'--'),1,2) IN ('WB','GT') THEN 'WB/GT'
+                        ELSE 'ST7'
+            END MODEL
+        FROM
+            (
+                SELECT
+                    #{intgPrjTrlineCdCode} AS INTG_PRJ_TRLINE_CD_CODE
+                    , MANDT
+                    , BUKRS
+                    , INTG_PRJ_NO
+                    , TRLINE_CD
+                    , MODEL
+                    , COMPS_CNTR_NO
+                    , TO_CHAR(BGN_DT) BGN_DT
+                    , TO_CHAR(XPIR_DT) XPIR_DT
+                FROM BSSC.SC_CR_CNTRINFO
+                WHERE MANDT = '100'
+                AND BUKRS = '1000'
+                AND CNTR_KIND = 'D'
+                AND ( HRTS_YN = 'Y' OR  ( HRTS_YN = 'N' and MOYN2 ='Y') )
+                AND CNTR_DEL_DT = ' '
+                AND PROG_STAT = 'A6'
+                AND SALES_GCD != 'H11'
+                AND TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN BGN_DT AND TO_CHAR(TO_DATE(XPIR_DT,'YYYYMMDD') + 40,'YYYYMMDD' )
+                AND INTG_PRJ_NO = #{intgPrjNo}
+                AND TRLINE_CD = #{trlineCd}
+            ) C
+                INNER JOIN BSSC.SC_INTGPRJ_TRLINE_MNG B
+                        ON C.MANDT = B.MANDT
+                            AND C.BUKRS = B.BUKRS
+                            AND C.INTG_PRJ_NO = B.INTG_PRJ_NO
+                            AND C.TRLINE_CD = B.TRLINE_CD
+    </select>
+    <select id="selectByContractSummary" parameterType="com.hdel.miri.api.domain.contract.Contract$ContractJoin"
+            resultMap="getContractSummary">
+        SELECT
+            DISTINCT
+            C.PORTFOLIO_CONTRACT_MAPPING_ID PORTFOLIO_CONTRACT_MAPPING_ID
+                , C.COMPS_CNTR_NO CONTRACT_CODE
+                , C.INTG_PRJ_TRLINE_CD_CODE INTG_PRJ_TRLINE_CD_CODE
+                ,C.INTG_PRJ_NO INTG_PRJ_NO
+                , C.TRLINE_CD TRLINE_CD
+                , C.BGN_DT BGN_DT
+                , C.XPIR_DT XPIR_DT
+                , B.CUST_NM CUST_NM
+                , B.SITENM SITENM
+                , CASE WHEN substr(NVL(MODEL,'--'),1,2) IN ('WB','GT') THEN 'WB/GT'
+                ELSE 'ST7'
+                END MODEL
+        FROM
+            (
+                SELECT
+                    #{portfolioContractMappingId} AS PORTFOLIO_CONTRACT_MAPPING_ID
+                    , #{intgPrjTrlineCdCode} AS INTG_PRJ_TRLINE_CD_CODE
+                    , MANDT
+                    , BUKRS
+                    , INTG_PRJ_NO
+                    , TRLINE_CD
+                    , MODEL
+                    , COMPS_CNTR_NO
+                    , TO_CHAR(BGN_DT) BGN_DT
+                    , TO_CHAR(XPIR_DT) XPIR_DT
+                FROM BSSC.SC_CR_CNTRINFO
+                WHERE MANDT = '100'
+                AND BUKRS = '1000'
+                AND CNTR_KIND = 'D'
+                AND ( HRTS_YN = 'Y' OR  ( HRTS_YN = 'N' and MOYN2 ='Y') )
+                AND CNTR_DEL_DT = ' '
+                AND PROG_STAT = 'A6'
+                AND SALES_GCD != 'H11'
+                AND TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN BGN_DT AND TO_CHAR(TO_DATE(XPIR_DT,'YYYYMMDD') + 40,'YYYYMMDD' )
+                AND INTG_PRJ_NO = #{intgPrjNo}
+                AND TRLINE_CD = #{trlineCd}
+            ) C
+                INNER JOIN BSSC.SC_INTGPRJ_TRLINE_MNG B
+                        ON C.MANDT = B.MANDT
+                            AND C.BUKRS = B.BUKRS
+                            AND C.INTG_PRJ_NO = B.INTG_PRJ_NO
+                            AND C.TRLINE_CD = B.TRLINE_CD
+                WHERE ROWNUM = 1
+    </select>
+    <select id="selectContactByContract"
+            parameterType="com.hdel.miri.api.domain.contract.Contract$ContractJoin"
+            resultMap="ContractContactInfo"
+    >
+        SELECT
+            DISTINCT NM,DEPT_NM,MOB
+        FROM (
+        <foreach collection="list" item="item" separator="UNION ALL">
+        SELECT
+                DISTINCT
+                EM.NM
+                , EM.DEPT_NM
+                , EM.MOB
+        FROM (
+            SELECT
+            MANDT
+                , BUKRS
+                , INTG_PRJ_NO
+                , TRLINE_CD
+                , MODEL
+                , AMI
+                , SALES_EMPL
+            FROM BSSC.SC_CR_CNTRINFO
+            WHERE MANDT = '100'
+            AND BUKRS = '1000'
+            AND CNTR_KIND = 'D'
+            AND ( HRTS_YN = 'Y' OR  ( HRTS_YN = 'N' and MOYN2 ='Y') )
+            AND CNTR_DEL_DT = ' '
+            AND PROG_STAT = 'A6'
+            AND SALES_GCD != 'H11'
+            AND TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN BGN_DT AND TO_CHAR(TO_DATE(XPIR_DT,'YYYYMMDD') + 40,'YYYYMMDD' )
+            AND INTG_PRJ_NO = #{item.intgPrjNo}
+            AND TRLINE_CD = #{item.trlineCd}
+            GROUP BY MANDT, BUKRS, INTG_PRJ_NO ,TRLINE_CD, MODEL,AMI,SALES_EMPL) C
+            LEFT JOIN BSSC.SC_EMPL_MST EM
+        ON C.MANDT = EM.MANDT
+            AND C.BUKRS = EM.BUKRS
+            AND 'H'||C.SALES_EMPL = EM.EMPL_ID
+        </foreach>
+        ) R
+    </select>
+    <select id="selectContactByContractDistinct"
+            parameterType="com.hdel.miri.api.domain.contract.Contract$ContractJoin"
+            resultMap="ContractContactInfo"
+    >
+            SELECT
+            DISTINCT
+            EM.NM as NM
+            , EM.DEPT_NM as DEPT_NM
+            , B.SITENM || '-' || C.INTG_PRJ_NO||C.TRLINE_CD AS DISP_STR
+            , EM.MOB as MOB
+            FROM (
+                SELECT
+                MANDT
+                , BUKRS
+                , INTG_PRJ_NO
+                , TRLINE_CD
+                , MODEL
+                , AMI
+                , SALES_EMPL
+                FROM BSSC.SC_CR_CNTRINFO
+                WHERE MANDT = '100'
+                AND BUKRS = '1000'
+                AND CNTR_KIND = 'D'
+                AND ( HRTS_YN = 'Y' OR  ( HRTS_YN = 'N' and MOYN2 ='Y') )
+                AND CNTR_DEL_DT = ' '
+                AND PROG_STAT = 'A6'
+                AND SALES_GCD != 'H11'
+                AND TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN BGN_DT AND TO_CHAR(TO_DATE(XPIR_DT,'YYYYMMDD') + 40,'YYYYMMDD' )
+                <if test="list != null and !list.isEmpty">
+                AND (INTG_PRJ_NO, TRLINE_CD) IN (
+                    <foreach collection="list" item="item" separator=",">
+                        (#{item.intgPrjNo}, #{item.trlineCd})
+                    </foreach>
+                    )
+                </if>
+                <if test="list == null or list.isEmpty">
+                    AND 1=2
+                </if>
+                GROUP BY MANDT, BUKRS, INTG_PRJ_NO ,TRLINE_CD, MODEL,AMI,SALES_EMPL) C
+            LEFT JOIN BSSC.SC_EMPL_MST EM
+                ON C.MANDT = EM.MANDT
+                AND C.BUKRS = EM.BUKRS
+                AND 'H'||C.SALES_EMPL = EM.EMPL_ID
+            LEFT JOIN BSSC.SC_INTGPRJ_TRLINE_MNG B
+                ON B.MANDT = C.MANDT
+                AND B.BUKRS = C.BUKRS
+                AND B.INTG_PRJ_NO  = C.INTG_PRJ_NO
+                AND B.TRLINE_CD  = C.TRLINE_CD    
+    </select>
+    <select id="selectContactByContractEngineer"
+            parameterType="com.hdel.miri.api.domain.contract.Contract$ContractJoin"
+            resultMap="ContractContactInfo"
+    >
+        SELECT DISTINCT
+            PM.PORTAL_MEB_NM  NM
+            , PM.MOBP_NO MOB
+            , 'Engineer' DEPT_NM
+            FROM (
+            SELECT
+            MANDT
+            , BUKRS
+            , INTG_PRJ_NO
+            , TRLINE_CD
+            , MODEL
+            , AMI
+            , AAI
+            FROM BSSC.SC_CR_CNTRINFO
+            WHERE MANDT = '100'
+            AND BUKRS = '1000'
+            AND CNTR_KIND = 'D'
+            AND ( HRTS_YN = 'Y' OR  ( HRTS_YN = 'N' and MOYN2 ='Y') )
+            AND CNTR_DEL_DT = ' '
+            AND PROG_STAT = 'A6'
+            AND SALES_GCD != 'H11'
+            AND TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN BGN_DT AND TO_CHAR(TO_DATE(XPIR_DT,'YYYYMMDD') + 40,'YYYYMMDD' )
+            <if test="list != null and !list.isEmpty">
+            AND (INTG_PRJ_NO, TRLINE_CD) IN (
+                <foreach collection="list" item="item" separator=",">
+                    (#{item.intgPrjNo}, #{item.trlineCd})
+                </foreach>
+            )
+            </if>
+            <if test="list == null or list.isEmpty">
+            AND 1=2
+            </if>
+            GROUP BY MANDT, BUKRS, INTG_PRJ_NO ,TRLINE_CD, MODEL,AMI,AAI ) C
+            INNER JOIN BSSC.SC_INTGPRJ_TRLINE_MNG B
+            ON B.MANDT = C.MANDT
+            AND B.BUKRS = C.BUKRS
+            AND B.INTG_PRJ_NO  = C.INTG_PRJ_NO
+            AND B.TRLINE_CD  = C.TRLINE_CD
+            LEFT JOIN BSCP.PO_MNG_POT_MEB PM
+            ON B.MANDT  = PM.MANDT
+            AND B.BUKRS  = PM.BUKRS
+            AND (C.AMI = PM.MEB_ID OR C.AAI = PM.MEB_ID)
+    </select>
+    <select id="selectContactByContractEngineerDistinct"
+            parameterType="com.hdel.miri.api.domain.contract.Contract$ContractJoinDistinct"
+            resultMap="ContractContactInfo"
+    >
+            SELECT DISTINCT
+                PM.PORTAL_MEB_NM  NM
+                , PM.PORTAL_MEB_TEL_NO MOB
+                , B.SITENM || '-' || C.INTG_PRJ_NO||C.TRLINE_CD AS DISP_STR
+                , 'Engineer' DEPT_NM
+            FROM (
+                SELECT
+                MANDT
+                , BUKRS
+                , INTG_PRJ_NO
+                , TRLINE_CD
+                , MODEL
+                , AMI
+                , AAI
+                FROM BSSC.SC_CR_CNTRINFO
+                WHERE MANDT = '100'
+                AND BUKRS = '1000'
+                AND CNTR_KIND = 'D'
+                AND ( HRTS_YN = 'Y' OR  ( HRTS_YN = 'N' and MOYN2 ='Y') )
+                AND CNTR_DEL_DT = ' '
+                AND PROG_STAT = 'A6'
+                AND SALES_GCD != 'H11'
+                AND TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN BGN_DT AND TO_CHAR(TO_DATE(XPIR_DT,'YYYYMMDD') + 40,'YYYYMMDD' )
+                <if test="list != null and !list.isEmpty">
+                AND (INTG_PRJ_NO, TRLINE_CD) IN (
+                    <foreach collection="list" item="item" separator=",">
+                        (#{item.intgPrjNo}, #{item.trlineCd})
+                    </foreach>
+                )
+                </if>
+                <if test="list == null or list.isEmpty">
+                AND 1=2
+                </if>
+                GROUP BY MANDT, BUKRS, INTG_PRJ_NO ,TRLINE_CD, MODEL,AMI,AAI ) C
+            INNER JOIN BSSC.SC_INTGPRJ_TRLINE_MNG B
+            ON B.MANDT = C.MANDT
+            AND B.BUKRS = C.BUKRS
+            AND B.INTG_PRJ_NO  = C.INTG_PRJ_NO
+            AND B.TRLINE_CD  = C.TRLINE_CD
+            LEFT JOIN BSCP.PO_MNG_POT_MEB PM
+            ON B.MANDT  = PM.MANDT
+            AND B.BUKRS  = PM.BUKRS
+            AND (C.AMI = PM.MEB_ID OR C.AAI = PM.MEB_ID)
+    </select>
+    <select id="selectByCompanionDays" parameterType="list"
+            resultType="integer">
+        SELECT
+            NVL(ROUND((SYSDATE - TO_DATE(MIN(BGN_DT))),0),0) COMPANION
+        FROM
+            (
+                SELECT TO_CHAR(SYSDATE,'YYYYMMDD') BGN_DT
+                FROM DUAL
+                UNION ALL
+            <foreach collection="list" item="item" separator="UNION ALL">
+            SELECT
+                 BGN_DT
+             FROM BSSC.SC_CR_CNTRINFO
+             WHERE MANDT = '100'
+               AND BUKRS = '1000'
+               AND CNTR_KIND = 'D'
+               AND ( HRTS_YN = 'Y' OR  ( HRTS_YN = 'N' and MOYN2 ='Y') )
+               AND CNTR_DEL_DT = ' '
+               AND PROG_STAT = 'A6'
+               AND SALES_GCD != 'H11'
+                AND INTG_PRJ_NO = #{item.intgPrjNo}
+                AND TRLINE_CD = #{item.trlineCd}
+            </foreach>
+            ) TOT
+    </select>
+    <select id="selectByCompanionDaysDistinct" parameterType="list"
+            resultType="integer">
+        SELECT
+        NVL(ROUND((SYSDATE - TO_DATE(MIN(BGN_DT))),0),0) COMPANION
+        FROM
+        (
+        <if test="list == null or list.size == 0">
+            SELECT TO_CHAR(SYSDATE,'YYYYMMDD') BGN_DT
+            FROM DUAL
+        </if>
+        <foreach collection="list" item="item" separator="UNION ALL">
+            SELECT
+            BGN_DT
+            FROM BSSC.SC_CR_CNTRINFO
+            WHERE MANDT = '100'
+            AND BUKRS = '1000'
+            AND CNTR_KIND = 'D'
+            AND ( HRTS_YN = 'Y' OR  ( HRTS_YN = 'N' and MOYN2 ='Y') )
+            AND CNTR_DEL_DT = ' '
+            AND PROG_STAT = 'A6'
+            AND SALES_GCD != 'H11'
+            AND INTG_PRJ_NO = #{item.intgPrjNo}
+            AND TRLINE_CD = #{item.trlineCd}
+        </foreach>
+        ) TOT
+    </select>
+    <select id="selectCAFiles" parameterType="string" resultMap="CAFileInfo">
+        SELECT DISTINCT
+            CS126.INTG_PRJ_NO
+            ,CS126.TRLINE_CD
+            ,Z.APRV_DOC_ID
+            ,CA.FILE_SAVE_PATH AS SAVED_FILE_PATH
+            ,CA.FILE_NM AS CA_FILE_NM
+            , COMPS_CNTR_NO
+        FROM BSSC.SC_CR_CNTRINFO CS126
+                LEFT OUTER JOIN BSCP.CM_DOC_INFO Z
+                                ON Z.MANDT = '100'
+                                    AND Z.BUKRS = '1000'
+                                    AND Z.APRV_DOC_ID = CS126.ELCT_APRV_NO
+                LEFT OUTER JOIN BSCP.CM_ATTACHMENT CA
+                                ON CA.MANDT = '100'
+                                    AND CA.BUKRS = '1000'
+                                    AND CA.ATTH_FILE_GCD_ID = Z.DOC_FILE_GRP_VAL
+                                    AND ROWNUM = 1
+        WHERE CS126.MANDT = '100'
+        AND CS126.BUKRS = '1000'
+        AND CS126.COMPS_CNTR_NO = #{key}
+        AND CS126.CNTR_DEL_DT = ' '
+    </select>
+    <select id="selectUnitPurchaseMST"
+            parameterType="com.hdel.miri.api.domain.scrm.SCRM$SCRMCurrentPortfolioRequest"
+            resultMap="SCRMUnitPurchaseMSTResponse"
+    >
+        WITH TEMP AS (
+            <if test="join == null or join.size == 0 ">
+                SELECT NULL CHNG_DT FROM DUAL
+            </if>
+            <if test="join != null and join.size > 0 ">
+                <foreach collection="join" item="item" separator="UNION ALL">
+                SELECT
+                    #{item.intgPrjTrlineCdCode} INTG_PRJ_TRLINE_CD_CODE
+                    , WBS_NO
+                    , #{item.buldNm} MATER_CONT
+                    , CHNG_DT
+                    , #{item.elevatorNo} as ELEVATOR_NO
+                    , #{item.frstInstallationDe} as FRST_INSTALLATION_DE
+                    , #{item.installationDe} as INSTALLATION_DE
+                    , #{item.installationPlace} as INSTALLATION_PLACE
+                    , #{item.applcEnDt} as APPLC_EN_DT
+                FROM BSSC.AM_RM_MATER_CHRG_LIST ML
+                WHERE ML.MANDT = '100'
+                AND ML.BUKRS = '1000'
+                AND ML.CHRG_KIND IN ('1','6','7','9','H')
+                AND ML.MATER_NO NOT IN ('NB-100','NC-100','NS-100')
+                AND ML.WBS_NO = #{item.projNo}
+                    <if test="startDate != null and startDate != ''">
+                        <if test="endDate != null and endDate != ''">
+                            AND ML.CHNG_DT BETWEEN #{startDate} AND #{endDate}
+                        </if>
+                    </if>
+                </foreach>
+            </if>
+        )
+        SELECT DISTINCT * FROM TEMP
+        <if test="keyword != null and keyword != ''">
+            WHERE WBS_NO = #{keyword}        
+        </if>
+        ORDER BY CHNG_DT DESC
+
+    </select>
+    <select id="selectUnitPurchaseDetail"
+        parameterType="com.hdel.miri.api.domain.scrm.SCRM$SCRMCurrentWBSNoRequest"
+            resultMap="SCRMCurrentWBSNoResponse"
+    >
+        SELECT
+            MM.MATER_NO MATER_NO
+            ,MM.MATER_CONT MATER_CONT
+            ,MM.VOLU||MM.VOLU_UNIT MATER_VOL
+            ,MM.SIZE1 MATER_SIZE
+            ,MM.BASE_UNIT MATER_UNIT
+            ,MM.MATER_TYPE MATER_TYPE
+        FROM BSSC.AM_RM_MATER_CHRG_LIST ML
+                    INNER JOIN BSSC.AM_MATER_MST MM
+                            ON ML.MANDT = MM.MANDT AND ML.BUKRS = MM.BUKRS AND ML.MATER_NO = MM.MATER_NO
+        WHERE ML.MANDT = '100'
+        AND ML.BUKRS = '1000'
+        AND ML.CHRG_KIND IN ('1','6','7','9','H')
+        AND MM.MATER_NO NOT IN ('NB-100','NC-100','NS-100')
+        AND ML.WBS_NO = #{wbsNo}
+        AND ML.CHNG_DT = #{chngDt}
+        ORDER BY ML.CHNG_DT DESC
+    </select>
+    <!-- SELECT -->
+    <!-- UPDATE -->
+    <!-- UPDATE -->
+    <!-- INSERT -->
+    <insert id="insertSendMMS" parameterType="com.hdel.miri.api.domain.mms.mmsVO$request">
+        INSERT
+          INTO BSSMS.MMS_MSG
+               (
+                 MSGKEY
+               , REQDATE
+               , PHONE
+               , CALLBACK
+               , SUBJECT
+               , MSG
+               , STATUS
+               , ETC1
+               )
+        VALUES (
+                 BSSMS.SEQ_MMS_MSG_MSGKEY.NEXTVAL
+               , SYSDATE
+               , #{receiveNo}
+               , '15770603'
+               , #{title}
+               , #{contents}
+               , '0'
+               , 'MIRI-PORTAL'
+               )
+    </insert>
+    <!-- INSERT -->
+    <!-- DELETE -->
+    <!-- DELETE -->
+</mapper>

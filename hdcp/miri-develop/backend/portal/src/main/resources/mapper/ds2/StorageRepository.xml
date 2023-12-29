@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0/EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hdel.miri.api.domain.storage.StorageRepository">
+    <!-- RESULT MAP -->
+    <resultMap id="ImageView" type="com.hdel.miri.api.domain.storage.Storage$View">
+        <result column="PHYSICAL_FILE_NAME" property="physicalFileName"></result>
+        <result column="ORIGINAL_FILE_NAME" property="originalFileName"></result>
+        <result column="FULL_FILE_PATH" property="fullFilePath"></result>
+    </resultMap>
+    <!-- RESULT MAP -->
+    <!-- SELECT -->
+    <select id="selectImage" parameterType="string" resultMap="ImageView">
+        SELECT
+            PHYSICAL_FILE_NAME
+             , ORIGINAL_FILE_NAME
+             ,FULL_FILE_PATH
+        FROM TB_UPLOAD_FILE WHERE PHYSICAL_FILE_NAME = #{key}
+    </select>
+    <!-- SELECT -->
+    <!-- UPDATE -->
+    <!-- UPDATE -->
+    <!-- INSERT -->
+    <insert id="insert" parameterType="com.hdel.miri.api.domain.storage.Storage$ImageSave">
+        INSERT INTO TB_UPLOAD_FILE
+        (PHYSICAL_FILE_NAME, ORIGINAL_FILE_NAME, FULL_FILE_PATH, REQUESTER, CREATION_USER, LASTUPDATE_USER)
+        WITH TEMP AS (
+        <foreach collection="files" item="item" separator="UNION ALL">
+            SELECT #{item.physicalFileName} as a
+                 , #{item.originalFileName} as b
+                 , #{item.fullFilePath} as c
+                 , #{item.requester} as d
+                 , #{currentUser} as e
+                 , #{currentUser} as f
+            FROM DUAL
+        </foreach>
+        ) SELECT * FROM TEMP
+    </insert>
+    <!-- INSERT -->
+    <!-- DELETE -->
+    <!-- DELETE -->
+</mapper>
