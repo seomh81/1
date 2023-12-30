@@ -56,7 +56,7 @@ def start_buytrade(buy_amtp):
                 # 1. 조회 기준 : 일캔들, 최근 5개 지표 조회
                 # 2. 속도를 위해 원하는 지표만 조회(RSI, MFI, MACD, CANDLE) - 수정
                 # -------------------------------------------------------------
-                indicators = upbit.get_indicator_sel(target_item['market'], '30', 200, 101,
+                indicators = upbit.get_indicator_sel(target_item['market'], '30', 200, 51,
                                                      ['BB', 'BB2', 'CANDLE'])
                                                             #['RSI', 'MFI', 'MACD', 'BB', 'CANDLE'])
 
@@ -77,6 +77,10 @@ def start_buytrade(buy_amtp):
                 bb2 = indicators['BB2']
                 candle = indicators['CANDLE']
 
+                # --------------------------------------------------------------
+                # 구매 비용 조절
+                # --------------------------------------------------------------
+
                 krw_balance = upbit.get_krwbal()
                 avg_buy_price = 0
 
@@ -95,10 +99,10 @@ def start_buytrade(buy_amtp):
                              + str(buy_amt) + ' 원 매수 시도 (' + str(buy_amtp) + ' %)')
                 logging.info(str(round((candle[0]['trade_price'] - bb2[0]['BBL']) / bb2[0]['BBL'] * 100, 1)) + ' %')
 
-                if krw_balance['krw_balance'] + avg_buy_price > 1400000:
-                    buy_amt = buy_amt + 30000
-                else:
-                    buy_amt = buy_amt - 30000
+                # if krw_balance['krw_balance'] + avg_buy_price > 1400000:
+                #     buy_amt = buy_amt + 30000
+                # else:
+                #     buy_amt = buy_amt - 30000
 
                 # --------------------------------------------------------------
                 # 볼린저 밴드 추가
@@ -107,7 +111,7 @@ def start_buytrade(buy_amtp):
                         and bb[2]['BBL'] > bb2[2]['BBL'] and candle[2]['high_price'] != candle[1]['high_price'] \
                         and candle[2]['low_price'] != candle[1]['low_price'] \
                         and (candle[1]['high_price'] - candle[1]['low_price']) != (candle[2]['high_price'] - candle[2]['low_price']))\
-                        or (bb2[0]['BBH'] < candle[0]['high_price'] and all(bb2[i+1]['BBH'] > candle[i+1]['high_price'] for i in range(100))):
+                        or (bb2[0]['BBH'] < candle[0]['high_price'] and all(bb2[i+1]['BBH'] > candle[i+1]['high_price'] for i in range(50))):
 
                 # --------------------------------------------------------------
                 # 매수 로직
@@ -186,6 +190,37 @@ def start_buytrade(buy_amtp):
                         continue
 
                     # ------------------------------------------------------------------
+                    # 잦은 거래 방지
+                    # ------------------------------------------------------------------
+
+                    order_done = upbit.get_order_status(target_item['market'], 'done') + upbit.get_order_status(
+                        target_item['market'], 'cancel')
+                    order_done_sorted = upbit.orderby_dict(order_done, 'created_at', True)
+                    order_done_filtered = upbit.filter_dict(order_done_sorted, 'side', 'bid')
+
+                    # -------------------------------------------------
+                    # 매수 직후 나타나는 오류 체크용 마지막 매수 시간 차이 계산
+                    # -------------------------------------------------
+                    # 마지막 매수 시간
+                    last_buy_dt = datetime.strptime(
+                        dateutil.parser.parse(order_done_filtered[0]['created_at']).strftime('%Y-%m-%d %H:%M:%S'),
+                        '%Y-%m-%d %H:%M:%S')
+
+                    # 현재 시간 추출
+                    current_dt = datetime.strptime(datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                                                   '%Y-%m-%d %H:%M:%S')
+
+                    # 시간 차이 추출
+                    diff = current_dt - last_buy_dt
+
+                    # 매수 후 10시간은 진행하지 않음(너무 잦은 거래 방지)
+                    if diff.seconds < 36000:
+                        logging.info('+_+ 매수 직후 발생하는 오류를 방지하기 위해 진행하지 않음!!! 10초 대기조 +_+ ')
+                        logging.info('------------------------------------------------------')
+                        continue
+
+
+                    # ------------------------------------------------------------------
                     # 매수금액 설정
                     # 1. M : 수수료를 제외한 최대 가능 KRW 금액만큼 매수
                     # 2. 금액 : 입력한 금액만큼 매수
@@ -258,7 +293,7 @@ if __name__ == '__main__':
         # 1. 로그레벨
         log_level = 'I'#input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
         # buy_amt = 20000#input("매수금액(M:최대, 10000:1만원) : ").upper()
-        buy_amtp = 7 #몇 %씩 매수할지?
+        buy_amtp = 5 #몇 %씩 매수할지?
         upbit.set_loglevel(log_level)
 
         logging.info("*********************************************************")
