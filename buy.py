@@ -96,7 +96,7 @@ def start_buytrade(buy_amtp):
                 logging.info(str(diff) + '시간 차이')
 
                 # 매수 후 10시간은 진행하지 않음(너무 잦은 거래 방지) - 잠시 꺼두자
-                if diff < 36000:
+                if diff.seconds < 36000:
                     logging.info('+_+ 매수 직후 발생하는 빈번하게 진행하지 않음!!! 10시간 대기조 +_+ ')
                     logging.info('------------------------------------------------------')
                     continue
