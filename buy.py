@@ -94,6 +94,7 @@ def start_buytrade(buy_amtp):
 
                 logging.info(str(last_buy_dt) + '     ' + str(current_dt))
                 logging.info(str(diff) + '시간 차이')
+                logging.info(str(diff.seconds) + '시간 차이')
 
                 # 매수 후 10시간은 진행하지 않음(너무 잦은 거래 방지) - 잠시 꺼두자
                 if diff.seconds < 36000:
