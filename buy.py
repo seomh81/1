@@ -67,6 +67,40 @@ def start_buytrade(buy_amtp):
                     logging.info('캔들 데이터 부족으로 데이터 산출 불가...[' + str(target_item['market']) + ']')
                     continue
 
+                # ------------------------------------------------------------------
+                # 잦은 거래 방지
+                # ------------------------------------------------------------------
+
+                order_done = upbit.get_order_status(target_item['market'], 'done') + upbit.get_order_status(
+                    target_item['market'], 'cancel')
+                order_done_sorted = upbit.orderby_dict(order_done, 'created_at', True)
+                order_done_filtered = upbit.filter_dict(order_done_sorted, 'side', 'bid')
+
+                # -------------------------------------------------
+                # 매수 직후 나타나는 오류 체크용 마지막 매수 시간 차이 계산
+                # -------------------------------------------------
+                # 마지막 매수 시간
+                last_buy_dt = datetime.strptime(
+                    dateutil.parser.parse(order_done_filtered[0]['created_at']).strftime('%Y-%m-%d %H:%M:%S'),
+                    '%Y-%m-%d %H:%M:%S')
+
+                # 현재 시간 추출
+                current_dt = datetime.strptime(datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                                               '%Y-%m-%d %H:%M:%S')
+
+                # 시간 차이 추출
+                diff = current_dt - last_buy_dt
+
+                logging.info(str(last_buy_dt) + '     ' + str(current_dt))
+                logging.info(str(diff) + '시간 차이')
+
+                # 매수 후 10시간은 진행하지 않음(너무 잦은 거래 방지) - 잠시 꺼두자
+                if diff.seconds < 36000:
+                    logging.info('+_+ 매수 직후 발생하는 오류를 방지하기 위해 진행하지 않음!!! 10초 대기조 +_+ ')
+                    logging.info('------------------------------------------------------')
+                    continue
+
+
                 # --------------------------------------------------------------
                 # 보조 지표 추출
                 # --------------------------------------------------------------
@@ -189,38 +223,8 @@ def start_buytrade(buy_amtp):
                         logging.info('1원 미만 종목....[' + str(target_item['market']) + ']')
                         continue
 
-                    # ------------------------------------------------------------------
-                    # 잦은 거래 방지
-                    # ------------------------------------------------------------------
 
-                    order_done = upbit.get_order_status(target_item['market'], 'done') + upbit.get_order_status(
-                        target_item['market'], 'cancel')
-                    order_done_sorted = upbit.orderby_dict(order_done, 'created_at', True)
-                    order_done_filtered = upbit.filter_dict(order_done_sorted, 'side', 'bid')
 
-                    # -------------------------------------------------
-                    # 매수 직후 나타나는 오류 체크용 마지막 매수 시간 차이 계산
-                    # -------------------------------------------------
-                    # 마지막 매수 시간
-                    last_buy_dt = datetime.strptime(
-                        dateutil.parser.parse(order_done_filtered[0]['created_at']).strftime('%Y-%m-%d %H:%M:%S'),
-                        '%Y-%m-%d %H:%M:%S')
-
-                    # 현재 시간 추출
-                    current_dt = datetime.strptime(datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                                                   '%Y-%m-%d %H:%M:%S')
-
-                    # 시간 차이 추출
-                    diff = current_dt - last_buy_dt
-
-                    logging.info(str(last_buy_dt) + '     ' + str(current_dt))
-                    logging.info(str(diff) + '시간 차이')
-
-                    # # 매수 후 10시간은 진행하지 않음(너무 잦은 거래 방지) - 잠시 꺼두자
-                    # if diff.seconds < 36000:
-                    #     logging.info('+_+ 매수 직후 발생하는 오류를 방지하기 위해 진행하지 않음!!! 10초 대기조 +_+ ')
-                    #     logging.info('------------------------------------------------------')
-                    #     continue
 
 
                     # ------------------------------------------------------------------
