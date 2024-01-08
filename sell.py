@@ -78,7 +78,7 @@ def start_selltrade(sell_pcnt, sell_pcnt1, sell_pcnt2, dcnt_pcnt, dcnt_pcnt1, dc
                         diff = current_dt - last_buy_dt
 
                         # 매수 후 1분간은 진행하지 않음(업비트 오류 방지 용)
-                        if diff.seconds < 60:
+                        if diff < 60:
                             logging.info('+_+ 매수 직후 발생하는 오류를 방지하기 위해 진행하지 않음!!! 60초 대기조 +_+ ')
                             logging.info('------------------------------------------------------')
                             continue
