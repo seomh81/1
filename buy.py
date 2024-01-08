@@ -6,7 +6,7 @@ import time
 import math
 
 from decimal import Decimal
-
+from datetime import datetime
 # 공통 모듈 Import
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from module import upbit
@@ -210,8 +210,13 @@ def start_buytrade(buy_amtp):
                     current_dt = datetime.strptime(datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                                                    '%Y-%m-%d %H:%M:%S')
 
+                    print(last_buy_dt + '     ' + current_dt)
+
+
                     # 시간 차이 추출
                     diff = current_dt - last_buy_dt
+
+                    print(diff + '시간 차이')
 
                     # # 매수 후 10시간은 진행하지 않음(너무 잦은 거래 방지) - 잠시 꺼두자
                     # if diff.seconds < 36000:

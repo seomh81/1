@@ -55,7 +55,7 @@ def start_selltrade(sell_pcnt, sell_pcnt1, sell_pcnt2, dcnt_pcnt, dcnt_pcnt1, dc
                         # 3. 매수 거래만 필터링
                         # 4. 가장 최근 거래일자부터 현재까지 고점을 조회
                         # -------------------------------------------------
-                        time.sleep(0.01)
+                        #time.sleep(0.01)
 
                         order_done = upbit.get_order_status(target_item['market'], 'done') + upbit.get_order_status(
                             target_item['market'], 'cancel')
@@ -78,8 +78,8 @@ def start_selltrade(sell_pcnt, sell_pcnt1, sell_pcnt2, dcnt_pcnt, dcnt_pcnt1, dc
                         diff = current_dt - last_buy_dt
 
                         # 매수 후 1분간은 진행하지 않음(업비트 오류 방지 용)
-                        if diff.seconds < 10:
-                            logging.info('+_+ 매수 직후 발생하는 오류를 방지하기 위해 진행하지 않음!!! 10초 대기조 +_+ ')
+                        if diff.seconds < 60:
+                            logging.info('+_+ 매수 직후 발생하는 오류를 방지하기 위해 진행하지 않음!!! 60초 대기조 +_+ ')
                             logging.info('------------------------------------------------------')
                             continue
 
