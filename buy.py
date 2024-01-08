@@ -210,13 +210,11 @@ def start_buytrade(buy_amtp):
                     current_dt = datetime.strptime(datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                                                    '%Y-%m-%d %H:%M:%S')
 
-                    print(last_buy_dt + '     ' + current_dt)
-
-
                     # 시간 차이 추출
                     diff = current_dt - last_buy_dt
 
-                    print(diff + '시간 차이')
+                    logging.info(str(last_buy_dt) + '     ' + str(current_dt))
+                    logging.info(str(diff) + '시간 차이')
 
                     # # 매수 후 10시간은 진행하지 않음(너무 잦은 거래 방지) - 잠시 꺼두자
                     # if diff.seconds < 36000:
