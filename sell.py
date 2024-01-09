@@ -77,9 +77,9 @@ def start_selltrade(sell_pcnt, sell_pcnt1, sell_pcnt2, dcnt_pcnt, dcnt_pcnt1, dc
                         # 시간 차이 추출
                         diff = current_dt - last_buy_dt
 
-                        # 매수 후 1분간은 진행하지 않음(업비트 오류 방지 용)
-                        if diff.seconds < 60:
-                            logging.info('+_+ 매수 직후 발생하는 오류를 방지하기 위해 진행하지 않음!!! 60초 대기조 +_+ ')
+                        # 매수 후 10초간은 진행하지 않음(업비트 오류 방지 용)
+                        if diff.seconds < 10:
+                            logging.info('+_+ 매수 직후 발생하는 오류를 방지하기 위해 진행하지 않음!!! 10초 대기조 +_+ ')
                             logging.info('------------------------------------------------------')
                             continue
 
@@ -220,13 +220,13 @@ if __name__ == '__main__':
 
         # 1. 로그레벨
         log_level = 'I' #input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
-        sell_pcnt = 1 #input("매도 수익률(ex:2%=2) : ")
-        sell_pcnt1 = 2
-        sell_pcnt2 = 3
-        dcnt_pcnt = -3 #input("고점대비 하락률(ex:-1%=-1) : ")
-        dcnt_pcnt1 = -2
-        dcnt_pcnt2 = -1
-        loss_cut = -3
+        sell_pcnt = 1.1 #input("매도 수익률(ex:2%=2) : ")
+        sell_pcnt1 = 2.2
+        sell_pcnt2 = 3.3
+        dcnt_pcnt = -3.3 #input("고점대비 하락률(ex:-1%=-1) : ")
+        dcnt_pcnt1 = -2.2
+        dcnt_pcnt2 = -1.1
+        loss_cut = -3.5
 
         upbit.set_loglevel(log_level)
 
