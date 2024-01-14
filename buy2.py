@@ -96,7 +96,7 @@ def start_buytrade(buy_amtp):
                 # 1. 조회 기준 : 일캔들, 최근 5개 지표 조회
                 # 2. 속도를 위해 원하는 지표만 조회(RSI, MFI, MACD, CANDLE) - 수정
                 # -------------------------------------------------------------
-                indicators = upbit.get_indicator_sel(target_item['market'], '30', 200, 41,
+                indicators = upbit.get_indicator_sel(target_item['market'], '60', 200, 41,
                                                      ['BB', 'BB2', 'CANDLE'])
                 # ['RSI', 'MFI', 'MACD', 'BB', 'CANDLE'])
 
@@ -149,15 +149,15 @@ def start_buytrade(buy_amtp):
                 # --------------------------------------------------------------
                 # 볼린저 밴드 추가
                 # --------------------------------------------------------------
-                if (bb2[0]['BBL'] > candle[0]['low_price'] and bb[0]['BBL'] > bb2[0]['BBL'] and bb[1]['BBL'] > bb2[1][
-                    'BBL'] and bb[2]['BBL'] > bb2[2]['BBL'] and candle[2]['high_price'] != candle[1]['high_price'] and
-                    candle[2]['low_price'] != candle[1]['low_price'] and (
-                            candle[1]['high_price'] - candle[1]['low_price']) != (
-                            candle[2]['high_price'] - candle[2]['low_price'])):
+                # if (bb2[0]['BBL'] > candle[0]['low_price'] and bb[0]['BBL'] > bb2[0]['BBL'] and bb[1]['BBL'] > bb2[1][
+                #     'BBL'] and bb[2]['BBL'] > bb2[2]['BBL'] and candle[2]['high_price'] != candle[1]['high_price'] and
+                #     candle[2]['low_price'] != candle[1]['low_price'] and (
+                #             candle[1]['high_price'] - candle[1]['low_price']) != (
+                #             candle[2]['high_price'] - candle[2]['low_price'])):
                 #
                 # if (bb2[0]['BBL'] > candle[0]['low_price'] and bb[0]['BBL'] > bb2[0]['BBL'] and bb[1]['BBL'] > bb2[1]['BBL'] and bb[2]['BBL'] > bb2[2]['BBL'] and candle[2]['high_price'] != candle[1]['high_price'] and candle[2]['low_price'] != candle[1]['low_price'] and (candle[1]['high_price'] - candle[1]['low_price']) != (candle[2]['high_price'] - candle[2]['low_price'])) or (bb2[0]['BBH'] < candle[0]['high_price'] and all(bb2[i+1]['BBH'] > candle[i+1]['high_price'] for i in range(50))): #보관, 왜 매수가 안될까? 원복하자
 
-                if bb2[0]['BBH'] < candle[0]['high_price'] and all(bb2[i+1]['BBH'] > candle[i+1]['high_price'] for i in range(20)): #보관, 왜 매수가 안될까? 원복하자
+                if bb[0]['BBH'] < candle[0]['high_price'] and all(bb[i+1]['BBH'] > candle[i+1]['high_price'] for i in range(20)): #보관, 왜 매수가 안될까? 원복하자
 
                 # --------------------------------------------------------------
                 # 매수 로직
