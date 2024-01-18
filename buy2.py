@@ -96,7 +96,7 @@ def start_buytrade(buy_amtp):
                 # 1. 조회 기준 : 일캔들, 최근 5개 지표 조회
                 # 2. 속도를 위해 원하는 지표만 조회(RSI, MFI, MACD, CANDLE) - 수정
                 # -------------------------------------------------------------
-                indicators = upbit.get_indicator_sel(target_item['market'], '60', 200, 51,
+                indicators = upbit.get_indicator_sel(target_item['market'], 'D', 200, 21,
                                                      ['BB', 'BB2', 'CANDLE'])
                 # ['RSI', 'MFI', 'MACD', 'BB', 'CANDLE'])
 
@@ -160,10 +160,10 @@ def start_buytrade(buy_amtp):
                 # if bb[0]['BBH'] < candle[0]['high_price'] and all(bb[i+1]['BBH'] > candle[i+1]['high_price'] for i in range(50)): #보관, 왜 매수가 안될까? 원복하자
 
                 if bb[0]['BBH'] < candle[0]['high_price']:
-                    logging.info('60분봉 상승 돌파, 48시간 돌파검증')
+                    logging.info('일봉 상승 돌파, 20일 돌파검증')
 
-                    if all(bb[i + 1]['BBH'] > candle[i + 1]['high_price'] for i in range(48)):  # 조건을 변환 - 탭 추가
-                        logging.info('2일간 돌파이력 없음')
+                    if all(bb[i + 1]['BBH'] > candle[i + 1]['high_price'] for i in range(20)):  # 조건을 변환 - 탭 추가
+                        logging.info('20일간 돌파이력 없음')
                         # --------------------------------------------------------------
                     # 매수 로직
                     # 1. RSI : 2일전 < 30미만, 3일전 > 2일전, 1일전 > 2일전, 현재 > 1일전
