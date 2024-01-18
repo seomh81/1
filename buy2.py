@@ -159,10 +159,10 @@ def start_buytrade(buy_amtp):
 
                 # if bb[0]['BBH'] < candle[0]['high_price'] and all(bb[i+1]['BBH'] > candle[i+1]['high_price'] for i in range(50)): #보관, 왜 매수가 안될까? 원복하자
 
-                if bb[0]['BBH'] < candle[0]['high_price']:
+                if bb2[0]['BBH'] < candle[0]['high_price']:
                     logging.info('일봉 상승 돌파, 20일 돌파검증')
 
-                    if all(bb[i + 1]['BBH'] > candle[i + 1]['high_price'] for i in range(20)):  # 조건을 변환 - 탭 추가
+                    if all(bb2[i + 1]['BBH'] > candle[i + 1]['high_price'] for i in range(20)):  # 조건을 변환 - 탭 추가
                         logging.info('20일간 돌파이력 없음')
                         # --------------------------------------------------------------
                     # 매수 로직
