@@ -86,8 +86,8 @@ def start_buytrade(buy_amtp):
                 # logging.info(str(diff.days) + '날 차이')
 
                 # 매수 후 10시간은 진행하지 않음(너무 잦은 거래 방지) - 잠시 꺼두자
-                if diff.days < 1:
-                    logging.info('+_+ 하루에 한 번 거래 +_+ ')
+                if diff.days < 3:
+                    logging.info('+_+ 3일에 한 번 거래 +_+ ')
                     logging.info('------------------------------------------------------')
                     continue
 
