@@ -35,7 +35,7 @@ def start_buytrade(buy_amtp):
             # -----------------------------------------------------------------
             # 전체 종목 리스트 추출
             # -----------------------------------------------------------------
-            target_items = upbit.get_items('KRW', 'ASTR, ID')
+            target_items = upbit.get_items('KRW', 'ID')
 
             # -----------------------------------------------------------------
             # 종목별 체크 #
@@ -104,7 +104,7 @@ def start_buytrade(buy_amtp):
                 # --------------------------------------------------------------
                 # 최근 상장하여 캔들 갯수 부족으로 보조 지표를 구하기 어려운 건은 제외
                 # --------------------------------------------------------------
-                if 'CANDLE' not in indicators or len(indicators['CANDLE']) < 200: #원래 200
+                if 'CANDLE' not in indicators or len(indicators['CANDLE']) < 300: #원래 200
                     logging.info('캔들 데이터 부족으로 데이터 산출 불가...[' + str(target_item['market']) + ']')
                     continue
 
