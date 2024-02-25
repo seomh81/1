@@ -220,12 +220,12 @@ if __name__ == '__main__':
 
         # 1. 로그레벨
         log_level = 'I' #input("로그레벨(D:DEBUG, E:ERROR, 그 외:INFO) : ").upper()
-        sell_pcnt = 1.1 #input("매도 수익률(ex:2%=2) : ")
-        sell_pcnt1 = 2.2
-        sell_pcnt2 = 3.3
-        dcnt_pcnt = -3.3 #input("고점대비 하락률(ex:-1%=-1) : ")
-        dcnt_pcnt1 = -2.2
-        dcnt_pcnt2 = -1.1
+        sell_pcnt = 1 #input("매도 수익률(ex:2%=2) : ")
+        sell_pcnt1 = 2
+        sell_pcnt2 = 3
+        dcnt_pcnt = -3 #input("고점대비 하락률(ex:-1%=-1) : ")
+        dcnt_pcnt1 = -2.5
+        dcnt_pcnt2 = -2
         loss_cut = -3.5
 
         upbit.set_loglevel(log_level)
