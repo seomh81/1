@@ -86,8 +86,8 @@ def start_buytrade(buy_amtp):
                 # logging.info(str(diff.days) + '날 차이')
 
                 # 매수 후 10시간은 진행하지 않음(너무 잦은 거래 방지) - 잠시 꺼두자
-                if diff.days < 5:
-                    logging.info('+_+ 5일에 한 번 거래 +_+ ')
+                if diff.days < 3:
+                    logging.info('+_+ 3일에 한 번 거래 +_+ ')
                     logging.info('------------------------------------------------------')
                     continue
 
@@ -96,7 +96,7 @@ def start_buytrade(buy_amtp):
                 # 1. 조회 기준 : 일캔들, 최근 5개 지표 조회
                 # 2. 속도를 위해 원하는 지표만 조회(RSI, MFI, MACD, CANDLE) - 수정
                 # -------------------------------------------------------------
-                indicators = upbit.get_indicator_sel(target_item['market'], '30', 200, 3,
+                indicators = upbit.get_indicator_sel(target_item['market'], '60', 200, 3,
                                                      ['BB', 'BB2', 'CANDLE'])
                 # ['RSI', 'MFI', 'MACD', 'BB', 'CANDLE'])
 
